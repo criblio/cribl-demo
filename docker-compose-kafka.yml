@@ -19,7 +19,8 @@ services:
     volumes:
       - "./cribl/cribl-kafka:/opt/cribl/local/cribl"
   splunk:
-    image: cribl/splunk:latest
+    build:
+      context: splunk
     ports:
       - "8000:8000"
       - "8088:8088"

@@ -1,10 +1,15 @@
 inputs:
   http:
     type: http
+    disabled: false
+    pipeline: beats-conditioning
     host: 0.0.0.0
     port: 10080
+    authToken: ""
     elasticAPI: /elastic
     criblAPI: /cribl
+    tls:
+      disabled: true
   tcpjson:
     type: tcpjson
     host: 0.0.0.0

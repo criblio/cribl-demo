@@ -1,0 +1,26 @@
+asyncFuncTimeout: 1000
+output: default
+description: Normalize events coming from Elastic Beats
+functions:
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      add:
+        - name: _raw
+          value: message
+        - name: sourcetype
+          value: input.type
+        - name: host
+          value: host.name
+        - name: _time
+          value: Number(C.Time.strftime(C.Time.strptime(__e['@timestamp'],
+            '%Y-%m-%dT%H:%M:%S.%L%Z'), '%s.%L', true))
+      remove:
+        - beat
+        - input
+        - message
+        - offset
+        - prospector
+        - >-
+          @timestamp

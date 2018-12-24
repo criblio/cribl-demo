@@ -5,7 +5,7 @@ routes:
     final: true
     disabled: false
     pipeline: elastic
-    filter: __e['@timestamp']
+    filter: __inputId=='http'
     description: ""
     clones:
       []

@@ -1,4 +1,12 @@
 asyncFuncTimeout: 1000
 output: elastic
 functions:
-  []
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      add:
+        - name: message
+          value: _raw
+      remove:
+        - _raw
