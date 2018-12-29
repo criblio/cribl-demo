@@ -37,7 +37,7 @@ services:
     ports:
       - "9001:9000"
     volumes:
-      - "./data:/data"
+      - "./data/minio:/data"
     command: server /data
 
   elasticsearch:

@@ -13,9 +13,6 @@ functions:
           value: input.type
         - name: host
           value: host.name
-        - name: _time
-          value: Number(C.Time.strftime(C.Time.strptime(__e['@timestamp'],
-            '%Y-%m-%dT%H:%M:%S.%L%Z'), '%s.%L', true))
       remove:
         - beat
         - input
@@ -24,3 +21,13 @@ functions:
         - prospector
         - >-
           @timestamp
+  - id: auto_timestamp
+    filter: "true"
+    disabled: null
+    conf:
+      srcField: _raw
+      dstField: _time
+      defaultTimezone: utc
+      timeExpression: time.getTime() / 1000
+      reSortFactor: 0.2
+      reSortCount: 1000

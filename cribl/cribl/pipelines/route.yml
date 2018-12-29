@@ -5,16 +5,16 @@ routes:
     final: true
     disabled: false
     pipeline: elastic
-    filter: __inputId=='http'
     description: ""
     clones:
       []
+    output: null
+    filter: __inputId=='http'
   - id: KM9Pf6
     name: Sensitive Data
     final: false
     disabled: false
     pipeline: masking
-    filter: index=='cribl' && sourcetype=='business_event'
     description: Mask Sensitive Data
     clones:
       - index: cribl-modified
@@ -23,82 +23,92 @@ routes:
         source: pii_cc
       - index: cribl-modified
         source: encrypt
+    output: null
+    filter: index=='cribl' && sourcetype=='business_event'
   - id: be12ct
     name: KV to JSON
     final: false
     disabled: false
     pipeline: kv2json
-    filter: index=='cribl' && sourcetype=='business_event'
     description: Convert KV Events to JSON
     clones:
       - index: cribl-modified
         source: pretty_autokv
+    output: null
+    filter: index=='cribl' && sourcetype=='business_event'
   - id: qVOe5A
     name: KV to JSON -> Minio
     final: false
     disabled: false
-    pipeline: kv2json-minio
-    filter: index=='cribl' && sourcetype=='business_event'
+    pipeline: kv2json
     description: KV To JSON in S3
     clones:
       - index: minio
+    output: minio
+    filter: index=='cribl' && sourcetype=='business_event'
   - id: py0d5r
     name: Logs to Metrics
     final: false
     disabled: false
     pipeline: logs_to_metrics
-    filter: index=='cribl' && sourcetype=='access_combined'
     description: Convert Access Combined Logs to Splunk Metrics
     clones:
       - index: cribl-metrics
+    output: null
+    filter: index=='cribl' && sourcetype=='access_combined'
   - id: 0nJxAA
     name: Sample and Filter
     final: false
     disabled: false
     pipeline: sample_and_filter
-    filter: index=='cribl' && sourcetype=='access_combined'
     description: Clean up voluminous weblog data for our needs
     clones:
       - index: cribl-modified
         source: smart_sample
       - index: cribl-modified
         source: filter
+    output: null
+    filter: index=='cribl' && sourcetype=='access_combined'
   - id: ZLTc0g
     name: Enrich
     final: false
     disabled: false
     pipeline: enrich
-    filter: index=='cribl' && sourcetype=='access_combined'
     description: Use lookups to add context to events
     clones:
       - index: cribl-modified
         source: enrich
       - index: cribl-modified
         source: indextimefields
+    output: null
+    filter: index=='cribl' && sourcetype=='access_combined'
   - id: mQEq5u
     name: JWT Decode
     final: false
     disabled: false
     pipeline: jwt_to_json
-    filter: index=='cribl' && sourcetype=='authfailed'
     description: Send auth failures with JWT to decode JWT
     clones:
       - index: cribl-modified
+    output: null
+    filter: index=='cribl' && sourcetype=='authfailed'
   - id: ioa1pg
     name: State Change
     final: false
     disabled: false
     pipeline: statechange
-    filter: sourcetype=='nagios'
     description: Log only on state change
     clones:
       - index: cribl-modified
+    output: null
+    filter: sourcetype=='nagios'
   - id: OsuFhD
     name: Main Route
     final: true
     disabled: false
     pipeline: main
-    filter: "true"
     description: Catchall for routing data through main pipeline
     clones:
       []
+    output: null
+    filter: "true"
