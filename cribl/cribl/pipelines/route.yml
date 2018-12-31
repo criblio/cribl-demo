@@ -4,11 +4,11 @@ routes:
     name: elastic
     final: true
     disabled: false
-    pipeline: elastic
+    pipeline: passthru
     description: ""
     clones:
       []
-    output: null
+    output: elastic
     filter: __inputId=='http'
   - id: KM9Pf6
     name: Sensitive Data

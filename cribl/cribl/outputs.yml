@@ -30,6 +30,7 @@ outputs:
     maxOpenFiles: 100
   elastic:
     type: elastic
+    pipeline: elastic
     url: http://elasticsearch:9200/_bulk
     index: cribl
     docType: cribl

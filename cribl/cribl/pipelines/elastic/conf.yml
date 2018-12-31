@@ -10,3 +10,12 @@ functions:
           value: _raw
       remove:
         - _raw
+  - id: eval
+    filter: /^{.+}$/.test(message)
+    disabled: false
+    conf:
+      add:
+        - name: ""
+          value: Object.assign(__e, JSON.parse(message))
+      remove:
+        - message
