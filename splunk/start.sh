@@ -2,6 +2,7 @@
 
 # Start Cribl and Splunk demo in a single container
 docker run \
+    -d \
     --rm \
     --name cribl-demo \
     --hostname cribl-demo \
@@ -11,4 +12,4 @@ docker run \
     --publish 9000:9000 \
     --publish 10080:10080 \
     -e DONT_TIMEOUT=1 \
-    ${SPLUNK_IMAGE}
+    cribl/cribl-demo:latest
