@@ -1,2 +1,2 @@
-FROM cribl/cribl:next
+FROM cribl/cribl:latest
 COPY functions /opt/cribl/bin/cribl/functions
