@@ -10,24 +10,22 @@ functions:
         - name: _raw
           value: message
         - name: sourcetype
-          value: input.type
+          value: "sourcetype ? sourcetype : input.type"
         - name: host
-          value: host.name
+          value: "typeof(host) == 'object' ? host.name : host"
       remove:
         - beat
         - input
         - message
         - offset
         - prospector
-        - >-
-          @timestamp
+        - "@timestamp"
   - id: auto_timestamp
     filter: "true"
     disabled: null
     conf:
-      srcField: _raw
+      srcField: message
       dstField: _time
-      defaultTimezone: utc
+      defaultTimezone: local
       timeExpression: time.getTime() / 1000
-      reSortFactor: 0.2
-      reSortCount: 1000
+      maxLen: 150

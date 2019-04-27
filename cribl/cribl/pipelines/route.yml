@@ -6,9 +6,8 @@ routes:
     disabled: false
     pipeline: passthru
     description: ""
-    clones:
-      []
-    filter: __inputId=='http'
+    clones: []
+    filter: __inputId=='elastic' && sourcetype!='authfailed'
     output: elastic
   - id: semK5P
     name: Elastic Unmodified BigJSON

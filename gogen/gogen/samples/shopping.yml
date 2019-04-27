@@ -5,7 +5,7 @@ earliest: -3s
 interval: 1
 latest: now
 lines:
-- _raw: $externalIP$ - - [$ts$] "$method$ $uri$&JSESSIONID=$sessionId$ HTTP 1.1" $httpstatus$ $size$ "$referrerUri$" "$userAgent$" $timeTaken$
+- _raw: $externalIP$ - - [$ts$] "$method$ $uri$&JSESSIONID=$sessionId$ HTTP/1.1" $httpstatus$ $size$ "$referrerUri$" "$userAgent$" $timeTaken$
   host: $webHost$
   index: cribl
   source: /opt/apache/log/access_combined.log
