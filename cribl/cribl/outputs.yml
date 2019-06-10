@@ -20,8 +20,7 @@ outputs:
     region: us-east-1
     endpoint: http://minio:9000
     signatureVersion: v4
-    partitionExpr: >-
-      `${host}/${sourcetype}`
+    partitionExpr: "`${host}/${sourcetype}`"
     format: json
     baseFileName: CriblOut
     compress: none
@@ -48,8 +47,7 @@ outputs:
     region: us-east-1
     endpoint: http://minio:9000
     signatureVersion: v4
-    partitionExpr: >-
-      `${host}/${sourcetype}`
+    partitionExpr: "`${host}/${sourcetype}`"
     format: json
     baseFileName: CriblOut
     compress: gzip

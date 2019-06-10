@@ -107,4 +107,9 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS: "true"
+  
+  graphite:
+    image: graphiteapp/graphite-statsd
+    ports:
+      - 8100:80
 

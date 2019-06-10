@@ -1,4 +1,4 @@
-FROM outcoldman/splunk:7.2.0
+FROM cribl/splunk:7.3.0
 ARG CRIBL_DISTRO=cribl-splunk-app
 RUN sh -c 'echo dash dash/sh boolean false | debconf-set-selections' && \
     sh -c 'DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash' && \
