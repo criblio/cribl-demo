@@ -1,0 +1,5 @@
+mount,disk
+/,/dev/sda1
+var,/dev/sdb1
+home,/dev/sda2
+etc,/dev/sdb2

@@ -1,0 +1,65 @@
+name: metrics
+description: Generate Statsd Metrics
+notes: >
+  Generates metrics in statsd wire format
+generator: metrics
+interval: 1
+tokens:
+- name: host
+  type: fieldChoice
+  srcField: host
+  sample: allhosts.csv
+  disabled: true
+- name: disks
+  type: fieldChoice
+  srcField: disk
+  sample: disks.csv
+  disabled: true
+lines:
+- _raw: |-
+    cpu.user:$pctUserAll$|g|#cpu:cpu-total,host:$host$
+    cpu.system:$pctSystemAll$|g|#cpu:cpu-total,host:$host$
+    cpu.iowait:$pctIowaitAll$|g|#cpu:cpu-total,host:$host$
+    cpu.idle:$pctIdleAll$|g|#cpu:cpu-total,host:$host$
+- _raw: |-
+    cpu.user:$pctUser$|g|#cpu:$cpuNum$,host:$host$
+    cpu.system:$pctSystem$|g|#cpu:$cpuNum$,host:$host$
+    cpu.iowait:$pctIowait$|g|#cpu:$cpuNum$,host:$host$
+    cpu.idle:$pctIdle$|g|#cpu:$cpuNum$,host:$host$
+- _raw: |-
+    net.rxpkt:$rx_p$|c|#interface:$nic$,host:$host$
+    net.txpkt:$tx_p$|c|#interface:$nic$,host:$host$
+    net.rxkb:$rx_kb$|c|#interface:$nic$,host:$host$
+    net.txkb:$tx_kb$|c|#interface:$nic$,host:$host$
+- _raw: |-
+    disk.size:$totalBytes$|g|#fs:$fs$,mnt:$mnt$,host:$host$
+    disk.used:$usedBytes$|g|#fs:$fs$,mnt:$mnt$,host:$host$
+    disk.avail:$availBytes$|g|#fs:$fs$,mnt:$mnt$,host:$host$
+    disk.used_pct:$usedPct$|g|#fs:$fs$,mnt:$mnt$,host:$host$
+- _raw: |-
+    io.rxreq:$rrps$|c|#device:$device$,host:$host$
+    io.txreq:$wrps$|c|#device:$device$,host:$host$
+    io.rxkb:$rkbps$|c|#device:$device$,host:$host$
+    io.txkb:$wkbps$|c|#device:$device$,host:$host$
+    io.avgwait:$avgwait$|g|#device:$device$,host:$host$
+    io.avgsvc:$avgsvc$|g|#device:$device$,host:$host$
+    io.bwutilpct:$bwutil$|g|#device:$device$,host:$host$
+- _raw: |-
+    mem.totalmb:$memTotalMB$|g|#host:$host$
+    mem.freemb:$memFreeMB$|g|#host:$host$
+    mem.usedmb:$memUsedMB$|g|#host:$host$
+    mem.freepct:$memFreePct$|g|#host:$host$
+    mem.usedpct:$memUsedPct$|g|#host:$host$
+    mem.pgpageout:$pgPageOut$|g|#host:$host$
+    mem.swapusedpct:$swapUsedPct$|g|#host:$host$
+    mem.pgswapout:$pgSwapOut$|g|#host:$host$
+    mem.cswitches:$cSwitches$|g|#host:$host$
+    mem.interrupts:$interrupts$|g|#host:$host$
+    mem.forks:$forks$|g|#host:$host$
+    mem.processes:$processes$|g|#host:$host$
+    mem.threads:$threads$|g|#host:$host$
+    mem.loadavg1mi:$loadAvg1mi$|g|#host:$host$
+    mem.waitthreads:$waitThreads$|g|#host:$host$
+    mem.interruptsps:$interruptsPS$|g|#host:$host$
+    mem.pgpageinps:$pgPageInPS$|g|#host:$host$
+    mem.pgpageoutps:$pgPageOutPS$|g|#host:$host$

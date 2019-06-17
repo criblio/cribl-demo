@@ -1,0 +1,49 @@
+asyncFuncTimeout: 1000
+output: default
+description: Aggregate Metrics from Statsd
+functions:
+  - id: eval
+    filter: sourcetype=='statsd_ext'
+    disabled: null
+    conf:
+      add:
+        - name: index
+          value: "'cribl-metrics'"
+      remove: []
+  - id: eval
+    filter: sourcetype=='graphite'
+    disabled: null
+    conf:
+      remove:
+        - com.*
+        - io.*
+        - org.*
+  - id: aggregation
+    filter: sourcetype=='statsd_ext'
+    disabled: null
+    conf:
+      passthrough: false
+      sufficientStatsOnly: false
+      metricsMode: true
+      timeWindow: 10s
+      aggregations:
+        - count()
+        - sum(_value)
+        - avg(_value)
+        - max(_value)
+        - min(_value)
+        - perc(95, _value)
+        - stdev(_value)
+      groupbys:
+        - _metric
+        - host
+        - cpu
+        - fs
+        - mnt
+        - device
+        - interface
+        - source
+        - sourcetype
+        - index
+      cumulative: false
+    description: Aggregate Statsd Metrics

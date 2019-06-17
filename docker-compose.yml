@@ -19,6 +19,8 @@ services:
       - "10001:10001"
       - "9999:9999"
       - "9000:9000"
+      - "8125:8125"
+      - "8125:8125/udp"
       - "5140:5140"
     volumes:
       - "./cribl/cribl:/opt/cribl/local/cribl"
@@ -112,4 +114,19 @@ services:
     image: graphiteapp/graphite-statsd
     ports:
       - 8100:80
+    volumes:
+      - ./graphite/carbon.conf:/opt/graphite/conf/carbon.conf:ro
+      - ./graphite/storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf:ro
 
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 8200:3000
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+
+  telegraf:
+    image: telegraf:latest
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - "/var/run/docker.sock:/var/run/docker.sock"

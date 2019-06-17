@@ -13,3 +13,4 @@ functions:
           value: "source ? source : appName"
         - name: sourcetype
           value: "sourcetype ? sourcetype : 'nagios'"
+      remove: []

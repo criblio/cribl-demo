@@ -1,0 +1,28 @@
+name: metrics
+fileName: metrics.lua
+options:
+  # cpu configs
+  minCPU: 30.0
+  maxCPU: 75.0
+  numCPUs: 8
+  # net configs
+  minKBPS: 200
+  maxKBPS: 2500
+  minAvgPacketSize: 200
+  maxAvgPacketSize: 1200
+  numNICs: 2
+  # disk used configs
+  minDiskUsedPct: 50.0
+  maxDiskUsedPct: 69.0
+  totalGBperDisk: 931
+  numDisks: 4
+  # io stats configs
+  highWrites: 0
+  highReads: 0
+  maxOps: 1000
+  avgKB: 0.512
+  maxTime: 100
+  # per proc stats
+  minMemUsedPct: 5.0
+  maxMemUsedPct: 60.0
+  totalMB: 16000

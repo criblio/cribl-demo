@@ -1,5 +1,24 @@
 id: default
 routes:
+  - id: ZdcmEQ
+    name: statsd -> Splunk
+    final: false
+    disabled: false
+    pipeline: statsd
+    description: Send Statsd Metrics to Splunk
+    clones:
+      - index: cribl-metrics
+    filter: sourcetype=='statsd_ext' || sourcetype=='graphite'
+    output: splunk
+  - id: A1JddJ
+    name: statsd
+    final: true
+    disabled: false
+    pipeline: statsd
+    description: Aggregate Statsd Metrics
+    clones: []
+    filter: sourcetype=='statsd_ext' || sourcetype=='graphite'
+    output: graphite
   - id: Qo3BYx
     name: elastic
     final: true
@@ -7,7 +26,7 @@ routes:
     pipeline: passthru
     description: ""
     clones: []
-    filter: __inputId=='elastic' && sourcetype!='authfailed'
+    filter: __inputId=='http:elastic:elastic' && sourcetype!='authfailed'
     output: elastic
   - id: semK5P
     name: Elastic Unmodified BigJSON

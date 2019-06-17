@@ -3,7 +3,7 @@ description: Converts Access Combined Logs to Splunk Metrics
 functions:
   - id: serde
     filter: sourcetype=='access_combined'
-    disabled: null
+    disabled: false
     conf:
       mode: extract
       type: clf
@@ -20,54 +20,48 @@ functions:
         - useragent
         - timetaken
     description: Parse Access Combined logs
-  - id: clone
-    filter: "true"
-    disabled: null
-    conf:
-      clones:
-        - source: http.timeTaken
-          metric_name: http.timeTaken
-    description: Clone for timeTaken
-  - id: eval
-    filter: >-
-      !metric_name
-    disabled: null
-    conf:
-      add:
-        - name: source
-          value: >-
-            'http.bytes'
-        - name: metric_name
-          value: >-
-            'http.bytes'
-        - name: _value
-          value: bytes
-      remove:
-        []
-    description: Override source & metric_name for bytes events
-  - id: eval
-    filter: metric_name == 'http.timeTaken'
-    disabled: null
-    conf:
-      add:
-        - name: _value
-          value: timetaken
-      remove:
-        []
-    description: Set _value for timeTaken
-  - id: eval
-    filter: sourcetype=='access_combined'
-    disabled: null
-    conf:
-      remove:
-        - bytes
-        - timetaken
-    description: Remove value fields
   - id: serde
     filter: sourcetype=='access_combined'
-    disabled: null
+    disabled: false
     conf:
       mode: extract
       type: kvp
       srcField: request_uri_query
     description: Parse Query String
+  - id: numerify
+    filter: sourcetype=='access_combined'
+    disabled: false
+    conf:
+      ignoreFields: []
+  - id: aggregation
+    filter: sourcetype=='access_combined'
+    disabled: false
+    conf:
+      passthrough: false
+      sufficientStatsOnly: false
+      metricsMode: true
+      timeWindow: 10s
+      aggregations:
+        - count()
+        - avg(bytes)
+        - min(bytes)
+        - max(bytes)
+        - sum(bytes)
+        - perc(95, bytes)
+        - stdev(bytes)
+        - avg(timetaken)
+        - min(timetaken)
+        - max(timetaken)
+        - sum(timetaken)
+        - perc(95, timetaken)
+        - stdev(timetaken)
+      groupbys:
+        - request_uri_path
+        - status
+        - request_method
+        - index
+        - host
+        - source
+        - sourcetype
+      cumulative: false
+    description: Aggregate Web Access Logs

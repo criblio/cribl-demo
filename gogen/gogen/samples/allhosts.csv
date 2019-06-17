@@ -1,0 +1,3 @@
+ip,host,mac,group,nics
+10.2.1.133,appserver-01,BE:21:D7:EF:CD:E2,api,2
+10.2.1.134,appserver-02,2A:24:90:9B:AF:2C,api,2

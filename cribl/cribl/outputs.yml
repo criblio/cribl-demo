@@ -55,3 +55,11 @@ outputs:
     maxFileOpenTimeSec: 60
     maxFileIdleTimeSec: 30
     maxOpenFiles: 100
+  graphite:
+    type: graphite
+    pipeline: graphite-conditioning
+    protocol: tcp
+    host: graphite
+    port: 2003
+    mtu: 512
+    flushPeriodSec: 1
