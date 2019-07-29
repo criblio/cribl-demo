@@ -2,54 +2,22 @@ asyncFuncTimeout: 1000
 output: default
 description: Reshape Large JSON events to be more valuable
 functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Remove multiValueHeader and null fields from _raw using Parser
+        Reserialize
   - id: serde
     filter: sourcetype=='lambda'
     disabled: false
     conf:
+      srcField: _raw
+      dstField: ""
       mode: reserialize
       type: json
-      srcField: _raw
       remove:
         - multiValueHeaders.*
-      fieldFilterExpr: "!(name.startsWith('headers.CloudFront-Is') && value === 'false') &&
-        value !== null"
-      dstField: ""
-  - id: regex_extract
-    filter: sourcetype=='lambda'
-    disabled: true
-    conf:
-      regex: /User-Agent":"(?<__UserAgent>[^"]+)/
-      iterations: 100
-      source: _raw
-    description: Extract User Agent
-  - id: suppress
-    filter: sourcetype=='lambda'
-    disabled: true
-    conf:
-      keyExpr: __UserAgent
-      allow: 1
-      suppressPeriodSec: 300
-      dropEventsMode: false
-      maxCacheSize: 50000
-      cacheIdleTimeoutPeriods: 2
-      numEventsIdleTimeoutTrigger: 10000
-    description: Find duplicate User Agents
-  - id: eval
-    filter: sourcetype=='lambda'
-    disabled: true
-    conf:
-      add:
-        - name: useragenthash
-          value: C.Mask.md5(__UserAgent, 8)
-      remove: []
-    description: Suppress User Agents
-  - id: serde
-    filter: sourcetype=='lambda' && suppress == 1
-    disabled: true
-    conf:
-      mode: reserialize
-      type: json
-      srcField: _raw
-      remove:
-        - requestContext.identity.userAgent
-      fieldFilterExpr: name !== 'headers.User-Agent'
+      fieldFilterExpr: value !== null
+    description: Parse JSON from _raw, drop multiValueHeaders and all null fields and
+      rewrite back to _raw

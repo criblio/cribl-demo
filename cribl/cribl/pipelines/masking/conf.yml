@@ -1,6 +1,13 @@
 asyncFuncTimeout: 1000
 description: For masking sensitive data
 functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: "Mask sensitive information: MD5 hash of a social security number; MD5
+        hash of a CC if it matches, along with an example ternary expression;
+        and encrypting an ESN (subscriber ID)."
   - id: mask
     filter: sourcetype=='business_event'
     disabled: false
@@ -8,26 +15,10 @@ functions:
       rules:
         - matchRegex: /(social=)([0-9]{3}-?[0-9]{2}-?[0-9]{4})/gm
           replaceExpr: "`${g1}${C.Mask.md5(g2, g2)}`"
-      fields:
-        - _raw
-    description: Redact Social Security Numbers
-  - id: mask
-    filter: sourcetype=='business_event'
-    disabled: false
-    conf:
-      rules:
-        - matchRegex: /([0-9]{14,16})/gm
+        - matchRegex: /([0-9]{14,16})/
           replaceExpr: "C.Mask.isCC(g1) ? C.Mask.md5(g1, g1.length) : g1"
-      fields:
-        - _raw
-    description: Validate CC number before masking
-  - id: mask
-    filter: sourcetype=='business_event'
-    disabled: false
-    conf:
-      rules:
-        - matchRegex: /(esn=)"?(\w+)"?/gi
+        - matchRegex: /(esn=)"?(\w+)"?/
           replaceExpr: "`${g1}${C.Crypto.encrypt(g2, 0)}`"
       fields:
         - _raw
-    description: Encrypt sensitive info
+    description: Redact Social Security Numbers

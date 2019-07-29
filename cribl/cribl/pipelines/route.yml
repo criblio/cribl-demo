@@ -100,6 +100,16 @@ routes:
         redacted: "true"
     filter: index=='cribl' && sourcetype=='business_event'
     output: default
+  - id: VAGP6z
+    name: Trim BigJSON
+    final: false
+    disabled: false
+    pipeline: trim_json
+    description: Trim Large JSON Events
+    clones:
+      - index: cribl-modified
+    filter: index=='cribl' && sourcetype=='lambda'
+    output: default
   - id: py0d5r
     name: Logs to Metrics
     final: false
@@ -155,16 +165,6 @@ routes:
     clones:
       - index: cribl-modified
     filter: index=='cribl' && sourcetype=='nagios'
-    output: default
-  - id: VAGP6z
-    name: Trim BigJSON
-    final: false
-    disabled: false
-    pipeline: trim_json
-    description: Trim Large JSON Events
-    clones:
-      - index: cribl-modified
-    filter: index=='cribl' && sourcetype=='lambda'
     output: default
   - id: OsuFhD
     name: Main Route

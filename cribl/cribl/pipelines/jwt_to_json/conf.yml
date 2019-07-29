@@ -1,34 +1,34 @@
 asyncFuncTimeout: 1000
 description: Convert JWT-like base64 to JSON
 functions:
-  - filter: "true"
-    id: regex_extract
-    description: Extract JWT Token
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Extract a base 64 encoded string, decode it, then assign fields in the
+        event based on the parsed JSON.
+  - id: regex_extract
+    filter: "true"
+    disabled: false
     conf:
       regex: /jwt:\s*(?<__jwt>[A-Za-z0-9+\/=]+)/
       source: _raw
-    disabled: false
-  - filter: __jwt
-    id: eval
-    description: Configure fields
+      iterations: 100
+    description: Extract JWT Token
+  - id: eval
+    filter: __jwt
+    disabled: null
     conf:
       add:
         - name: hasjwt
-          value: >-
-            'yes'
+          value: "'yes'"
         - name: source
-          value: >-
-            'pretty_base64'
-  - filter: __jwt
-    id: demo_base64decode
-    description: Decode Base64
-    conf:
-      srcField: __jwt
-      dstField: jwt
-  - filter: jwt
-    id: eval
-    description: Flatten JWT to index time fields
-    conf:
-      add:
-        - name: __nothing
-          value: Object.assign(__e, JSON.parse(jwt)) && undefined
+          value: "'pretty_base64'"
+        - name: jwt
+          value: C.Decode.base64(__jwt)
+        - value: Object.assign(__e, JSON.parse(jwt))
+          name: ""
+      remove:
+        - jwt
+        - message
+    description: Configure fields

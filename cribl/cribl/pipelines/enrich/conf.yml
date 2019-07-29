@@ -1,17 +1,27 @@
 asyncFuncTimeout: 1000
 functions:
-  - filter: source=='enrich'
-    id: regex_extract
-    description: Extract HTTP Status
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Extract HTTP Status and add human readable status
+  - id: regex_extract
+    filter: source=='enrich'
     disabled: false
     conf:
       regex: /"\s(?<__status>[1-5][0-9]{2})/
       source: _raw
-  - filter: source=='enrich'
-    id: lookup
-    description: Lookup HTTP status description and type
+      iterations: 100
+    description: Extract HTTP Status
+  - id: lookup
+    filter: source=='enrich'
+    disabled: null
     conf:
-      file: $SPLUNK_HOME/etc/apps/cribl/lookups/http_status.csv
+      file: http_status.csv
+      matchMode: exact
+      matchType: first
+      reloadPeriodSec: 60
+      addToEvent: false
       inFields:
         - eventField: __status
           lookupField: status
@@ -20,24 +30,45 @@ functions:
           eventField: idx_http_status_description
         - lookupField: status_type
           eventField: idx_http_status_type
-  - filter: source=='enrich'
-    id: demo_dns
-    description: Lookup DNS in the events
-    disabled: false
+    description: Lookup HTTP status description and type
+  - id: comment
+    filter: "true"
+    disabled: null
     conf:
-      {}
-  - filter: source=='indextimefields'
-    id: eval
-    description: Add Index Time Fields
+      comment: Extract Client IP and do a reverse DNS lookups
+  - id: regex_extract
+    filter: "true"
+    disabled: null
+    conf:
+      regex: /(?<__clientip>([0-1]?\d\d?|2[0-4]\d|25[0-5])\.([0-1]?\d\d?|2[0-4]\d|25[0-5])\.([0-1]?\d\d?|2[0-4]\d|25[0-5])\.([0-1]?\d\d?|2[0-4]\d|25[0-5]))/m
+      regexList: []
+      source: _raw
+      iterations: 100
+    description: Extract Client IP
+  - id: reverse_dns
+    filter: __clientip
+    disabled: null
+    conf:
+      fields:
+        - inFieldName: __clientip
+          outFieldName: dns
+      cacheTTL: 60
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Add some index time fields
+  - id: eval
+    filter: source=='indextimefields'
+    disabled: null
     conf:
       add:
         - name: geo
-          value: >-
-            ['us-south', 'us-north', 'us-east',
-            'us-west'][Math.floor(Math.random() * 4)]
+          value: "['us-south', 'us-north', 'us-east',
+            'us-west'][Math.floor(Math.random() * 4)]"
         - name: dc
-          value: >-
-            `dc-0${Math.floor(Math.random() * 8)}`
+          value: "`dc-0${Math.floor(Math.random() * 8)}`"
         - name: rack
-          value: >-
-            `rack-${Math.floor(Math.random() * 12)}`
+          value: "`rack-${Math.floor(Math.random() * 12)}`"
+    description: Add Index Time Fields
+output: default

@@ -1,5 +1,5 @@
 FROM cribl/splunk:7.3.0
-ARG CRIBL_DISTRO=cribl-splunk-app
+ARG CRIBL_DISTRO=cribl-splunk-app-linux-x64
 RUN sh -c 'echo dash dash/sh boolean false | debconf-set-selections' && \
     sh -c 'DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash' && \
     echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list && \
@@ -7,8 +7,9 @@ RUN sh -c 'echo dash dash/sh boolean false | debconf-set-selections' && \
     apt-get -o Acquire::Check-Valid-Until=false update && \
     apt-get install -y vim nano curl ca-certificates jq && \
     rm -rf /var/lib/apt/lists/*
-RUN VERSION=$(curl -s https://cdn.cribl.io/versions.json | jq -r .version) && \
-    curl -Lso /tmp/${CRIBL_DISTRO}.tgz https://cdn.cribl.io/dl/$(echo ${VERSION} | cut -d '-' -f 1)/${CRIBL_DISTRO}-${VERSION}.tgz && \
+# RUN VERSION=$(curl -s https://cdn.cribl.io/versions.json | jq -r .version) && \
+#     curl -Lso /tmp/${CRIBL_DISTRO}.tgz https://cdn.cribl.io/dl/$(echo ${VERSION} | cut -d '-' -f 1)/${CRIBL_DISTRO}-${VERSION}.tgz && \
+RUN curl -Lso /tmp/${CRIBL_DISTRO}.tgz https://cdn.cribl.io/dl/latest/${CRIBL_DISTRO}.tgz && \
     tar -zxvf /tmp/${CRIBL_DISTRO}.tgz -C /var/opt/splunk/etc/apps && \
     rm /tmp/${CRIBL_DISTRO}.tgz
 COPY hack/splunk/etc /var/opt/splunk/etc

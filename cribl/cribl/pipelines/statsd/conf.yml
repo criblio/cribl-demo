@@ -2,14 +2,12 @@ asyncFuncTimeout: 1000
 output: default
 description: Aggregate Metrics from Statsd
 functions:
-  - id: eval
-    filter: sourcetype=='statsd_ext'
+  - id: comment
+    filter: "true"
     disabled: null
     conf:
-      add:
-        - name: index
-          value: "'cribl-metrics'"
-      remove: []
+      comment: Next eval drops out a number of dimensions which are uninteresting and
+        clutter up the UI of Grafana and Splunk.
   - id: eval
     filter: sourcetype=='graphite'
     disabled: null
@@ -18,6 +16,14 @@ functions:
         - com.*
         - io.*
         - org.*
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: All metrics from statsd and graphite come in with fields _metric,
+        _metric_type and _value. This can be used in aggregations if you want to
+        aggregate values, as seen below. Note Group By also has the fields
+        Splunk expects like index, host, source and sourcetype.
   - id: aggregation
     filter: sourcetype=='statsd_ext'
     disabled: null
@@ -46,4 +52,5 @@ functions:
         - sourcetype
         - index
       cumulative: false
+      add: []
     description: Aggregate Statsd Metrics
