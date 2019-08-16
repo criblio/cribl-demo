@@ -1,6 +1,11 @@
 asyncFuncTimeout: 1000
 description: Convert k=v events to JSON
 functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Parse K=V in _raw and rewrite as JSON
   - id: serde
     filter: sourcetype=='business_event'
     disabled: null
@@ -10,13 +15,12 @@ functions:
       srcField: _raw
       dstField: __parsed
     description: Parse K=V
-  - id: eval
-    filter: sourcetype=='business_event'
+  - id: serialize
+    filter: __parsed
     disabled: null
     conf:
-      add:
-        - name: _raw
-          value: JSON.stringify(__parsed)
-      remove:
-        []
-    description: Replace raw with parsed key/value pairs
+      type: json
+      fields:
+        - "*"
+      srcField: __parsed
+      dstField: _raw

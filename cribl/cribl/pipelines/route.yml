@@ -1,15 +1,14 @@
 id: default
+groups:
+  kWhP9A:
+    name: Elastic
+    description: Routes destined for ElasticSearch
+    index: 1
+  N8e7LH:
+    name: S3 BigJSON
+    description: S3 Events
+    index: 2
 routes:
-  - id: ZdcmEQ
-    name: statsd -> Splunk
-    final: false
-    disabled: false
-    pipeline: statsd
-    description: Send Statsd Metrics to Splunk
-    clones:
-      - index: cribl-metrics
-    filter: sourcetype=='statsd_ext' || sourcetype=='graphite' || sourcetype=='statsd'
-    output: splunk
   - id: A1JddJ
     name: statsd
     final: true
@@ -18,7 +17,7 @@ routes:
     description: Aggregate Statsd Metrics
     clones: []
     filter: sourcetype=='statsd_ext' || sourcetype=='graphite' || sourcetype=='statsd'
-    output: graphite
+    output: statsd
   - id: Qo3BYx
     name: elastic
     final: true
@@ -28,6 +27,7 @@ routes:
     clones: []
     filter: __inputId=='http:elastic:elastic' && sourcetype!='authfailed'
     output: elastic
+    groupId: kWhP9A
   - id: semK5P
     name: Elastic Unmodified BigJSON
     final: false
@@ -38,6 +38,7 @@ routes:
       - __index: bigjson
     filter: index=='cribl' && sourcetype=='lambda'
     output: elastic
+    groupId: kWhP9A
   - id: Umz4dS
     name: Elastic Trimmed BigJSON
     final: false
@@ -48,6 +49,7 @@ routes:
       - __index: bigjson-trimmed
     filter: index=='cribl' && sourcetype=='lambda'
     output: elastic
+    groupId: kWhP9A
   - id: tTglKB
     name: S3 Unmodified BigJSON
     final: false
@@ -58,6 +60,7 @@ routes:
       - host: unmodified
     filter: index=='cribl' && sourcetype=='lambda'
     output: s3_bigjson
+    groupId: N8e7LH
   - id: ylRtTp
     name: S3 Trimmed BigJSON
     final: false
@@ -68,16 +71,7 @@ routes:
       - host: trimmed
     filter: index=='cribl' && sourcetype=='lambda'
     output: s3_bigjson
-  - id: qVOe5A
-    name: KV to JSON -> S3
-    final: false
-    disabled: false
-    pipeline: kv2json
-    description: KV To JSON in S3
-    clones:
-      - index: minio
-    filter: index=='cribl' && sourcetype=='business_event'
-    output: s3
+    groupId: N8e7LH
   - id: be12ct
     name: KV to JSON
     final: false
@@ -88,7 +82,7 @@ routes:
       - index: cribl-modified
         source: pretty_autokv
     filter: index=='cribl' && sourcetype=='business_event'
-    output: default
+    output: kv2json
   - id: KM9Pf6
     name: Sensitive Data
     final: false
