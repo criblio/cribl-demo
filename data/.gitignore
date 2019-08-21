@@ -1,3 +1,6 @@
 *
 !minio
+!*.py
+!*.csv
+!*.json
 !.gitignore
