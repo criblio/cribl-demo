@@ -1,6 +1,5 @@
 begin: -1h
 count: 3
-randomizeCount: 0.7
 earliest: -3s
 interval: 1
 latest: now

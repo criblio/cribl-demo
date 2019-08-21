@@ -4,15 +4,30 @@ functions:
     filter: "true"
     disabled: null
     conf:
-      comment: Extract HTTP Status and add human readable status
+      comment: Extract Weblog Fields using RegEx
   - id: regex_extract
-    filter: source=='enrich'
-    disabled: false
+    filter: "true"
+    disabled: null
     conf:
-      regex: /"\s(?<__status>[1-5][0-9]{2})/
+      regex: /^(?<__clientIP>[\d.]+) (?<__ident>\S+) (?<__httpBasicUser>\S+)
+        (?<__timestamp>\[[^\]]+\]) "(?<method>\w+)
+        (?<uri>[^?]+)\??(?<__queryString>[^ ]+)?
+        HTTP\/(?<__httpVersion>[0-9.]+)" (?<status>\d{3}) (?<bytes>\d+)
+        "(?<__referrer>[^"]+)" "(?<__userAgent>[^"]+)" (?<timeTaken>\d+)$/gm
       source: _raw
       iterations: 100
-    description: Extract HTTP Status
+  - id: serde
+    filter: __queryString
+    disabled: null
+    conf:
+      mode: extract
+      srcField: __queryString
+      type: kvp
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Lookup HTTP Status
   - id: lookup
     filter: source=='enrich'
     disabled: null
@@ -35,28 +50,6 @@ functions:
     filter: "true"
     disabled: null
     conf:
-      comment: Extract Client IP and do a reverse DNS lookups
-  - id: regex_extract
-    filter: "true"
-    disabled: null
-    conf:
-      regex: /(?<__clientip>([0-1]?\d\d?|2[0-4]\d|25[0-5])\.([0-1]?\d\d?|2[0-4]\d|25[0-5])\.([0-1]?\d\d?|2[0-4]\d|25[0-5])\.([0-1]?\d\d?|2[0-4]\d|25[0-5]))/m
-      regexList: []
-      source: _raw
-      iterations: 100
-    description: Extract Client IP
-  - id: reverse_dns
-    filter: __clientip
-    disabled: null
-    conf:
-      fields:
-        - inFieldName: __clientip
-          outFieldName: dns
-      cacheTTL: 60
-  - id: comment
-    filter: "true"
-    disabled: null
-    conf:
       comment: Add some index time fields
   - id: eval
     filter: source=='indextimefields'
@@ -71,4 +64,55 @@ functions:
         - name: rack
           value: "`rack-${Math.floor(Math.random() * 12)}`"
     description: Add Index Time Fields
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Convert extracted values to numbers
+  - id: numerify
+    filter: "true"
+    disabled: false
+    conf:
+      ignoreFields:
+        - status
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Lookup JSESSIONID against Redis
+  - id: demo_redisLookup
+    filter: "true"
+    disabled: false
+    conf:
+      host: redis
+      port: "6379"
+      fromField: JSESSIONID
+      toField: userName
+      secure: false
+  - id: eval
+    filter: "true"
+    disabled: true
+    conf:
+      add:
+        - name: userName
+          value: "'mwilde'"
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Lookup userName against REST API
+  - id: demo_restLookup
+    filter: "true"
+    disabled: false
+    conf:
+      urlExpression: "`http://apiserver:3000/users/${userName}`"
+      eventField: customer
+      maxConcurrentRequests: 1
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      remove:
+        - httpBasicUser
+        - JSESSIONID
 output: default
