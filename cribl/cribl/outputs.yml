@@ -71,7 +71,7 @@ outputs:
       - filter: "true"
         output: splunk
         final: false
-      - filter: "false"
+      - filter: "true"
         output: graphite
         final: true
     onBackpressure: drop

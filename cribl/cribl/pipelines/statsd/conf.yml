@@ -26,7 +26,7 @@ functions:
         Splunk expects like index, host, source and sourcetype.
   - id: aggregation
     filter: sourcetype=='statsd_ext'
-    disabled: null
+    disabled: true
     conf:
       passthrough: false
       sufficientStatsOnly: false
@@ -52,5 +52,14 @@ functions:
         - sourcetype
         - index
       cumulative: false
-      add: []
+      add:
+        - name: index
+          value: "index ? index : 'cribl-metrics'"
     description: Aggregate Statsd Metrics
+  - id: eval
+    filter: "!index"
+    disabled: null
+    conf:
+      add:
+        - name: index
+          value: "'cribl-metrics'"
