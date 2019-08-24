@@ -24,5 +24,7 @@ ENV SPLUNK_BEFORE_START_CMD_1 "cmd /bin/bash /opt/splunk/etc/apps/cribl/bin/time
 ENV SPLUNK_BEFORE_START_CMD_2 "cmd /bin/bash /opt/splunk/etc/apps/cribl/bin/intercom.sh"
 ENV SPLUNK_BEFORE_START_CMD_3 "cmd /bin/bash /opt/splunk/etc/apps/cribl/bin/config.sh"
 ADD http://cdn.cribl.io/dl/scope/latest/linux/libwrap.so /usr/lib/libwrap.so
+RUN chmod 755 /usr/lib/libwrap.so
 ADD scope.cfg /etc/scope/scope.cfg
-ENV LD_PRELOAD=/usr/lib/libwrap.so
+RUN cp /var/opt/splunk/etc/splunk-launch.conf.default /var/opt/splunk/etc/splunk-launch.conf && \
+    echo -e "\nLD_PRELOAD=/usr/lib/libwrap.so\n" >> /var/opt/splunk/etc/splunk-launch.conf
