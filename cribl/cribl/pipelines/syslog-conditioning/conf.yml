@@ -10,7 +10,7 @@ functions:
         - name: index
           value: "index ? index : 'cribl'"
         - name: source
-          value: "source ? source : appName"
+          value: "source ? source : appname"
         - name: sourcetype
           value: "sourcetype ? sourcetype : 'nagios'"
       remove: []

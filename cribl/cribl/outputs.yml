@@ -57,14 +57,6 @@ outputs:
     mtu: 512
     flushPeriodSec: 1
     onBackpressure: drop
-  splunk:
-    type: splunk
-    host: splunk
-    port: 9997
-    onBackpressure: queue
-    nestedFields: none
-    tls:
-      disabled: true
   statsd:
     type: router
     rules:
@@ -94,3 +86,16 @@ outputs:
     connectionTimeout: 5000
     writeTimeout: 10000
     onBackpressure: block
+  splunk:
+    type: splunk
+    host: splunk
+    port: 9997
+    nestedFields: none
+    tls:
+      disabled: true
+    connectionTimeout: 5000
+    writeTimeout: 10000
+    onBackpressure: queue
+    pqMaxFileSize: 1 MB
+    pqPath: $CRIBL_HOME/state/queues
+    pqCompress: none
