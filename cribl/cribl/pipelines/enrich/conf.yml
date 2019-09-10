@@ -38,7 +38,7 @@ functions:
       reloadPeriodSec: 60
       addToEvent: false
       inFields:
-        - eventField: __status
+        - eventField: status
           lookupField: status
       outFields:
         - lookupField: status_description

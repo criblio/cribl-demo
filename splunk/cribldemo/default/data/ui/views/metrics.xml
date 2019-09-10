@@ -50,11 +50,11 @@
           <b>Metrics are much more compact than logs and searching and reporting on them is lightning fast.</b>To play around, head on over to the <a href="analysis_workspace">Analysis Workspace</a>. Alternatively, you can try to run a few searches manually. For example: 
           <ul>
             <li>
-              <code>| mstats max(_value) prestats=t WHERE metric_name="http.timetaken" AND "index"="cribl-metrics" span=10s
+              <code>| mstats max(_value) prestats=t WHERE metric_name="timetaken.avg" AND "index"="cribl-metrics" span=10s
 | timechart max(_value) as "Max"</code>
             </li>
             <li>
-              <code>| mstats p95(_value) prestats=t WHERE metric_name="http.timetaken" AND "index"="cribl-metrics" span=10s
+              <code>| mstats p95(_value) prestats=t WHERE metric_name="timetaken.avg" AND "index"="cribl-metrics" span=10s
 | timechart p95(_value) as "p95"</code>
             </li>
           </ul>
@@ -65,9 +65,9 @@
       <chart>
         <title>http.bytes Over Time</title>
         <search>
-          <query>| mstats avg(_value) as "Avg" WHERE metric_name="http.bytes" AND "index"="cribl-metrics" $mstats_span$
+          <query>| mstats avg(_value) as "Avg" WHERE metric_name="bytes.avg" AND "index"="cribl-metrics" $mstats_span$
 | append [
-    | mstats avg(_value) as "Avg (-30m)" WHERE metric_name="http.bytes" AND "index"="cribl-metrics" earliest=$earliest_0$ latest=$latest_0$ $mstats_span$
+    | mstats avg(_value) as "Avg (-30m)" WHERE metric_name="bytes.avg" AND "index"="cribl-metrics" earliest=$earliest_0$ latest=$latest_0$ $mstats_span$
     | eval _time = round(relative_time(_time, "+30m"))
 ]
 | timechart first("Avg") as "Avg", first("Avg (-30m)") as "Avg (-30m)" $timechart_span$</query>
@@ -95,7 +95,7 @@
       <chart>
         <title>http.timetaken by Action Over Time</title>
         <search>
-          <query>| mstats p95(_value) prestats=true WHERE metric_name="http.timetaken" AND "index"="cribl-metrics" $mstats_span$ BY "action" 
+          <query>| mstats p95(_value) prestats=true WHERE metric_name="timetaken.avg" AND "index"="cribl-metrics" $mstats_span$ BY "action" 
 | timechart p95(_value) as "p95" agg=max limit=5 useother=false $timechart_span$ BY "action"</query>
           <earliest>$global_time_tok.earliest$</earliest>
           <latest>$global_time_tok.latest$</latest>
@@ -119,7 +119,7 @@
       <chart>
         <title>http.timetaken by Category Over Time</title>
         <search>
-          <query>| mstats max(_value) prestats=true WHERE metric_name="http.timetaken" AND "index"="cribl-metrics" span=10s BY "category_id" 
+          <query>| mstats max(_value) prestats=true WHERE metric_name="timetaken.avg" AND "index"="cribl-metrics" span=10s BY "category_id" 
 | timechart max(_value) as "Max" agg=max limit=5 useother=false span=10s BY "category_id"</query>
           <earliest>$global_time_tok.earliest$</earliest>
           <latest>$global_time_tok.latest$</latest>
