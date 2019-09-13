@@ -61,6 +61,9 @@ outputs:
     type: router
     rules:
       - filter: "true"
+        output: localhost
+        final: false
+      - filter: "true"
         output: splunk-metrics
         final: false
       - filter: "true"
@@ -85,7 +88,7 @@ outputs:
       disabled: true
     connectionTimeout: 5000
     writeTimeout: 10000
-    onBackpressure: block
+    onBackpressure: drop
   splunk:
     type: splunk
     host: splunk
@@ -99,3 +102,12 @@ outputs:
     pqMaxFileSize: 1 MB
     pqPath: $CRIBL_HOME/state/queues
     pqCompress: none
+  localhost:
+    type: statsd_ext
+    protocol: udp
+    host: localhost
+    port: 9125
+    mtu: 512
+    flushPeriodSec: 1
+    connectionTimeout: 5000
+    writeTimeout: 10000
