@@ -56,14 +56,14 @@ inputs:
   elastic:
     type: http
     disabled: false
-    pipeline: beats-conditioning
     host: 0.0.0.0
     port: 10200
     elasticAPI: /
+    criblAPI: /cribl
+    splunkHecAPI: ""
     tls:
       disabled: true
     authToken: ""
-    splunkHecAPI: ""
   hec:
     type: http
     disabled: false

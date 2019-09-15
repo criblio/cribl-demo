@@ -7,6 +7,8 @@ functions:
     disabled: null
     conf:
       add:
+        - name: _raw
+          value: __e.asJSON()
         - name: sourcetype
           value: "sourcetype ? sourcetype : input.type"
         - name: host
@@ -22,10 +24,17 @@ functions:
         - sourcetype
         - _time
       remove:
-        - "*"
+        - __e['@timestamp']
+        - beat
+        - input
+        - message
+        - offset
+        - prospector
+        - stream
+        - log
   - id: auto_timestamp
     filter: "true"
-    disabled: null
+    disabled: false
     conf:
       srcField: _raw
       dstField: _time

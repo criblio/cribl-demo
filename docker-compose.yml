@@ -148,7 +148,7 @@ services:
         hard: 1024
     healthcheck:
       test: curl --fail -s http://localhost:3000/ || exit 1
-      interval: 30s
+      interval: 15s
       timeout: 10s
       retries: 3
   redis:

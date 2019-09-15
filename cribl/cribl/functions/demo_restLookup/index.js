@@ -45,9 +45,25 @@ function lookupEvent(event, u, retryInterval, promise) {
   promise = promise || Promise.resolve(); // if promise is undefined, create empty promise
 
   return promise.then(() => new Promise((resolve, reject) => {
+    const onError = (err) => {
+      dLogger.error(`Error in REST Lookup for ${u}: ${err.message}`);
+      if (conf.retryOnError) {
+        retryInterval = Math.min(maxRetryInterval, retryInterval * 2);
+        setTimeout(() => {
+          dLogger.info(`Retrying for ${u} after ${retryInterval}`);
+          lookupEvent(event, u, retryInterval, promise);
+        }, retryInterval);
+        return;
+      }
+      reject(`Error: ${err.message}`);
+    };
     http.get(u, {
       agent
     }, (resp) => {
+      if ((resp.statusCode < 200 || resp.statusCode > 299) && resp.statusCode != 404) {
+        onError(new Error(`non-2XX status code: ${resp.statusCode}`));
+        return;
+      }
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -63,17 +79,7 @@ function lookupEvent(event, u, retryInterval, promise) {
         resolve(event);
       });
 
-    }).on('error', (err) => {
-      dLogger.error(`Error in REST Lookup: ${err.message}`);
-      if (conf.retryOnError) {
-        retryInterval = Math.min(maxRetryInterval, retryInterval * 2);
-        setTimeout(() => {
-          lookupEvent(event, u, retryInterval, promise);
-        }, retryInterval);
-        return;
-      }
-      reject(`Error: ${err.message}`);
-    });
+    }).on('error', onError)
   }));
 }
 
