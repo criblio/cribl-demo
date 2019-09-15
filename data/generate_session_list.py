@@ -3,7 +3,7 @@ import csv
 import random
 import json
 
-SESSIONS_COUNT = 783
+SESSIONS_COUNT = 1566
 TAHOE_SESSIONS_COUNT = 3
 
 out = []
@@ -16,7 +16,7 @@ def add_session(username):
 if __name__ == '__main__':
     rows = []
     tahoe_rows = []
-    with open('../../../../gogen_assets/samples/customer_master_small.csv') as csv_file:
+    with open('../gogen/gogen/samples/customer_master_small.csv') as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=',')
         for row in csv_reader:
             rows.append(row)
@@ -40,6 +40,6 @@ if __name__ == '__main__':
         json_file.write(json.dumps(out))
 
     with open('./session.csv', 'w') as new_csv_file:
-        csv_writer = csv.DictWriter(new_csv_file, out[0].keys())
+        csv_writer = csv.DictWriter(new_csv_file, out[0].keys(), lineterminator='\n')
         csv_writer.writerows(out)
     

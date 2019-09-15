@@ -13,6 +13,8 @@ let urlExpression;
 let http;
 let agent;
 
+const maxRetryInterval = 10000;
+
 exports.init = (opt) => {
   conf = (opt || {}).conf || {};
 
@@ -33,16 +35,19 @@ exports.init = (opt) => {
   if (conf.headers && Array.isArray(conf.headers)) {
     conf.headersObj = conf.headers.reduce((prev, cur) => Object.keys(cur).forEach(k => prev[k] = cur[k]), {});
   }
+
+  if (conf.retryOnError === undefined) {
+    conf.retryOnError = false;
+  }
 };
 
+function lookupEvent(event, u, retryInterval, promise) {
+  promise = promise || Promise.resolve(); // if promise is undefined, create empty promise
 
-exports.process = (event) => {
-  const u = urlExpression.evalOn(event);
-
-  // dLogger.info(`Executing REST Lookup against ${u}`);
-
-  return new Promise((resolve, reject) => {
-    http.get(u, { agent }, (resp) => {
+  return promise.then(() => new Promise((resolve, reject) => {
+    http.get(u, {
+      agent
+    }, (resp) => {
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -53,16 +58,30 @@ exports.process = (event) => {
         let d = data;
         try {
           d = JSON.parse(data);
-        } catch (e) {
-        }
+        } catch (e) {}
         event[conf.eventField] = d;
         resolve(event);
       });
 
     }).on('error', (err) => {
       dLogger.error(`Error in REST Lookup: ${err.message}`);
+      if (conf.retryOnError) {
+        retryInterval = Math.min(maxRetryInterval, retryInterval * 2);
+        setTimeout(() => {
+          lookupEvent(event, u, retryInterval, promise);
+        }, retryInterval);
+        return;
+      }
       reject(`Error: ${err.message}`);
     });
-  });
+  }));
+}
+
+
+exports.process = (event) => {
+  const u = urlExpression.evalOn(event);
+
+  // dLogger.info(`Executing REST Lookup against ${u}`);
+  return lookupEvent(event, u, 1000);
 };
 

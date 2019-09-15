@@ -9,7 +9,7 @@ badsessions["SD2215060241$SL3658339903FF9509496472ADFF4058117289"] = true
 -- HACK 
 -- Gogen API doesn't let us just pick a random choice
 -- So we need to know how big the session.csv file is
-sessionCount = 787
+sessionCount = 1570
 
 -- We want an approximately gaussian distribution, so use central limit theorum to approximate
 -- see example from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve

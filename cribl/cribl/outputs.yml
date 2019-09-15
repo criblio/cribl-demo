@@ -111,3 +111,47 @@ outputs:
     flushPeriodSec: 1
     connectionTimeout: 5000
     writeTimeout: 10000
+  temp:
+    type: filesystem
+    destPath: /tmp/enrich
+    stagePath: /tmp/staging
+    partitionExpr: "``"
+    format: json
+    baseFileName: CriblOut
+    compress: none
+    maxFileSizeMB: 32
+    maxFileOpenTimeSec: 300
+    maxFileIdleTimeSec: 30
+    maxOpenFiles: 100
+  enrich:
+    type: router
+    rules:
+      - filter: "true"
+        output: temp
+        final: false
+      - filter: "true"
+        output: splunk
+        final: true
+  splunk-beats:
+    type: splunk
+    pipeline: beats-conditioning
+    host: splunk
+    port: 9997
+    nestedFields: none
+    tls:
+      disabled: true
+    connectionTimeout: 5000
+    writeTimeout: 10000
+    onBackpressure: queue
+    pqMaxFileSize: 1 MB
+    pqPath: $CRIBL_HOME/state/queues
+    pqCompress: none
+  beats:
+    type: router
+    rules:
+      - filter: "true"
+        output: elastic
+        final: false
+      - filter: "true"
+        output: splunk-beats
+        final: true

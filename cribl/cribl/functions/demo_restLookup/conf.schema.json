@@ -35,6 +35,12 @@
                     }
                 }
             }
+        },
+        "retryOnError": {
+            "title": "Retry On Error",
+            "description": "Retry (infinitely) and backpressure until success",
+            "type": "boolean",
+            "default": false
         }
     }
 }

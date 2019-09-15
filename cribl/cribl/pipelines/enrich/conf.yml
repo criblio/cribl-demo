@@ -1,4 +1,4 @@
-asyncFuncTimeout: 1000
+asyncFuncTimeout: 180000
 functions:
   - id: comment
     filter: "true"
@@ -103,11 +103,12 @@ functions:
       comment: Lookup userName against REST API
   - id: demo_restLookup
     filter: "true"
-    disabled: false
+    disabled: true
     conf:
       urlExpression: "`http://apiserver:3000/users/${userName}`"
       eventField: customer
       maxConcurrentRequests: 1
+      retryOnError: true
   - id: eval
     filter: "true"
     disabled: null

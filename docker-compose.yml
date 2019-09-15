@@ -26,6 +26,7 @@ services:
       - "./cribl/cribl:/opt/cribl/local/cribl"
     cap_add:
       - NET_ADMIN
+    privileged: true
   splunk:
     build:
       context: splunk
@@ -147,8 +148,8 @@ services:
         hard: 1024
     healthcheck:
       test: curl --fail -s http://localhost:3000/ || exit 1
-      interval: 5s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 3
   redis:
     build:

@@ -1,4 +1,4 @@
-begin: -1h
+begin: now
 count: 3
 earliest: -3s
 interval: 1

@@ -1,4 +1,4 @@
-begin: -1h
+begin: now
 count: 10
 randomizeCount: 0.5
 earliest: -3s
