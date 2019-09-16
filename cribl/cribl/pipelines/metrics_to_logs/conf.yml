@@ -3,8 +3,8 @@ output: default
 description: Convert statsd metrics to logs for Splunk
 functions:
   - id: clone
-    filter: _metric.match(/fs.+/) || proc=='node'
-    disabled: null
+    filter: _metric.match(/fs.+/) && proc=='node'
+    disabled: false
     conf:
       clones:
         - __cloned: "true"
