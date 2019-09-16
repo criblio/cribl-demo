@@ -81,6 +81,7 @@ outputs:
         final: true
   splunk-metrics:
     type: splunk
+    pipeline: metrics_to_logs
     host: splunk
     port: 9998
     nestedFields: none

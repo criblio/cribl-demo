@@ -75,7 +75,13 @@ function lookupEvent(event, u, retryInterval, promise) {
         try {
           d = JSON.parse(data);
         } catch (e) {}
-        event[conf.eventField] = d;
+        if (conf.flatten && typeof d === 'object') {
+          Object.keys(d).forEach(k => {
+            event[`${conf.eventField}_${k}`] = d[k];
+          });
+        } else {
+          event[conf.eventField] = d;
+        }
         resolve(event);
       });
 
