@@ -1,7 +1,1 @@
-messages:
-  NEW_VERSION:
-    severity: info
-    title: New version available
-    text: 'New version available: <a target="_blank"
-      href="https://cribl.io/download">1.7.1-7a779351</a>'
-    time: 1568601881537
+messages: {}
