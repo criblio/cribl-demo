@@ -10,3 +10,5 @@ crypto:
   keyPath: $CRIBL_HOME/local/cribl/auth/keys.json
 system:
   intercom: false
+distributed:
+  mode: master

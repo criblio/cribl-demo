@@ -1,4 +1,4 @@
-FROM cribl/cribl:latest
+FROM cribl/cribl:next
 COPY http_status.csv /opt/cribl/data/lookups/http_status.csv
 COPY scripts/ /opt/cribl/scripts/
 ADD http://cdn.cribl.io/dl/scope/latest/linux/libwrap.so /usr/lib/libwrap.so
