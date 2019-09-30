@@ -79,17 +79,6 @@ outputs:
       - filter: "true"
         output: s3
         final: true
-  splunk-metrics:
-    type: splunk
-    pipeline: metrics_to_logs
-    host: splunk
-    port: 9998
-    nestedFields: none
-    tls:
-      disabled: true
-    connectionTimeout: 5000
-    writeTimeout: 10000
-    onBackpressure: drop
   splunk:
     type: splunk
     host: splunk
@@ -156,3 +145,14 @@ outputs:
       - filter: "true"
         output: splunk-beats
         final: true
+  splunk-metrics:
+    type: splunk
+    pipeline: metrics_to_logs
+    host: splunk
+    port: 9998
+    nestedFields: none
+    tls:
+      disabled: true
+    connectionTimeout: 5000
+    writeTimeout: 10000
+    onBackpressure: queue

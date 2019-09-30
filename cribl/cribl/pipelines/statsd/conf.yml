@@ -63,3 +63,14 @@ functions:
       add:
         - name: index
           value: "'cribl-metrics'"
+  - id: demo_cardinalityGuard
+    filter: "true"
+    disabled: false
+    conf:
+      ignoreFields:
+        - _*
+      maxValues: 500
+      buckets: 10
+      bucketSeconds: 60
+      redactValue: REDACTED
+    description: Redact any field over 500 Values in 10 minutes

@@ -8,5 +8,5 @@ ENV LD_PRELOAD=/usr/lib/libwrap.so
 ENV SCOPE_OUT_DEST=udp://cribl:8125
 ENV SCOPE_LOG_LEVEL=info
 ENV SCOPE_LOG_DEST=file:///tmp/scope.log
-ENV SCOPE_OUT_VERBOSITY=5
+ENV SCOPE_OUT_VERBOSITY=4
 CMD ["start"]
