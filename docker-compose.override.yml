@@ -1,17 +1,17 @@
 version: "3.5"
 
 services:
-  # graphite:
-  #   entrypoint: ["echo", "Service disabled"]
-  #   restart: "no"
+  graphite:
+    entrypoint: ["echo", "Service disabled"]
+    restart: "no"
 
-  # grafana:
-  #   entrypoint: ["echo", "Service disabled"]
-  #   restart: "no"
+  grafana:
+    entrypoint: ["echo", "Service disabled"]
+    restart: "no"
 
-  # telegraf:
-  #   entrypoint: ["echo", "Service disabled"]
-  #   restart: "no"
+  telegraf:
+    entrypoint: ["echo", "Service disabled"]
+    restart: "no"
 
   elasticsearch:
     entrypoint: ["echo", "Service disabled"]
@@ -24,4 +24,4 @@ services:
   cribl:
     extra_hosts:
       - "elasticsearch:192.168.123.123"
-      # - "graphite:192.168.123.124"
+      - "graphite:192.168.123.124"

@@ -23,7 +23,7 @@ services:
       - "8125:8125/udp"
       - "5140:5140"
     volumes:
-      - "./cribl/cribl:/opt/cribl/local/cribl"
+      - "./cribl/master:/opt/cribl/local/cribl"
     cap_add:
       - NET_ADMIN
     privileged: true
