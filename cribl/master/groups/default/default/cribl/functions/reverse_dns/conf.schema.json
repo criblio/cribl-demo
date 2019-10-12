@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "fields": {
+      "title": "Lookup Fields",
+      "description": "List of field names to perform DNS lookup for",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["inFieldName"],
+        "properties": {
+          "inFieldName": {
+            "type": "string",
+            "title": "Lookup Field Name",
+            "description": "The name of the field containing the IP address to lookup. If the field value is not in ipv4 or ipv6 format, the lookup is skipped."
+          },
+          "outFieldName": {
+            "type": "string",
+            "title": "Output Field Name",
+            "description": "Name of field to add resolved the hostname as, leave blank to overwrite the lookup field."
+          }
+        }
+      }
+    },
+    "cacheTTL": {
+      "type": "number",
+      "title": "Reload Period (minutes)",
+      "description": "How often (in minutes) to refresh DNS cache. Use 0 to disable",
+      "default": 60
+    }
+  }
+}

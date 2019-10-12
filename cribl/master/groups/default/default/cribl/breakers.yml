@@ -1,0 +1,181 @@
+AWS Ruleset:
+  lib: cribl
+  description: Event breaking rules for common AWS data sources
+  tags: flowlogs,elb,alb,loadbalancer,cdn
+  rules:
+    - name: AWS VPC Flow
+      condition: /^\d+\s+\d+\s+eni-\w+.*(OK|NODATA|SKIPDATA)?$/.test(_raw) || sourcetype=='aws:cloudwatchlogs:vpcflow'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /(?=\d{10}\s\d{10})/
+      timestamp:
+        type: format
+        length: 150
+        format: "%s"
+      timestampTimezone: utc
+      maxEventBytes: 1024
+    - name: AWS ALB
+      condition: /^(?:https?|h2|wss?)\s\d+-\d+-\d+.*?arn:aws:elasticloadbalancing/.test(_raw) || sourcetype=='aws:alb:accesslogs'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /\w+\s/
+      timestamp:
+        type: format
+        length: 150
+        format: "%Y-%m-%dT%H:%M:%S.%f%Z"
+      timestampTimezone: local
+      maxEventBytes: 4096
+    - name: AWS ELB
+      condition: /^\d+-\d+-\d+.*?(?:\d+\.\d+\s){3}/.test(_raw) || sourcetype=='aws:elb:accesslogs'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^/
+      timestamp:
+        type: format
+        length: 150
+        format: "%Y-%m-%dT%H:%M:%S.%f%Z"
+      timestampTimezone: local
+      maxEventBytes: 4096
+    - name: AWS Cloudfront Web
+      condition: /^\d+-\d+-\d+\t\d+:\d+:\d+\t[a-zA-Z]{3}\d+\t\d+(?:\t\S+)+$/.test(_raw) || sourcetype=='aws:cloudfront:accesslogs'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^/
+      timestamp:
+        type: format
+        length: 150
+        format: "%Y-%m-%d\t%H:%M:%S"
+      timestampTimezone: utc
+      maxEventBytes: 4096
+Apache Ruleset:
+  lib: cribl
+  description: Event breaking rules for Apache Common and Combined logs
+  tags: apache,common,combined
+  rules:
+    - name: Apache Common
+      condition: /^(\S+\s){3}\[[^\]]+\]\s"[^"]+"(\s+\S+){2}$/.test(_raw) ||
+        sourcetype=='access_common'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /\[/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %d/%b/%Y:%H:%M:%S %Z
+      timestampTimezone: local
+      maxEventBytes: 4096
+    - name: Apache Combined
+      condition: /^(\S+\s){3}\[[^\]]+\]\s"[^"]+"(\s+\S+){3,}/.test(_raw) ||
+        sourcetype=='access_combined'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /\[/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %d/%b/%Y:%H:%M:%S %Z
+      timestampTimezone: local
+      maxEventBytes: 4096
+Cisco Ruleset:
+  lib: cribl
+  description: Event breaking rules for common Cisco data source
+  tags: cisco,asa,estreamer
+  rules:
+    - name: Cisco ASA
+      condition: /%ASA-\d-\d{6}:/.test(_raw)  || sourcetype=='cisco:asa'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %b %d %H:%M:%S
+      timestampTimezone: local
+      maxEventBytes: 1024
+    - name: Cisco FWSM
+      condition: /%FWSM-\d-\d{6}:/.test(_raw) || sourcetype=='cisco:fwsm'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %b %d %H:%M:%S
+      timestampTimezone: local
+      maxEventBytes: 1024
+    - name: Cisco Estreamer
+      condition: /^rec_type=.*?event_sec=/.test(_raw) ||
+        sourcetype=='cisco:estreamer:data'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /event_sec=/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %s
+      timestampTimezone: utc
+      maxEventBytes: 8192
+Palo Alto Ruleset:
+  lib: cribl
+  description: Event breaking rules for common Palo Alto data source
+  tags: palo,traffic,threat,system,config
+  rules:
+    - name: Palo Alto Traffic
+      condition: /^(?:[^,]+,)+TRAFFIC,.*?0x\d{2,}(?:,[^,]*)+$/.test(_raw) ||
+        sourcetype=='pan:traffic'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^(?:[^,]*,){6}/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %Y/%m/%d %H:%M:%S
+      timestampTimezone: local
+      maxEventBytes: 8192
+    - name: Palo Alto Threat
+      condition: /^(?:[^,]+,)+THREAT,.*?0x\d{2,}(?:,[^,]*)+$/.test(_raw) ||
+        sourcetype=='pan:threat'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^(?:[^,]*,){6}/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %Y/%m/%d %H:%M:%S
+      timestampTimezone: local
+      maxEventBytes: 8192
+    - name: Palo Alto System
+      condition: /^(?:[^,]+,)+SYSTEM(?:,[^,]*)+$/.test(_raw) || sourcetype=='pan:system'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^(?:[^,]*,){6}/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %Y/%m/%d %H:%M:%S
+      timestampTimezone: local
+      maxEventBytes: 1024
+    - name: Palo Alto Config
+      condition: /^(?:[^,]+,)+CONFIG(?:,[^,]*)+$/.test(_raw) || sourcetype=='pan:config'
+      eventBreakerRegex: /[\n\r]+/
+      timestampAnchorRegex: /^(?:[^,]*,){6}/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %Y/%m/%d %H:%M:%S
+      timestampTimezone: local
+      maxEventBytes: 1024
+Bro Ruleset:
+  lib: cribl
+  description: Event breaking rules for Bro logs
+  tags: bro
+  rules:
+    - name: Bro
+      condition: /^\d{10}\.\d{6}(?:\t+[^\t]+)+/.test(_raw) || sourcetype=='bro' ||
+        sourcetype.startsWith('bro_')
+      eventBreakerRegex: /[\r\n]+(?=\d{10}\.\d{6})/m
+      timestampAnchorRegex: /^/
+      timestamp:
+        type: format
+        length: 150
+        format: >-
+          %s.%f
+      timestampTimezone: utc
+      maxEventBytes: 4096

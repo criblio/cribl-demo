@@ -1,0 +1,11 @@
+distributed:
+  mode: worker
+  master:
+    host: cribl
+    port: 4200
+    authToken: criblmaster
+    compression: none
+    tls:
+      disabled: true
+    connectionTimeout: 5000
+    writeTimeout: 10000

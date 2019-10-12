@@ -1,0 +1,15 @@
+{
+    "title": "",
+    "type": "object",
+    "properties": {
+        "ignoreFields": {
+            "title": "Ignore Fields",
+            "description": "Fields to NOT numerify",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "description": "Field to ignore"
+            }
+        }
+    }
+}

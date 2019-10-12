@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "ui:field": "Table",
+    "ui:options": {
+      "popupEditor": "RegexEditor",
+      "popupEditorTitle": "Event Breaker Rule",
+      "matchRegexProperty": "matchRegex",
+      "replaceExprProperty": "replaceExpr",
+      "eventFieldProperty": "fields"
+    },
+    "items": {
+      "matchRegex": {
+        "ui:widget": "RegexInputWithoutPopup",
+        "ui:placeholder": "Enter regex"
+      },
+      "replaceExpr": {
+        "ui:widget": "JsInputWithoutPopup",
+        "ui:placeholder": "Enter replace expression"
+      }
+    }
+  },
+  "fields": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Field names"
+  }
+}

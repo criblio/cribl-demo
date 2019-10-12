@@ -1,0 +1,7 @@
+{
+  "ignoreFields": {
+    "items": {
+      "ui:placeholder": "Enter field name"
+    }
+  } 
+}

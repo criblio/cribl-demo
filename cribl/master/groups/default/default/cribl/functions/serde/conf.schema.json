@@ -1,0 +1,58 @@
+{
+  "title": "",
+  "type": "object",
+  "required": ["mode", "type"],
+  "properties": {
+    "mode": {
+      "title": "Operation Mode",
+      "type": "string",
+      "description": "Extract creates new fields. Reserialize will extract, filter fields and then reserialize.",
+      "enum": ["extract", "reserialize"],
+      "enumNames": ["Extract", "Reserialize"],
+      "default": "extract"
+    },
+    "srcField": {
+      "title": "Source Field",
+      "description": "Field which contains text to be parsed",
+      "type": "string",
+      "default": "_raw"
+    },
+    "dstField": {
+      "title": "Destination Field",
+      "description": "Field name where to add fields to. Extract Mode only.",
+      "type": "string"
+    },
+    "type":{
+      "title": "Type",
+      "description": "Parser/Formatter type to use.",
+      "type": "string",
+      "enum": ["csv", "elff", "clf", "kvp", "json"],
+      "enumNames": ["CSV", "Extended Log File Format", "Common Log Format", "Key=Value Pairs", "JSON Object"],
+      "default": "csv"
+    },
+    "fields": {
+      "title": "List of Fields",
+      "description": "Fields expected to be extracted, in order. If not specified parser will auto-generate.",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "keep": {
+      "title": "Fields To Keep",
+      "description": "List of fields to keep, supports wildcards (*). Takes precedence over 'Fields to Remove'.",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "remove": {
+      "title": "Fields To Remove",
+      "description": "List of fields to remove, supports wildcards (*). Cannot remove fields matching 'Fields to Keep'.",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "fieldFilterExpr": {
+      "title": "Fields Filter Expression",
+      "description": "Expression evaluated against {index, name, value} context. Return truthy to keep field, falsy to remove.",
+      "type": "string",
+      "jsExpression": true
+    }
+  }
+}

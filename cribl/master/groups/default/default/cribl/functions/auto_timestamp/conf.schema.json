@@ -1,0 +1,78 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "srcField": {
+      "title": "Source Field",
+      "description": "Field to search for a timestamp",
+      "type": "string",
+      "default": "_raw"
+    },
+    "dstField": {
+      "title": "Destination Field",
+      "description": "Field to place timestamp in",
+      "type": "string",
+      "default": "_time"
+    },
+    "defaultTimezone": {
+      "type": "string",
+      "title": "Default Timezone",
+      "description": "Timezone to assign to timestamps without timezone info.",
+      "default":"local",
+      "enum": ["local", "utc"],
+      "enumNames": ["Local", "UTC"]
+    },
+    "timeExpression": {
+      "title": "Time Expression",
+      "description": "Expression to use to format time. Current Time, as a Javascript Date object, is in global `time`.",
+      "type": "string",
+      "jsExpression": true,
+      "default": "time.getTime() / 1000"
+    },
+    "offset": {
+      "title": "Start Scan Offset",
+      "description": "The offset into the string from where to look for a timestamp",
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "maxLen": {
+      "title": "Max Timestamp Scan Depth",
+      "description": "Maximum string length where to look for a timestamp",
+      "type": "number",
+      "minimum": 1,
+      "default": 150
+    },
+    "defaultTime": {
+      "title": "Default Time",
+      "description": "How to set the time field if no timestamp is found",
+      "type": "string",
+      "default": "now",
+      "enum": ["now", "last", "none"],
+      "enumNames": ["Current Time", "Last Event's Time", "None"]
+    },
+    "timestamps": {
+      "title": "Additional Timestamps",
+      "description": "Add Regex/Strptime pairs to extract additional timestamp formats",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["regex","strptime"],
+        "properties": {
+          "regex": {
+            "type": "string",
+            "title": "Regex",
+            "description": "Regex with group 1 matching the timestamp",
+            "regexp": true
+          },
+          "strptime": {
+            "type": "string",
+            "title": "Strptime Format",
+            "description": "Timestamp format in strptime format"
+          }
+        }
+      }
+    }
+  }
+}

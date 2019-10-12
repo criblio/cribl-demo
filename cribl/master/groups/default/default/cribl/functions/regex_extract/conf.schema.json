@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["regex"],
+  "properties": {
+    "regex": {
+      "type": "string",
+      "title": "Regex",
+      "description": "Regex literal with named capturing groups, e.g. (?<foo>bar) or _NAME_ and _VALUE_ capturing groups, e.g. (?<_NAME_0>[^ =]+)=(?<_VALUE_0>[^,]+).",
+      "regexp": true
+    },
+    "regexList": {
+      "type": "array",
+      "title": "Additional Regex",
+      "items": {
+        "type": "object",
+        "required": ["regex"],
+        "properties": {
+          "regex": {
+            "type": "string",
+            "title": "Regex",
+            "description": "Regex literal with named capturing groups, e.g. (?<foo>bar) or _NAME_ and _VALUE_ capturing groups, e.g. (?<_NAME_0>[^ =]+)=(?<_VALUE_0>[^,]+).",
+            "minLength": 1,
+            "regexp": true
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "title": "Source Field",
+      "description": "Field where to perform regex field extraction",
+      "default": "_raw"
+    },
+    "iterations": {
+      "type": "number",
+      "title": "Max Exec",
+      "description": "The maximum number of times to apply RegEx to source field when the global flag is set or when using a _NAME_ and _VALUE_ capture group.",
+      "default": 100,
+      "minimum" : 1
+    },
+    "fieldNameExpression": {
+      "title": "Field Name Format Expression",
+      "description": "Expression to format field names when _NAME_ capturing groups are used. The *original* field name is in global 'name'. E.g., to append XX to all field names: `${name}_XX`. If not specified names will be sanitized using regex: /^[_0-9]+|[^a-zA-Z0-9_]+/g.",
+      "type": "string",
+      "jsExpression": true
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "title": "",
+  "type": "object",
+  "required": ["type"],
+  "properties": {
+    "type":{
+      "title": "Type",
+      "description": "Data output format",
+      "type": "string",
+      "enum": ["csv", "elff", "clf", "kvp", "json"],
+      "enumNames": ["CSV", "Extended Log File Format", "Common Log Format", "Key=Value Pairs", "JSON Object"],
+      "default": "csv"
+    },
+    "fields": {
+      "title": "Fields to serialize",
+      "description": "Required for CSV, ELFF and CLF. All other formats support wildcard field lists",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "srcField": {
+      "title": "Source Field",
+      "description": "Field containing object to serialize. Leave blank to serialize top level event fields",
+      "type": "string"
+    },
+    "dstField": {
+      "title": "Destination Field",
+      "description": "Field to serialize data to",
+      "type": "string",
+      "default": "_raw"
+    }
+  }
+}

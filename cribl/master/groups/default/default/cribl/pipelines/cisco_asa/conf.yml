@@ -1,0 +1,77 @@
+functions:
+  - id: eval
+    filter: sourcetype!='cisco:asa'
+    disabled: null
+    conf:
+      {}
+    description: Short-circuit all events that are NOT sourcetype cisco:asa
+    final: true
+  - id: regex_extract
+    filter: "true"
+    disabled: null
+    conf:
+      regex: /ASA-\d+-(?<__code>\d+)/
+      source: _raw
+    description: Extract ASA Code
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop stub TCP|UDP|ICMP build and teardown messages.
+  - id: drop
+    filter: >-
+      [302022, 302023, 302024, 302025, 302026, 302027].indexOf(+__code) > -1
+    disabled: null
+    conf:
+      {}
+    description: Drop stub TCP|UDP|ICMP build and teardown messages
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop ICMP messages.
+  - id: drop
+    filter: >-
+      [302020, 302021].indexOf(+__code) > -1
+    disabled: null
+    conf:
+      {}
+    description: Drop ICMP messages.
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop TCP|UDP|ICMP messages since same information is logged in
+        connection building/teardown.
+  - id: drop
+    filter: >-
+      [305011, 305012].indexOf(+__code) > -1
+    disabled: null
+    conf:
+      {}
+    description: Drop TCP|UDP|ICMP messages since same information is logged in connection
+      building/teardown.
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: 1. Extract field "action" from ASA-6-106100 messages
+
+        2. Sample permitted ASA-6-106100 messages at 10:1
+  - id: regex_extract
+    filter: __code == 106100
+    disabled: false
+    conf:
+      regex: /ASA-\d+-106100:\saccess-list\s\w+\s(?<__action>\w+)/
+      source: _raw
+    description: Extract field "action" from ASA-6-106100 messages
+  - id: sampling
+    filter: "true"
+    disabled: false
+    conf:
+      rules:
+        - filter: __action=='permitted'
+          rate: 10
+    description: Sample permitted ASA-6-106100 messages at 10:1
+output: default
+description: Filter and Sample Cisco ASA events

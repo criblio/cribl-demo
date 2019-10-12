@@ -1,0 +1,13 @@
+asyncFuncTimeout: 1000
+output: default
+functions:
+  - id: demo_cardinalityGuard
+    filter: "true"
+    disabled: false
+    conf:
+      ignoreFields:
+        - _*
+      maxValues: 5
+      buckets: 3
+      bucketSeconds: 1
+      redactValue: REDACTED

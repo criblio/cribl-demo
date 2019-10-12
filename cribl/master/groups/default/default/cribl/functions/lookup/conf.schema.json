@@ -1,0 +1,85 @@
+{
+  "type":"object",
+  "title": "",
+  "required": ["file"],
+  "properties": {
+    "file": {
+      "type": "string",
+      "title": "Lookup file path (.csv, .csv.gz)",
+      "description": "Path to lookup file. Reference environment variables via $, e.g. $HOME/file.csv",
+      "minLength": 1
+    },
+    "matchMode": {
+      "title": "Match Mode",
+      "type": "string",
+      "description": "Defines the format of the lookup file an implies matching logic that will be performed.",
+      "enum": ["exact", "cidr", "regex"],
+      "enumNames": ["Exact", "CIDR", "Regex"],
+      "default": "exact"
+    },
+    "matchType": {
+      "title": "Match Type",
+      "type": "string",
+      "description": "For CIDR and Wildcard Match Mode, this attribute further refines how to resolve multiple matches. 'First Match' will return the first matching entry, 'Most Specific' will scan all entries finding the most specific match, and 'All' will return all matches in output as arrays.",
+      "enum": ["first", "specific","all"],
+      "enumNames": ["First Match", "Most Specific", "All"],
+      "default": "first"
+    },
+    "reloadPeriodSec": {
+      "type": "number",
+      "title": "Reload Period (sec)",
+      "description": "Periodically check the underlying file for modtime changes and reload if necessary. Use -1 to disable",
+      "default": 60
+    },
+    "addToEvent": {
+      "type": "boolean",
+      "title": "Add to raw event",
+      "description": "Whether to add the looked up values to _raw, as key=value pairs",
+      "default": false
+    },
+    "inFields": {
+      "type": "array",
+      "title": "Lookup field(s)",
+      "description": "Field(s) which should be used to key into the lookup table",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["eventField"],
+        "properties": {
+          "eventField" :{
+            "type": "string",
+            "title": "Lookup Field Name in Event",
+            "description": "Field name as it appears in events"
+          },
+          "lookupField" :{
+            "type": "string",
+            "title": "Corresponding Field Name in Lookup",
+            "description": "(optional) the field name as it appears in the lookup file, defaults to event field name"
+          }
+        }
+      }
+    },
+    "outFields": {
+      "type": "array",
+      "title": "Output field(s)",
+      "description": "Field(s) to add to events after matching lookup. Defaults to all if not specified",
+      "items": {
+        "type": "object",
+        "required": ["lookupField"],
+        "properties": {
+          "lookupField" :{
+            "type": "string",
+            "title": "Output Field Name from Lookup",
+            "description": "The field name as it appears in the lookup file"
+          },
+          "eventField" :{
+            "type": "string",
+            "title": "Lookup Field Name in Event",
+            "description": "(optional) field name to add to event, defaults to lookup field name"
+          }
+        }
+      }
+
+    }
+  }
+}

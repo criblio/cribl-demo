@@ -1,0 +1,17 @@
+{
+  "clones": {
+    "items": {
+      "ui:field": "KeyValue",
+      "key": {
+        "ui:placeholder": "Enter field name"
+      },
+      "value": {
+        "ui:placeholder": "Enter field value"
+      },
+      "ui:options": {
+        "orderable": false,
+        "defaultItem": {"key":"", "value":""}
+      }
+    }
+  }
+}

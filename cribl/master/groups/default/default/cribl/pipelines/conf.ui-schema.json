@@ -1,0 +1,7 @@
+{
+  "id": { "ui:placeholder": "Enter Pipeline name" },
+  "conf": {
+    "output": { "ui:widget": "hidden" },
+    "description": { "ui:placeholder": "Enter a description" }
+  }
+}

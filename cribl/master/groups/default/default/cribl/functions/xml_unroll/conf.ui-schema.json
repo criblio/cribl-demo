@@ -1,0 +1,10 @@
+{
+  "unroll": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression"
+  },
+  "inherit": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression"
+  }
+}

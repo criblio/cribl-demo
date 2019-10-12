@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "clones": {
+      "type": "array",
+      "title": "Clones",
+      "description": "Create clones with the following fields set",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "title": "Fields",
+        "description": "Key value pairs to set/overwrite in the clone",
+        "properties": {},
+        "additionalProperties": {
+          "type": "string"
+        }
+      } 
+    }
+  }
+}

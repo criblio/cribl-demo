@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "comment": {
+      "type": "string",
+      "title": "Comment",
+      "description": "Comment",
+      "maxLength": 1000
+    }
+  }
+}

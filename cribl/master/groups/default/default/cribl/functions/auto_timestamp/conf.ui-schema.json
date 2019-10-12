@@ -1,0 +1,45 @@
+{
+  "srcField": {
+    "ui:options": { "inline": true, "width": "34%" }
+  },
+  "dstField": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "defaultTimezone": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "timeExpression": {
+    "ui:widget": "JsInput"
+  },
+  "timestamps": {
+    "ui:field": "Table",
+    "items": {
+      "regex": {
+        "ui:widget": "RegexInput",
+        "ui:options": {
+          "popupEditor": "RegexEditor",
+          "eventFieldProperty": "srcField"
+        }
+      },
+      "strptime": {}
+    }
+  },  
+  "offset": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "maxLen": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "defaultTime": {
+    "ui:options": { "inline": true, "width": "34%" }
+  },
+  "ui:options":  {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": [ "timeExpression", "offset", "maxLen", "defaultTime", "timestamps" ]
+      }
+    }
+  }
+}
