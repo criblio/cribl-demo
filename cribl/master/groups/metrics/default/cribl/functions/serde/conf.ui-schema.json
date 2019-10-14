@@ -1,0 +1,43 @@
+{
+  "srcField": {
+    "ui:options": { "inline": true, "width": "50%" },
+    "ui:placeholder": "Source field name",
+    "ui:emptyValue": ""
+  },
+  "dstField": {
+    "ui:options": { "inline": true, "width": "50%" },
+    "ui:placeholder": "Destination field name"
+  },
+  "fieldFilterExpr": {
+    "ui:widget": "JsInput",
+    "ui:placeholder": "Enter field filter expression"
+  },
+  "type": {
+    "ui:widget": "ParserSelect"
+  },
+  "fields": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names",
+    "ui:options": {
+      "tokenProcessingExp": "token.replace(/(^\\W+)|(\\W+$)/g, '').replace(/\\W+/g, '_')",
+      "separator": "value.indexOf(',') > -1 ? /[,]+/g : /[\\s]+/g",
+      "popupEditor": "ParserEditor",
+      "updateFormProperties": ["mode", "type", "srcField", "keep", "remove", "fieldFilterExpr"],
+      "parserFormPath": "conf"
+    }
+  },
+  "keep": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names",
+    "ui:options": {
+      "typeaheadItems": "fields"
+    }
+  },
+  "remove":{
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names",
+    "ui:options": {
+      "typeaheadItems": "fields"
+    }
+  }
+}

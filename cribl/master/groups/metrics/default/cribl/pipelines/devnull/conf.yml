@@ -1,0 +1,4 @@
+functions:
+  - id: drop
+    disabled: false
+    filter: "true"

@@ -48,28 +48,6 @@ outputs:
     maxFileOpenTimeSec: 60
     maxFileIdleTimeSec: 30
     maxOpenFiles: 100
-  graphite:
-    type: graphite
-    pipeline: graphite-conditioning
-    protocol: tcp
-    host: graphite
-    port: 2003
-    mtu: 512
-    flushPeriodSec: 1
-    onBackpressure: drop
-  statsd:
-    type: router
-    rules:
-      - filter: "true"
-        output: localhost
-        final: false
-      - filter: "true"
-        output: splunk-metrics
-        final: false
-      - filter: "true"
-        output: graphite
-        final: true
-    onBackpressure: drop
   kv2json:
     type: router
     rules:
@@ -92,15 +70,6 @@ outputs:
     pqMaxFileSize: 1 MB
     pqPath: $CRIBL_HOME/state/queues
     pqCompress: none
-  localhost:
-    type: statsd_ext
-    protocol: udp
-    host: localhost
-    port: 9125
-    mtu: 512
-    flushPeriodSec: 1
-    connectionTimeout: 5000
-    writeTimeout: 10000
   temp:
     type: filesystem
     destPath: /tmp/enrich

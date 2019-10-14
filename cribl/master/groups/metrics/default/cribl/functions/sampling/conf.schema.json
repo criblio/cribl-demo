@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "rules": {
+      "type": "array",
+      "title": "Sampling Rules",
+      "description": "Events matching these rules will be sampled at the given rate",
+      "items": {
+        "type": "object",
+        "required": ["filter", "rate"],
+        "additionalProperties": false,          
+        "properties": {
+          "filter": {
+            "title": "Filter",
+            "type": "string",
+            "description": "Filter expression (JS) matching events to be sampled. Use true to match all.",
+            "default": "true",
+            "jsExpression": true
+          },
+          "rate": {
+            "title": "Sampling Rate",
+            "type": "integer",
+            "description": "Sampling rate, picks one out of N matching events",
+            "default": 1
+          }
+        }
+      }
+    }
+  }
+}

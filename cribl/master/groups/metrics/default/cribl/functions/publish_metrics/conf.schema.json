@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "fields": {
+      "title": "Metrics",
+      "description": "List of metrics from event to extract and format. Formatted metrics can be used by a destination to pass metrics to a metrics aggreation platform.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["inFieldName","metricType"],
+        "properties": {
+          "inFieldName": {
+            "type": "string",
+            "title": "Event Field Name",
+            "description": "The name of the field in event containing the metric value."
+          },
+          "outFieldExpr": {
+            "type": "string",
+            "title": "Metric Name Expression",
+            "description": "JavaScript expression to evaluate metric field name. Defaults to Event Field Name.",
+            "jsExpression": true
+          },
+          "metricType": {
+            "type": "string",
+            "title": "Metric Type",
+            "description": "Type of metric.",
+            "enum": ["counter", "timer", "gauge"],
+            "enumNames": ["Counter", "Timer", "Gauge"],
+            "default": "gauge"
+          }
+        }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "title": "Dimensions",
+      "description": "Optional list of dimensions to associate with every extracted metric value. Leave blank if this function is used to process output from the Aggregation function as dimensions will be automatically discovered.",
+      "default": ["!_*", "*"],
+      "items": {
+        "type": "string",
+        "title": "Dimensions",
+        "description": "List of dimension fields to pass with each extracted metric."
+      }
+    },
+    "overwrite": {
+      "type": "boolean",
+      "title": "Overwrite",
+      "description": "If true overwrite previous metric specs, otherwise append.",
+      "default": false
+    }
+  }
+}

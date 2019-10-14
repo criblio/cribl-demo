@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["command"],
+  "properties": {
+    "command": {
+      "type": "string",
+      "title": "Command",
+      "description": "Command to execute and feed events to, via stdin, json per line"
+    },
+    "args": {
+      "type": "array",
+      "title": "Args",
+      "description": "Command arguments",
+      "items": {
+        "type": "string"
+      }
+    },
+    "restartOnExit": {
+      "type": "boolean",
+      "title": "Restart on exit",
+      "description": "Restart the process if it exits and/or we fail to write to it",
+      "default": true
+    },
+    "env": {
+      "type": "object",
+      "title": "Environment Variables",
+      "description": "Environment variables to overwrite or set",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

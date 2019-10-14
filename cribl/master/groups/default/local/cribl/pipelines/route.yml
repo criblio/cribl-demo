@@ -3,21 +3,12 @@ groups:
   kWhP9A:
     name: Elastic
     description: Routes destined for ElasticSearch
-    index: 1
+    index: 0
   N8e7LH:
     name: S3 BigJSON
     description: S3 Events
-    index: 2
+    index: 1
 routes:
-  - id: A1JddJ
-    name: statsd
-    final: true
-    disabled: false
-    pipeline: statsd
-    description: Aggregate Statsd Metrics
-    clones: []
-    filter: sourcetype=='statsd_ext' || sourcetype=='graphite' || sourcetype=='statsd'
-    output: statsd
   - id: Qo3BYx
     name: elastic
     final: true

@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["rules"],
+  "properties": {
+    "rules": {
+      "type": "array",
+      "title": "Masking Rules",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["matchRegex", "replaceExpr"],
+        "properties": {
+          "matchRegex": {
+            "type": "string",
+            "title": "Match Regex",
+            "description": "Pattern to replace, remember to use /g to replace all matches",
+            "minLength": 1,
+            "regexp": true
+          },
+          "replaceExpr": {
+            "type": "string",
+            "title": "Replace Expression",
+            "description": "A JavaScript expression or literal to replace the matching content",
+            "jsExpression": true
+          }
+        }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "title": "Apply to Fields",
+      "description": "Fields where to apply the masking rules, supports * wildcards",
+      "items": {
+        "type": "string"
+      },
+      "default": ["_raw"]
+    }
+  }
+}

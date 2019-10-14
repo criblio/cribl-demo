@@ -1,0 +1,56 @@
+outputs:
+  default:
+    defaultId: splunk-metrics
+    type: default
+  elastic:
+    type: elastic
+    pipeline: elastic
+    url: http://elasticsearch:9200/_bulk
+    index: cribl
+    docType: cribl
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    flushPeriodSec: 1
+    onBackpressure: drop
+  graphite:
+    type: graphite
+    pipeline: graphite-conditioning
+    protocol: tcp
+    host: graphite
+    port: 2003
+    mtu: 512
+    flushPeriodSec: 1
+    onBackpressure: drop
+  statsd:
+    type: router
+    rules:
+      - filter: "true"
+        output: localhost
+        final: false
+      - filter: "true"
+        output: splunk-metrics
+        final: false
+      - filter: "true"
+        output: graphite
+        final: true
+    onBackpressure: drop
+  localhost:
+    type: statsd_ext
+    protocol: udp
+    host: localhost
+    port: 9125
+    mtu: 512
+    flushPeriodSec: 1
+    connectionTimeout: 5000
+    writeTimeout: 10000
+  splunk-metrics:
+    type: splunk
+    pipeline: metrics_to_logs
+    host: splunk
+    port: 9998
+    nestedFields: none
+    tls:
+      disabled: true
+    connectionTimeout: 5000
+    writeTimeout: 10000
+    onBackpressure: queue

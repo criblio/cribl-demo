@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "add": {
+      "title": "Evaluate Fields",
+      "description": "Set of key-value pairs to evaluate and add/set",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Field Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value Expression",
+            "description": "JavaScript expression to compute the value (can be constant)",
+            "jsExpression": true
+          }
+        }
+      }
+    },
+    "keep": {
+      "title": "Keep Fields",
+      "description": "List of fields to keep, supports * wildcards. Takes precedence over 'Remove Fields'.",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "remove": {
+      "title": "Remove Fields",
+      "description": "List of fields to remove, supports * wildcards. Cannot remove fields matching 'Keep Fields'.",
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

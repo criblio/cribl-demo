@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "file": {
+       "type": "string",
+       "title": "GeoIP File (.mmdb)",
+       "description": "Path to a Maxmind database in binary format, with .mmdb extension"     
+    },
+    "inField": {
+       "type":"string",
+       "title": "IP Field",
+       "description": "Field name where to find an IP to lookup, can be nested",
+       "default":"ip"
+    },
+    "outField": {
+       "type":"string",
+       "title": "Result Field",
+       "description": "Field name where to store the GeoIP lookup results",
+       "default":"geoip"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "inFields": {
+    "ui:field": "Table",
+    "items": {
+      "eventField": {
+        "ui:placeholder": "Enter field name"
+      },
+      "lookupField" :{
+        "ui:placeholder": "Enter field name"
+      }
+    }
+  },
+  "outFields": {
+    "ui:field": "Table",
+    "items": {
+      "eventField": {
+        "ui:placeholder": "Enter field name"
+      },
+      "lookupField" :{
+        "ui:placeholder": "Enter field name"
+      }
+    }
+  },
+  "file": {
+    "ui:placeholder": "Select one or enter lookup file path",
+    "ui:widget": "ApiLookup",
+    "ui:options": {
+      "url": "/system/lookups",
+      "valueProp": "id", 
+      "labelProp": "id",
+      "editable": true
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "required": ["mode", "keyExpr"],
+  "properties": {
+    "mode": {
+      "title": "Sample Mode",
+      "type": "string",
+      "description": "Defines how sample rate will be derived: log(previousPeriodCount) or sqrt(previousPeriodCount).",
+      "enum": ["log", "sqrt"],
+      "enumNames": ["Logarithmic", "Square Root"],
+      "default": "log"
+    },
+    "keyExpr": {
+      "title": "Sample Group Key",
+      "description": "Expression used to derive sample group key. For example:`${domain}:${status}`. Each sample group will have its own derived sampling rate based on volume. Defaults to `${host}`",
+      "type": "string",
+      "jsExpression": true,
+      "default": "`${host}`"
+    },
+    "samplePeriod": {
+      "title": "Sample Period (sec)",
+      "description": "How often (in seconds) sample rates will be adjusted.",
+      "type": "number",
+      "default": 30
+    },
+    "minEvents": {
+      "title": "Minimum Events",
+      "description": "Minimum number of events that must be received in previous sample period for sampling mode to be applied to current period. If the num events received for a sample group is less than min a sample rate of 1:1 is used.",
+      "type": "number",
+      "default": 30
+    },
+    "maxSampleRate": {
+      "title": "Max Sampling Rate",
+      "description": "Maximum sampling rate. If computed sampling rate is above this value it will be clamped down to this value.",
+      "type": "number",
+      "minimum": 1,
+      "default": 100
+    }
+  }
+}

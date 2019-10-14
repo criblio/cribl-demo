@@ -1,0 +1,69 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "outputField": {
+      "title": "Output Field",
+      "description": "The field to which the CEF formated event will be output",
+      "type": "string",
+      "default": "_raw"
+    },
+    "header": {
+      "title": "Header Fields",
+      "description": "Set of header key/value pairs",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Header Field Name",
+            "readOnly": true
+          },
+          "value": {
+            "type": "string",
+            "title": "Value Expression",
+            "description": "JavaScript expression to compute the value (can be constant)",
+            "jsExpression": true
+          }
+        }
+      },
+      "default": [
+        {"name": "cef_version", "value": "'CEF:0'"},
+        {"name": "device_vendor", "value": "'Cribl'"},
+        {"name": "device_product", "value": "'Cribl'"},
+        {"name": "device_version", "value": "C.version"},
+        {"name": "device_event_class_id", "value": "420"},
+        {"name": "name", "value": "'Cribl Event'"},
+        {"name": "severity", "value": "6"}
+      ]
+    },
+    "extension": {
+      "title": "Extension Fields",
+      "description": "Set of extension key-value pairs",
+      "type": "array",
+      "uniqueFields": ["name"],
+      "items": {
+        "type": "object",
+        "required": ["name", "value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Field Name",
+            "pattern": "^[a-zA-Z0-9]+$"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value Expression",
+            "description": "JavaScript expression to compute the value (can be constant)",
+            "jsExpression": true
+          }
+        }
+      }
+    }
+  }
+}

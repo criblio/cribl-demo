@@ -1,0 +1,29 @@
+{
+  "fields": {
+    "ui:field": "Table",
+    "items": {
+      "inFieldName": {
+        "ui:options": {
+          "columnWidth": "35%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "outFieldExpr": {
+        "ui:widget": "JsInput",
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter output expression"
+      },
+      "metricType": {
+        "ui:options": {
+          "columnWidth": "15%"
+        }
+      }
+    }
+  },
+  "dimensions": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter list of dimensions. Optional."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "regex": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression"
+  }
+}

@@ -1,0 +1,75 @@
+functions:
+  - id: eval
+    filter: >-
+      !(sourcetype=='WinEventLog:Security' || source=='WinEventLog:Security')
+    disabled: null
+    conf:
+      {}
+    description: Short-circuit all events that are NOT of source or sourcetype WinEventLog:Security
+    final: true
+  - id: regex_extract
+    filter: "true"
+    disabled: null
+    conf:
+      regex: /EventCode=(?<__eventCode>\d+)/
+      source: _raw
+    description: Extract EventCode field
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop Process Start & End emitted by Splunk Universal Forwarder process
+  - id: drop
+    filter: (__eventCode=='4688' || __eventCode=='4689') &&
+      _raw.indexOf('SplunkUniversalForwarder') > -1
+    disabled: false
+    conf:
+      {}
+    description: Drop Process Start & End for processes Splunk creates
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop Repetitious Token Assignment Events
+  - id: drop
+    filter: __eventCode=='4703' && /Security ID:\s*NT AUTHORITY.SYSTEM/.test(_raw) &&
+      /SeAssignPrimaryTokenPrivilege\s*SeIncreaseQuotaPrivilege\s*SeSecurityPrivilege\s*SeTakeOwnershipPrivilege\s*SeLoadDriverPrivilege\s*SeSystemtimePrivilege\s*SeBackupPrivilege\s*SeRestorePrivilege\s*SeShutdownPrivilege\s*SeSystemEnvironmentPrivilege\s*SeUndockPrivilege\s*SeManageVolumePrivilege/m.test(_raw)
+    disabled: false
+    conf:
+      {}
+    description: Drop Repetitious Token Assignment Events
+    final: true
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Remove event descriptions
+  - id: mask
+    filter: __eventCode=='4624' ||  __eventCode=='4688'
+    disabled: null
+    conf:
+      rules:
+        - matchRegex: /This event is generated[\s\S]+$/m
+          replaceExpr: >-
+            'DESCRIPTION REMOVED'
+        - matchRegex: /(Process\sCommand\sLine:)([\s\S]+)$/
+          replaceExpr: >-
+            `${g1} REMOVED`
+      fields:
+        - _raw
+    description: Remove event descriptions
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Remove timestamps
+  - id: mask
+    filter: "true"
+    disabled: null
+    conf:
+      rules:
+        - matchRegex: /(.+[\r\n]+)(LogName)/m
+          replaceExpr: g2
+      fields:
+        - _raw
+    description: Drop Timestamp

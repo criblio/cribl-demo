@@ -1,0 +1,85 @@
+{
+  "definitions": {
+    "functionConf": {
+      "type": "object",
+      "required": ["id", "conf"],
+      "additionalProperties": false,
+      "properties": {
+        "filter": {
+          "title": "Filter",
+          "description": "Filter that selects data to be fed through this function",
+          "type": "string",
+          "default": "true",
+          "jsExpression": true
+        },
+        "id": {
+          "title": "Id",
+          "description": "Function Id",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "description": "Simple description about this step",
+          "type": "string"
+        },
+        "disabled": {
+          "title": "Disabled",
+          "description": "If true data will not be pushed throught this function",
+          "type": "boolean"
+        },
+        "final": {
+          "title": "Final",
+          "description": "If true, stops the results of this function from being passed to the downstream functions",
+          "type": "boolean"
+        },
+        "conf": {
+          "type": "object",
+          "title": "Function specific configs",
+          "properties": {}
+        }
+      }
+    }
+  },
+  "title": "Pipeline Settings",
+  "type": "object",
+  "required": ["conf"],
+  "properties": {
+    "id": {
+      "title": "Id",
+      "description": "Pipeline Id",
+      "type": "string"
+    },
+    "conf": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asyncFuncTimeout": {
+          "type": "integer",
+          "title": "Async Function Timeout (ms)",
+          "description": "Time (in ms) to wait for an async function to complete processing a data item",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "output": {
+          "type": "string",
+          "title": "Output event destination",
+          "description": "The output destination for events processed by this pipeline",
+          "default": "default"
+        },
+        "description": {
+          "title": "Description",
+          "description": "Simple description about this pipeline",
+          "type": "string"
+        },
+        "functions": {
+          "title": "Functions",
+          "description": "List of functionss to pass data through",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/functionConf"
+          }
+        }
+      }
+    }
+  }
+}

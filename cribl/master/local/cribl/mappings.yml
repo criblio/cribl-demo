@@ -1,0 +1,21 @@
+rulesets:
+  default:
+    conf:
+      functions:
+        - filter: cribl.tags.includes('metrics')
+          id: eval
+          description: Metrics
+          final: true
+          conf:
+            add:
+              - name: groupId
+                value: "'metrics'"
+        - filter: "true"
+          id: eval
+          description: Default Mappings
+          disabled: false
+          final: true
+          conf:
+            add:
+              - name: groupId
+                value: "'default'"

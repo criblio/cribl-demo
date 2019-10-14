@@ -9,3 +9,4 @@ ENV SCOPE_LOG_LEVEL=info
 ENV SCOPE_LOG_DEST=file:///tmp/scope.log
 ENV SCOPE_OUT_VERBOSITY=4
 ENV GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+ADD entrypoint.sh /sbin/entrypoint.sh

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["unroll"],
+  "properties": {
+    "unroll": {
+      "type": "string",
+      "title": "Unroll Elements Regex",
+      "description": "Path to array to unroll, e.g. ^root\\.child\\.ElementToUnroll$"
+    },
+    "inherit": {
+      "type": "string",
+      "title": "Copy Elements Regex",
+      "description": "Regex matching elements to copy into each unrolled event, e.g. ^root\\.(childA|childB|childC)$"
+    },
+    "unrollIdxField": {
+      "type": "string",
+      "title": "Unroll Index Field",
+      "description": "Add a field with this name, containing the index at which the item was located, starting from 0",
+      "default": "unroll_idx"
+    },
+    "pretty": {
+      "type": "boolean",
+      "title": "Pretty Print",
+      "description": "Whether to pretty print the output XML",
+      "default": false
+    }
+  }
+}

@@ -1,0 +1,3 @@
+samples:
+  maxSize: 256KB
+minFreeSpace: 5 GB

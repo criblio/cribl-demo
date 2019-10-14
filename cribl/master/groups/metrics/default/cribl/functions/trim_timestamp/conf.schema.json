@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "field": {
+      "type": "string",
+      "title": "Index-time Field",
+      "description": "Name of index-time field to save the timestamp in (none, if empty)"
+    }
+  }
+}

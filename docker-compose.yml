@@ -27,11 +27,22 @@ services:
       - "10080:10080"
       - "10001:10001"
       - "9999:9999"
+      - "5140:5140"
+    # volumes:
+    #   - "./cribl/w0:/opt/cribl/local/_system"
+    environment:
+      - CRIBL_WORKER=default
+  cribl-w1:
+    build:
+      context: cribl
+    ports:
+      - "9003:9000"
       - "8125:8125"
       - "8125:8125/udp"
-      - "5140:5140"
-    volumes:
-      - "./cribl/w0:/opt/cribl/local/_system"
+    # volumes:
+    #   - "./cribl/w0:/opt/cribl/local/_system"
+    environment:
+      - CRIBL_WORKER=metrics
   splunk:
     build:
       context: splunk
