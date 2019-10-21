@@ -3,6 +3,10 @@ const customers = {};
 const cache = {};
 let fields = [];
 
+process.on('uncaughtException', function (err) {
+  console.log(err);
+}); 
+
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -26,6 +30,10 @@ const morgan = require('morgan');
 const app = express();
 const port = 3000;
 
+app.on('error', (err) => {
+  console.error(err);
+});
+
 // app.use(morgan('short'));
 
 function getAndIncrAccessCount(userName) {
@@ -33,6 +41,9 @@ function getAndIncrAccessCount(userName) {
   let file;
   const cacheFile = cache[userName];
   let ret = Promise.resolve();
+  if (process.env.DISABLE_ACCESS_COUNT=='1') {
+    return ret;
+  }
   if (cacheFile) {
     ret = ret.then(() => cacheFile);
   } else {

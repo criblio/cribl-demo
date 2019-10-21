@@ -31,7 +31,7 @@ services:
     # volumes:
     #   - "./cribl/w0:/opt/cribl/local/_system"
     environment:
-      - CRIBL_WORKER=default
+      - CRIBL_DIST_MASTER_URL=tcp://criblmaster@cribl:4200
   cribl-w1:
     build:
       context: cribl
@@ -42,7 +42,7 @@ services:
     # volumes:
     #   - "./cribl/w0:/opt/cribl/local/_system"
     environment:
-      - CRIBL_WORKER=metrics
+      - CRIBL_DIST_MASTER_URL=tcp://criblmaster@cribl:4200?tag=metrics
   splunk:
     build:
       context: splunk
@@ -168,6 +168,8 @@ services:
       timeout: 10s
       retries: 3
     privileged: true
+    environment:
+      - DISABLE_ACCESS_COUNT=1
   redis:
     build:
       context: redis

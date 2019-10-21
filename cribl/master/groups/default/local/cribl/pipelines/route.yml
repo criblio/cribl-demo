@@ -3,12 +3,21 @@ groups:
   kWhP9A:
     name: Elastic
     description: Routes destined for ElasticSearch
-    index: 0
+    index: 1
   N8e7LH:
     name: S3 BigJSON
     description: S3 Events
-    index: 1
+    index: 2
 routes:
+  - id: d0e58131b4639b5427191a62cc64778d481b2f58
+    name: drop_access_combined
+    final: true
+    disabled: false
+    pipeline: devnull
+    description: Drop Access Combined Events
+    clones: []
+    filter: sourcetype=='access_combined'
+    output: devnull
   - id: Qo3BYx
     name: elastic
     final: true
