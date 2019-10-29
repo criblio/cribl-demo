@@ -1,8 +1,8 @@
 default:
   description: Default Worker Groups
   tags: default
-  configVersion: d27a7f65
+  configVersion: b6250b70
 metrics:
   description: For Metrics Workloads
   tags: metrics
-  configVersion: 5941d11a
+  configVersion: 9f4e589f

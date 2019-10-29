@@ -12,4 +12,4 @@ path:
   logs: /var/log/beats
 
 output.elasticsearch:
-  hosts: ["http://cribl:10200"]
+  hosts: ["http://cribl-w0:10200"]
