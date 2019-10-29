@@ -1,4 +1,4 @@
-FROM cribl/cribl:next
+FROM cribl/cribl:latest
 COPY http_status.csv /opt/cribl/data/lookups/http_status.csv
 COPY scripts/ /opt/cribl/scripts/
 ADD http://cdn.cribl.io/dl/scope/latest/linux/libscope.so /usr/lib/libscope.so
