@@ -10,8 +10,8 @@ This will launch a Cribl demo environment with a number of sources and destinati
 
 | System                 | URL                                                                                                    | Username | Password  |
 |------------------------|--------------------------------------------------------------------------------------------------------|----------|-----------|
-| Cribl                  | http://localhost:9000/login?username=admin&password=cribldemo                                          | admin    | cribldemo |
-| Splunk                 | https://localhost:8000/en-US/account/insecurelogin?loginType=splunk&username=admin&password=cribldemo- | admin    | cribldemo |
+| Cribl                  | http://localhost:9000/                                          | admin    | admin |
+| Splunk                 | https://localhost:8000/en-US/account/insecurelogin?loginType=splunk&username=admin&password=cribldemo | admin    | cribldemo |
 | Elasticsearch (Kibana) | http://localhost:9200                                                                                  |          |           |
 | Grafana                | http://localhost:8200                                                                                  | admin    | cribldemo |
 | Graphite               | http://localhost:8100                                                                                  |          |           |
