@@ -11,10 +11,16 @@ This will launch a Cribl demo environment with a number of sources and destinati
 | System                 | URL                                                                                                    | Username | Password  |
 |------------------------|--------------------------------------------------------------------------------------------------------|----------|-----------|
 | Cribl                  | http://localhost:9000/login?username=admin&password=cribldemo                                          | admin    | cribldemo |
-| Splunk                 | https://localhost:8000/en-US/account/insecurelogin?loginType=splunk&username=admin&password=cribldemo- | admin    | cribldemo |
+| Splunk                 | http://localhost:8000/en-US/account/insecurelogin?loginType=splunk&username=admin&password=cribldemo- | admin    | cribldemo |
 | Elasticsearch (Kibana) | http://localhost:9200                                                                                  |          |           |
 | Grafana                | http://localhost:8200                                                                                  | admin    | cribldemo |
 | Graphite               | http://localhost:8100                                                                                  |          |           |
+
+## How to start data flowing into demo systems
+
+1. Under Worker Groups: click on Commit for each worker to commit the configuration changes to git (local)
+2. Click on Deploy to deploy the changes to each worker. Workers that belong to the group will start pulling updated configurations on their next check-in.
+3. Wait a few seconds for changes to take effect
 
 ## What to see first
 
