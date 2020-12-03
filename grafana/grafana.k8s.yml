@@ -52,6 +52,14 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: grafana
+      initContainers:
+        - name: grafana-setup
+          image: alpine:latest
+          command: ['sh', "-c", "chown 472 /var/lib/grafana"]
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: grafana
+        
       restartPolicy: Always
       volumes:
         - name: grafana
