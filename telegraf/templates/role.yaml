@@ -3,7 +3,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: influx:stats:viewer
+  name: {{ .Release.Namespace }}:influx:stats:viewer
   labels:
     {{- include "telegraf.labels" . | nindent 4 }}
     rbac.authorization.k8s.io/aggregate-view-telegraf-stats: "true"
@@ -22,7 +22,7 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: influx:cluster:viewer
+  name: {{ .Release.Namespace }}:influx:cluster:viewer
   labels:
     {{- include "telegraf.labels" . | nindent 4 }}
     rbac.authorization.k8s.io/aggregate-view-telegraf: "true"
@@ -35,7 +35,7 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: influx:telegraf
+  name: {{ .Release.Namespace }}:influx:telegraf
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
