@@ -1,0 +1,4 @@
+resources:
+  - splunk.k8s.yml
+patches:
+  - patch.yml

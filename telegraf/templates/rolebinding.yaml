@@ -14,21 +14,35 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: {{ .Release.Namespace }}:influx:telegraf
-{{- end }}
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/name: {{ .Release.Namespace }}-kube-state-metrics
     app.kubernetes.io/version: 2.0.0-alpha.3
-  name: kube-state-metrics
+  name: {{ .Release.Namespace }}-kube-state-metrics
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: kube-state-metrics
+  name: {{ .Release.Namespace }}-kube-state-metrics
 subjects:
 - kind: ServiceAccount
   name: kube-state-metrics
   namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Namespace }}-view-metrics
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Release.Namespace }}-view-metrics
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:anonymous
+
+{{- end }}

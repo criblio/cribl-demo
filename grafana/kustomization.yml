@@ -1,0 +1,4 @@
+resources:
+  - grafana.k8s.yml
+patches:
+  - patch.yml

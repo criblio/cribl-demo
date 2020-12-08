@@ -35,6 +35,8 @@ build:
   - image: splunk
     context: splunk
 deploy:
+  kustomize: 
+    paths: ["./grafana", "./splunk"]
   kubectl:
     manifests:
     - apiserver/apiserver.k8s.yml
