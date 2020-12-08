@@ -87,3 +87,12 @@ profiles:
     deploy:
       kustomize: 
         paths: ["./grafana", "./splunk"]
+
+      helm:
+        releases:
+        - name: cribl
+          chartPath: cribl/charts/logstream-master
+          artifactOverrides:
+            image: cribl-master
+          valuesFiles:
+            - cribl/master.values.prod.yml
