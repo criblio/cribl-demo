@@ -1,0 +1,43 @@
+#!/bin/bash
+
+export PAGER=/bin/cat
+
+if [ -n "$1" ]; then
+  repohead=$1
+else
+  echo "Must specific a repository head as the first argument"
+fi
+
+if [  -n "$AWS_REGION" ]; then
+  region=$AWS_REGION
+elif [ -n "$AWS_DEFAULT_REGION" ]; then
+  region=$AWS_DEFAULT_REGION
+else
+  echo "Defaulting Region to us-west-2 - if you want a different region, set AWS_REGION or AWS_DEFAULT_REGION and rerun"
+  region=us-west-2
+fi
+
+acct=$(aws sts get-caller-identity --query "Account"  --output text)
+
+export repository_uri=${acct}.dkr.ecr.${region}.amazonaws.com
+
+aws --profile Lab-Power ecr get-login-password | docker login --username AWS --password-stdin ${repository_uri}
+# lookup all relevant information
+export secret=${region}-ecr-registry
+export password=$(aws ecr get-authorization-token --output text --query authorizationData[].authorizationToken | base64 -d | cut -d: -f2)
+email=user@host.com
+
+# configure kubes to log into ECR
+#kubectl delete secret --ignore-not-found $secret
+#kubectl create secret docker-registry $secret \
+ #--docker-server=https://${repository_uri} \
+ #--docker-username=AWS \
+ #--docker-password="${password}" \
+ #--docker-email="${email}"
+
+for i in $(grep image skaffold.yaml | awk -F: '{print $2}'  | sort | uniq); do
+  echo "Created: $(aws ecr create-repository --repository-name $repohead/$i --output text --query 'repository.repositoryUri')"
+done
+
+echo "Use the --default-repo ${repository_uri}/${repohead} option to skaffold deploy"
+echo "Or export SKAFFOLD_DEFAULT_REPO=${repository_uri}/${repohead}"

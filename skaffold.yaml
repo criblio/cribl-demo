@@ -35,8 +35,6 @@ build:
   - image: splunk
     context: splunk
 deploy:
-  kustomize: 
-    paths: ["./grafana", "./splunk"]
   kubectl:
     manifests:
     - apiserver/apiserver.k8s.yml
@@ -83,3 +81,9 @@ deploy:
       chartPath: influxdb2
       valuesFiles:
       - influxdb2/values.yaml
+
+profiles:
+  - name: prod
+    deploy:
+      kustomize: 
+        paths: ["./grafana", "./splunk"]
