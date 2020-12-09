@@ -55,7 +55,7 @@ persistence:
   size: 1Gi
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 8086
 
 ingress:

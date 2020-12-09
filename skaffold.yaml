@@ -82,7 +82,7 @@ deploy:
     - name: influxdb2
       chartPath: influxdb2
       valuesFiles:
-      - influxdb2/values.yaml
+      - influxdb2/prod-values.yaml
 
 profiles:
   - name: dev
@@ -95,6 +95,10 @@ profiles:
             image: cribl-master
           valuesFiles:
             - cribl/master.values.yml
+        - name: influxdb2
+          chartPath: influxdb2
+          valuesFiles:
+          - influxdb2/values.yaml
 
     patches:
     - op: remove

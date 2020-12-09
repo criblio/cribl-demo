@@ -4,7 +4,7 @@ metadata:
   name: {{ template "influxdb.fullname" . }}
   labels: {{- include "influxdb.labels" . | nindent 4 }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: http
