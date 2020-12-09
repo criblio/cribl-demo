@@ -35,6 +35,8 @@ build:
   - image: splunk
     context: splunk
 deploy:
+  kustomize: 
+    paths: ["./grafana", "./splunk"]
   kubectl:
     manifests:
     - apiserver/apiserver.k8s.yml
@@ -54,7 +56,7 @@ deploy:
       artifactOverrides:
         image: cribl-master
       valuesFiles:
-      - cribl/master.values.yml
+      - cribl/master.values.prod.yml
     - name: cribl-w0
       chartPath: cribl/charts/logstream-workergroup
       artifactOverrides:
@@ -83,10 +85,8 @@ deploy:
       - influxdb2/values.yaml
 
 profiles:
-  - name: prod
+  - name: dev
     deploy:
-      kustomize: 
-        paths: ["./grafana", "./splunk"]
 
       helm:
         releases:
@@ -95,4 +95,8 @@ profiles:
           artifactOverrides:
             image: cribl-master
           valuesFiles:
-            - cribl/master.values.prod.yml
+            - cribl/master.values.yml
+
+    patches:
+    - op: remove
+      path: /deploy/kustomize

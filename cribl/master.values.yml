@@ -28,7 +28,6 @@ env:
   CRIBL_AFTER_START_CMD_1: sleep 60 && $CRIBL_HOME/scripts/cli-deploy > /tmp/deploy.log
 
 service:
-  type: NodePort
   annotations: {}
 
   ports:

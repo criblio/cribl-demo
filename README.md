@@ -36,15 +36,17 @@ If you don't have homebrew, check out the following links for install instructio
     * Minikube: https://minikube.sigs.k8s.io/docs/start/
     * Skaffold: https://skaffold.dev/docs/install/
 
-To run the demo (again, on a Mac):
+To run the demo LOCALLY on minikube (again, on a Mac):
 
-    ./start.sh
-    skaffold dev --port-forward=true
+    ./start.sh local
+    skaffold dev --port-forward=true -p dev
+
+If you already have minikube running, you can omit the "local" argument to `start.sh`. The `-p dev` argument to skaffold invokes the "dev" profile, which uses kube-proxy redirection for service deployment. If that's omitted, the services for cribl, splunk and grafana will all attempt to create load balancers.
 
 Now, you can access Cribl at http://localhost:9000 with username `admin` password `cribldemo`. 
 
 # Running on EKS
-Running in "Production" mode on an EKS cluster requires a few additional steps.
+While the skaffold default deployment is now "production mode" (meaning externally facing services are exposed via load balancer), running on an EKS cluster requires a few additional steps. This is *primarily* because of the use of Elastic Container Registry (ECR) for holding the built images (when done locally, skaffold uses the local docker cache instead). 
 
 ## Setup ECR
 Running in EKS requires that you push the docker images up into ECR. ECR's repository structure requires that you pre-create the repos for each image. The script "setup-ecr" can take care of that. You need to have an active AWS credential in the environment (or use aws2-wrap), as well as either AWS_DEFAULT_REGION or AWS_REGION set to your preferred region (otherwise, it will default to us-west-2). The command line is as follows:
@@ -105,10 +107,10 @@ Generating tags...
 ```
 
 ## Deploying the build
-We'll use `skaffold deploy` to deploy the environment. By default, all services use the ClusterIP type, but we want the user facing services to instead use a LoadBalancer type. To acheive this, we use the Kustomize utility, and associate kustomizations to a profile. In this case, if we use the "prod" profile, those services will be deployed using the LoadBalancer type. In addition, we have to include the --tag option to specify the tag we want to deploy. Finally, to deploy in a namespace, specify -n \<namespace>. For example, to deploy the tag "demo1" to the "testing" namespace:
+We'll use `skaffold deploy` to deploy the environment. We have to include the --tag option to specify the tag we want to deploy. Finally, to deploy in a namespace, specify -n \<namespace>. For example, to deploy the tag "demo1" to the "testing" namespace:
 
 ```
-skaffold deploy --tag demo1 -p prod -n testing
+skaffold deploy --tag demo1 -n testing
 Tags used in deployment:
  - apiserver -> 586997984287.dkr.ecr.us-west-2.amazonaws.com/cribl-demo-main/apiserver:demo1
  - cribl-master -> 586997984287.dkr.ecr.us-west-2.amazonaws.com/cribl-demo-main/cribl-master:demo1
