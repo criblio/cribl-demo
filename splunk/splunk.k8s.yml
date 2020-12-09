@@ -19,8 +19,8 @@ spec:
       labels:
         io.kompose.service: splunk
         app.kubernetes.io/name: splunk
-      annotations:
-        io.cribl.scope/disable: 'true'
+      # annotations:
+      #   io.cribl.scope/disable: 'true'
     spec:
       containers:
         - env:

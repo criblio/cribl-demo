@@ -17,6 +17,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: gogen
+        app.kubernetes.io/name: gogen
     spec:
       containers:
         - env:

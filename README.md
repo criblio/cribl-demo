@@ -46,7 +46,7 @@ If you already have minikube running, you can omit the "local" argument to `star
 Now, you can access Cribl at http://localhost:9000 with username `admin` password `cribldemo`. 
 
 # Running on EKS
-While the skaffold default deployment is now "production mode" (meaning externally facing services are exposed via load balancer), running on an EKS cluster requires a few additional steps. This is *primarily* because of the use of Elastic Container Registry (ECR) for holding the built images (when done locally, skaffold uses the local docker cache instead). 
+Running in "Production" mode on an EKS cluster requires a few additional steps.
 
 ## Setup ECR
 Running in EKS requires that you push the docker images up into ECR. ECR's repository structure requires that you pre-create the repos for each image. The script "setup-ecr" can take care of that. You need to have an active AWS credential in the environment (or use aws2-wrap), as well as either AWS_DEFAULT_REGION or AWS_REGION set to your preferred region (otherwise, it will default to us-west-2). The command line is as follows:
@@ -107,7 +107,7 @@ Generating tags...
 ```
 
 ## Deploying the build
-We'll use `skaffold deploy` to deploy the environment. We have to include the --tag option to specify the tag we want to deploy. Finally, to deploy in a namespace, specify -n \<namespace>. For example, to deploy the tag "demo1" to the "testing" namespace:
+We'll use `skaffold deploy` to deploy the environment, using the -n \<namespace> argument to deploy in a namespace. For example, to deploy the tag "demo1" to the "testing" namespace:
 
 ```
 skaffold deploy --tag demo1 -n testing

@@ -87,7 +87,6 @@ deploy:
 profiles:
   - name: dev
     deploy:
-
       helm:
         releases:
         - name: cribl
@@ -100,3 +99,4 @@ profiles:
     patches:
     - op: remove
       path: /deploy/kustomize
+
