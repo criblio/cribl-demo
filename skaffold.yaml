@@ -6,8 +6,6 @@ build:
   artifacts:
   - image: apiserver
     context: apiserver
-  - image: demo-refresh
-    context: demo-refresh
   - image: cribl-master
     context: cribl/master
     docker:
@@ -63,13 +61,12 @@ deploy:
     - grafana/grafana.k8s.yml
     - redis/redis.k8s.yml
     - splunk/splunk.k8s.yml
-    - demo-refresh/demorefresh.k8s.yml
   helm:
     flags:
       upgrade:
         [--timeout=600s]                 # Helm upgrade timeout
       install:
-        [--timeout=600s, --wait]   
+        [--timeout=600s]   
     releases:
     - name: cribl
       chartPath: cribl/charts/logstream-master
