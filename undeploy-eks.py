@@ -77,7 +77,7 @@ config.load_kube_config()
 kubeclient = client.CoreV1Api()
 
 # ensure that the specified namespace is set up
-check_namespace(options, kubeclient)
+#check_namespace(options, kubeclient)
 
 # Set up the SKAFFOLD env var
 os.environ['SKAFFOLD_DEFAULT_REPO'] = "%s.dkr.ecr.%s.amazonaws.com/%s" % (acct['Account'], options.region, options.repohead)

@@ -5,6 +5,7 @@ metadata:
     {{- include "influxdb.labels" . | nindent 4 }}
   name: {{ template "influxdb.fullname" . }}-fix-dbrp
   annotations:
+    "helm.sh/hook-weight": "2"
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
 spec:

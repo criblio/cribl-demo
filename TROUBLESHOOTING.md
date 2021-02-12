@@ -24,4 +24,27 @@
 
 ### Influxdb "exceeded progress deadline"
 
-This issue seems to appear sporadically when running on minikube, and appears to be due to one of the helm charts jobs running for too long.  While we're still trying to figure out why this happens, more often then not, just re-running the `skaffold dev` command fixes it. 
+This issue seems to appear sporadically when running on minikube. There are a few post-install jobs that need to run after influxdb is installed, and they require the influxdb2 service to be up and available. If the system is running low on resources, it can take some time for the influxdb2 service to get to the ready state, 
+
+
+### Skaffold exits when a deployment fails, but doesn't clean up resources
+
+This can be a bit painful. There are a few steps that can resolve this:
+
+1. run `skaffold delete` - this, in theory, should clean up any resources left behind, but it is less than perfect, and often fails when trying to clean up a failed deployment.
+1. manually delete every component via `kubectl`. This is really painful.
+
+Preferred approach is to *always* use a unique namespace when you run `skaffold dev` or deploy on EKS. If, say, you did the following to run:
+
+```
+kubectl create namespace myspace
+skaffold dev --port-forward=true -p dev -n myspace
+```
+
+all of the resources would be in an isolated namespace called `myspace`. This allows you to run a single command to get rid of any resources in that namespace:
+
+```
+kubectl delete all --all -n myspace
+```
+
+Be _*VERY*_ careful with this command, and ensure that you've included the `-n <namespace>` argument, otherwise you may delete resources in your cluster that you didn't intend to delete... 

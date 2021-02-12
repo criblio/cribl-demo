@@ -9,7 +9,8 @@ metadata:
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
 spec:
-  activeDeadlineSeconds: 90
+  activeDeadlineSeconds: 120
+  ttlSecondsAfterFinished: 900
   template:
     metadata:
       annotations:

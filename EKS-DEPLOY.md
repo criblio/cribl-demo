@@ -4,8 +4,10 @@ If you want to run the cribl-demo on EKS, this document covers that. It is cumul
 
 ## Pre-Requisites for Deployment Scripts
 
+You will need to have a working python3 installation along with a working pip (or pip3) install to be able to deploy to EKS.
+
 ```
-pip -r ./requirements.txt
+pip install -r ./requirements.txt
 ```
 additionally, you'll need to have active AWS credentials in the shell.
 

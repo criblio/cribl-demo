@@ -6,6 +6,8 @@ build:
   artifacts:
   - image: apiserver
     context: apiserver
+  - image: demo-refresh
+    context: demo-refresh
   - image: cribl-master
     context: cribl/master
     docker:
@@ -61,12 +63,13 @@ deploy:
     - grafana/grafana.k8s.yml
     - redis/redis.k8s.yml
     - splunk/splunk.k8s.yml
+    - demo-refresh/demorefresh.k8s.yml
   helm:
     flags:
       upgrade:
         [--timeout=600s]                 # Helm upgrade timeout
       install:
-        [--timeout=600s]   
+        [--timeout=600s, --wait]   
     releases:
     - name: cribl
       chartPath: cribl/charts/logstream-master
@@ -158,11 +161,13 @@ profiles:
     patches:
     - op: add
       path: /deploy/kustomize/paths
-      value: ["./grafana", "./splunk",  "./apiserver", "./minio", "./redis"]
+      value: ["./grafana", "./splunk", "./minio", "./redis"]
     - op: remove
       path: /deploy/kubectl/manifests/3
     - op: remove
       path: /deploy/kubectl/manifests/1
+    - op: remove
+      path: /deploy/kubectl/manifests/0
     - op: replace
       path: /deploy/helm/releases/0/valuesFiles
       value: [ "cribl/master-mini.values.yml" ]
@@ -195,3 +200,5 @@ profiles:
       path: /build/artifacts/5
     - op: remove
       path: /build/artifacts/4
+    - op: remove
+      path: /build/artifacts/0
