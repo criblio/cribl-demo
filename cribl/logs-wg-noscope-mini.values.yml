@@ -53,7 +53,7 @@ service:
   #   port: 8125
   #   protocol: TCP
   - name: elastic
-    port: 9200
+    port: 10200
     protocol: TCP
 
 resources: 

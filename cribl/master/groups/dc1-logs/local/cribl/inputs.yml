@@ -49,7 +49,7 @@ inputs:
     disabled: false
     pipeline: beats-conditioning
     host: 0.0.0.0
-    port: 9200
+    port: 10200
     elasticAPI: /
     tls:
       disabled: true
