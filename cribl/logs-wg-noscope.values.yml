@@ -47,6 +47,9 @@ service:
   - name: https
     port: 10081
     protocol: TCP    
+  - name: beats
+    port: 10200
+    protocol: TCP
   - name: syslog
     port: 5140
     protocol: TCP

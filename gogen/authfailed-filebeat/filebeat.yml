@@ -16,4 +16,4 @@ path:
   logs: /var/log/beats
 
 output.elasticsearch:
-  hosts: ["${CRIBL_ELASTIC}"]
+  hosts: ["http://cribl-w0:10200"]

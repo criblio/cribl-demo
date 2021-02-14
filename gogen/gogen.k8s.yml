@@ -116,11 +116,7 @@ spec:
               memory: 128Mi
         - env:
             - name: GOGEN_OUT
-              value: http
-            - name: GOGEN_URL
-              value: http://cribl-w0:10200
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: elasticsearch
+              value: file
           image: gogen-authfailed-filebeat
           name: gogen-authfailed-filebeat
           resources:
