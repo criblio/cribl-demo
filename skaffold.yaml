@@ -36,7 +36,7 @@ build:
   - image: gogen-accesscombined-forwarder
     context: gogen/accesscombined-forwarder
   - image: gogen-authfailed-filebeat
-    context: gogen/statechange-syslog
+    context: gogen/authfailed-filebeat
   - image: gogen-datacollection-syslog
     context: gogen/datacollection-syslog
   - image: grafana
@@ -199,3 +199,13 @@ profiles:
       path: /build/artifacts/4
     - op: remove
       path: /build/artifacts/0
+
+  - name: forward
+    portForward:
+    - resourceType: deployment
+      resourceName: cribl
+      namespace: minitest
+      port: 9000
+      address: 0.0.0.0
+      localPort: 9000
+
