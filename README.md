@@ -15,7 +15,7 @@ _**NOTE**_ - due to some problems with different k8s engines, it's recommended t
 
 ## Pre-Requisites
 
-### On a Mac with homebrew
+### On a Mac with homebrew ([Homebrew Installation Instructions](https://docs.brew.sh/Installation))
 
 ```
 brew install minikube
@@ -24,7 +24,7 @@ brew install helm
 curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.17.2/skaffold-darwin-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin
 ```
 
-### On a Mac with MacPorts
+### On a Mac with MacPorts ([MacPorts Installation Instructions](https://www.macports.org/install.php))
 ```
 sudo port install minikube kubectl-1.20 helm-3.5
 sudo port select --set helm helm3.5
@@ -99,13 +99,26 @@ If you already have minikube running, you can omit the "local" argument to `star
 
 Now, you can access Cribl at http://localhost:9000 with username `admin` password `cribldemo`. 
 
+## Accessing Services in the Demo environment
+
+Using the port-forwarding capability in skaffold (as seen above), will yield 4 services that you can access:
+
+|Service|URL|Purpose|
+|-------|---|-------|
+|cribl|[http://localhost:9000](http://localhost:9000)|The Cribl LogStream master UI|
+|splunk|[http://localhost:8000](http://localhost:8000)|The Splunk UI|
+|influxdb2|[http://localhost:8086](http://localhost:8086)|The InfluxDB UI|
+|grafana|[http://localhost:4000](http://localhost:4000)|The Grafana UI|
+
 
 ## Profiles
 
-We have two alternate profiles in the skaffold.yaml file:
+We have alternate profiles in the skaffold.yaml file:
 
 * dev - this reduced the memory load of the environment by reducing the resource allocations for each pod. The user facing services (logstream master, splunk, grafan and influxdb2) all will run in NodePort mode.
 * minimal - this also reduces the memory load through reduced resource allocations, as well as a lower number of pods. The user facing services (logstream master, splunk, grafan and influxdb2) all will run in NodePort mode.
+* nogen - this is a barebones profile that really only spins up the distributed Cribl LogStream environment, minio and the user facing services.
+* forward - this profile can be combined with any of the other profiles to forward the user facing services to 0.0.0.0 (instead of the default 127.0.0.1), allowing for access to it from other systems - useful when you're developing on an AWS EC2 instance with no GUI. 
 
 
 ## EKS Deployment

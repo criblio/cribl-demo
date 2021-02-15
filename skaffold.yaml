@@ -208,4 +208,22 @@ profiles:
       port: 9000
       address: 0.0.0.0
       localPort: 9000
+    - resourceType: deployment
+      resourceName: grafana
+      namespace: minitest
+      port: 3000
+      address: 0.0.0.0
+      localPort: 3000
+    - resourceType: deployment
+      resourceName: splunk
+      namespace: minitest
+      port: 8000
+      address: 0.0.0.0
+      localPort: 8000
+    - resourceType: deployment
+      resourceName: influxdb2
+      namespace: minitest
+      port: 8086
+      address: 0.0.0.0
+      localPort: 8086
 
