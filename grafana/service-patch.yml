@@ -3,4 +3,4 @@ kind: Service
 metadata:
   name: grafana
 spec:
-  type: ClusterIP
+  type: NodePort
