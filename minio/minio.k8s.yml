@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        io.cribl.scope/disable: 'true'
+        appscope.dev/disable: "true"
       labels:
         io.kompose.service: minio
         app.kubernetes.io/name: minio

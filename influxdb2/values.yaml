@@ -71,3 +71,6 @@ ingress:
 templates:
 - https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
 - https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml
+
+podAnnotations:
+  appscope.dev/disable: "true"

@@ -80,12 +80,6 @@ deploy:
         image: cribl-worker
       valuesFiles:
       - cribl/logs-wg.values.yml
-    - name: cribl-w0-noscope
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/logs-wg-noscope.values.yml
     - name: cribl-w1
       chartPath: cribl/charts/logstream-workergroup
       artifactOverrides:
@@ -121,15 +115,12 @@ profiles:
       value: [ "cribl/logs-wg-mini.values.yml" ]
     - op: replace
       path: /deploy/helm/releases/2/valuesFiles
-      value: [ "cribl/logs-wg-noscope-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/3/valuesFiles
       value: [ "cribl/metrics-wg-mini.values.yml" ]
     - op: replace 
-      path: /deploy/helm/releases/4/valuesFiles
+      path: /deploy/helm/releases/3/valuesFiles
       value: [ "cribl/aws-wg-mini.values.yml" ]
     - op: replace
-      path: /deploy/helm/releases/6/valuesFiles
+      path: /deploy/helm/releases/5/valuesFiles
       value: [ "influxdb2/values.yaml" ]
 
   - name: minimal
@@ -146,10 +137,10 @@ profiles:
       path: /deploy/helm/releases/1/valuesFiles
       value: [ "cribl/logs-wg-mini.values.yml" ]
     - op: replace
-      path: /deploy/helm/releases/3/valuesFiles
+      path: /deploy/helm/releases/2/valuesFiles
       value: [ "cribl/metrics-wg-mini.values.yml" ]
     - op: replace 
-      path: /deploy/helm/releases/4/valuesFiles
+      path: /deploy/helm/releases/3/valuesFiles
       value: [ "cribl/aws-wg-mini.values.yml" ]
     - op: remove
       path: /deploy/helm/releases/2
@@ -172,10 +163,10 @@ profiles:
       path: /deploy/helm/releases/1/valuesFiles
       value: [ "cribl/logs-wg-mini.values.yml" ]
     - op: replace
-      path: /deploy/helm/releases/3/valuesFiles
+      path: /deploy/helm/releases/2/valuesFiles
       value: [ "cribl/metrics-wg-mini.values.yml" ]
     - op: replace 
-      path: /deploy/helm/releases/4/valuesFiles
+      path: /deploy/helm/releases/3/valuesFiles
       value: [ "cribl/aws-wg-mini.values.yml" ]
     - op: remove
       path: /deploy/helm/releases/2

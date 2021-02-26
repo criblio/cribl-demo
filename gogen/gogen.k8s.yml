@@ -16,6 +16,8 @@ spec:
       labels:
         io.kompose.service: gogen
         app.kubernetes.io/name: gogen
+      annotations:
+        appscope.dev/disable: "true"
     spec:
       containers:
         - env:

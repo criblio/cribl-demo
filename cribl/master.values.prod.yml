@@ -43,8 +43,7 @@ service:
     protocol: TCP
     external: false
 
-podAnnotations:
-  io.cribl.scope/disable: 'true'
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000

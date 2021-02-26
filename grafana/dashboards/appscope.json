@@ -1011,7 +1011,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_pod_name",
+          "alias": "$tag_name",
           "groupBy": [
             {
               "params": [
@@ -1021,7 +1021,7 @@
             },
             {
               "params": [
-                "pod_name"
+                "name"
               ],
               "type": "tag"
             },
@@ -1143,7 +1143,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_pod_name",
+          "alias": "$tag_name",
           "groupBy": [
             {
               "params": [
@@ -1153,7 +1153,7 @@
             },
             {
               "params": [
-                "pod_name"
+                "name"
               ],
               "type": "tag"
             },
@@ -1275,7 +1275,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_pod_name",
+          "alias": "$tag_name",
           "groupBy": [
             {
               "params": [
@@ -1285,7 +1285,7 @@
             },
             {
               "params": [
-                "pod_name"
+                "name"
               ],
               "type": "tag"
             },
@@ -1407,7 +1407,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_pod_name",
+          "alias": "$tag_name",
           "groupBy": [
             {
               "params": [
@@ -1417,7 +1417,7 @@
             },
             {
               "params": [
-                "pod_name"
+                "name"
               ],
               "type": "tag"
             },
@@ -1539,7 +1539,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_pod_name",
+          "alias": "$tag_name",
           "groupBy": [
             {
               "params": [
@@ -1549,7 +1549,7 @@
             },
             {
               "params": [
-                "pod_name"
+                "name"
               ],
               "type": "tag"
             },
@@ -1671,7 +1671,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_pod_name",
+          "alias": "$tag_name",
           "groupBy": [
             {
               "params": [
@@ -1681,7 +1681,7 @@
             },
             {
               "params": [
-                "pod_name"
+                "name"
               ],
               "type": "tag"
             },

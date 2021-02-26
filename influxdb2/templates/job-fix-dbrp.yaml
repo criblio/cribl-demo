@@ -15,7 +15,7 @@ spec:
       labels:
         {{- include "influxdb.labels" . | nindent 8 }}
       annotations:
-        io.cribl.scope/disable: 'true'
+        appscope.dev/disable: "true"
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}-fix-dbrp

@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       annotations:
-        io.cribl.scope/disable: 'true'
+        appscope.dev/disable: "true"
       labels:
         {{- include "influxdb.labels" . | nindent 8 }}
     spec:

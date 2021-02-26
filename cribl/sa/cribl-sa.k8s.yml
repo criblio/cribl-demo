@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       annotations:
-        io.cribl.scope/disable: 'true'
+        appscope.dev/disable: "true"
       labels:
         app.kubernetes.io/name: cribl-sa
     spec:
