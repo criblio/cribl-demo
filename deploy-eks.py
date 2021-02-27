@@ -103,6 +103,7 @@ parser = OptionParser()
 parser.add_option("-n", "--namespace", dest="ns", default="default", help="Namespace to Interrogate")
 parser.add_option("-d", "--domain", dest="domain", default="demo.cribl.io", help="Hosted Zone to Use")
 parser.add_option("-r", "--region", dest="region", default="us-west-2", help="AWS Region to deploy to")
+parser.add_option("-s", "--ssm-cred-path", dest="credpath", help="SSM path for admin password for env")
 parser.add_option("-a", "--description", dest="description", default="Demo Environment")
 parser.add_option("-c", "--container-repo-head", dest="repohead", default="cribl-demo", help="ECR Repo top level")
 parser.add_option("-p", "--profile", dest="profile", help="Skaffold Profile to run with")
@@ -116,6 +117,25 @@ if "CRIBL_TAG" not in os.environ:
 s3 = boto3.client('s3')
 sts = boto3.client('sts')
 r53 = boto3.client("route53")
+ssm = boto3.client("ssm")
+
+credpath="/cribl/demo/creds/" + options.ns
+
+chpass=False
+try:
+  pass_param = ssm.get_parameter(Name=credpath, WithDecryption=True)
+  chpass = True
+  print('Credential param exists, using it')
+except botocore.exceptions.ClientError as e:
+  if e.response['Error']['Code'] == 'ParameterNotFound':
+    print('credential param does not exist, will use default')
+    chpass = False
+
+if chpass:
+  cmd="perl -pi.bak -e 's{cribldemo([\"\\\]+)}{" + pass_param['Parameter']['Value'] + "$1}g;' ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Password Set Succeeded")
 
 
 # get acct id and hosted zone id
@@ -213,6 +233,7 @@ htmlout = """
 """ % (options.ns, style, options.ns, options.description)
 
 for svc in services.keys():
+  print ("Checking svc %s service" % svc)
   ret = kubeclient.read_namespaced_service(svc, options.ns)
   for host in ret.status.load_balancer.ingress:
     chg = { "Action": "UPSERT", "ResourceRecordSet": { "Name": "%s.%s.%s" % ( svc, options.ns, options.domain ), "Type": "CNAME", "TTL": 300, "ResourceRecords": [ { "Value": host.hostname } ] } }
@@ -254,3 +275,9 @@ print("Done")
 print ("Updating R53")
 response = r53.change_resource_record_sets(HostedZoneId=zoneid, ChangeBatch = chgbatch)
 print("%s - %s" % (response['ChangeInfo']['Status'], response['ChangeInfo']['Comment']))
+
+if (options.credpath):
+  cmd="git checkout ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Password Unset Succeeded")
