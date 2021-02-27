@@ -85,7 +85,6 @@ baddev-674b4fd4c7-flpl7               1/1     Running   1          7m21s
 cribl-778dc66c6b-sxdhr                1/1     Running   0          8m32s
 cribl-sa-7q77w                        0/1     Pending   0          7m27s
 cribl-w0-78b59b9bb9-p2q5c             1/1     Running   0          8m27s
-cribl-w0-noscope-5bd4b6d66c-9g24w     1/1     Running   0          8m23s
 cribl-w1-7cb54fd7bb-8p6xj             1/1     Running   0          8m20s
 cribl-w2-557b6c4d8f-hddlk             1/1     Running   0          8m17s
 gogen-57fb46fbd-9nnhq                 9/9     Running   0          7m21s
@@ -107,7 +106,6 @@ The hashed values will obviously change from run to run, but here's a guide to w
 |cribl-\<unique id\>|The Cribl Master node - where all of the configuration info for logstream is managed|
 |cribl-sa-\<unique id\>|A standalone job that seeds the demo environment with collection test data|
 |cribl-w0-\<unique id\>|The `dc1-logs` worker group|
-|cribl-w0-noscope-\<unique id\>|Also a part of the `dc1-logs` worker group, but with appscope deployment disabled (for demoing AppScope)|
 |cribl-w1-\<unique id\>|The `dc1-metrics` worker group|
 |cribl-w2-\<unique id\>|The 'aws' worker group|
 |gogen-\<unique id\>|a collection of containers running gogen configurations to generate data in the demo environment|

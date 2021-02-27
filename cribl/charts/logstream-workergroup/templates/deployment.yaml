@@ -44,10 +44,10 @@ spec:
             - name: {{ .name }}
               containerPort: {{ .port }}
             {{- end }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /api/v1/health
-          #     port: {{ .Values.config.healthPort }}
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: {{ .Values.config.healthPort }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
