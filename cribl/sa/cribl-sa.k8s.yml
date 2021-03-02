@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: cribl-sa
 spec:
-  activeDeadlineSeconds: 660
+  activeDeadlineSeconds: 16600
   template:
     metadata:
       annotations:
@@ -17,10 +17,11 @@ spec:
       containers:
         - env:
             # - name: CRIBL_AFTER_START_CMD_1
-            #   value: sleep 660 && /bin/kill -TERM 1
+            #   value: sleep 1660 && /bin/kill -TERM 1
             - name: CRIBL_HOME
               value: /opt/cribl
           image: cribl-sa
+          imagePullPolicy: Always
           name: cribl-sa
           ports:
             - containerPort: 9000

@@ -1,7 +1,7 @@
 name: pan
 generator: sample
-begin: -10d
-end: now
+begin: 2021-01-01T00:00:00Z
+end: 2021-01-31T23:59:59Z
 tokens:
 - name: ts1
   type: timestamp
@@ -48,7 +48,6 @@ tokens:
   srcField: destination_zone
   group: 1
 fromSample: pan.sample
-count: 60
-interval: 60
-earliest: -60s
+count: 1
+interval: 600
 randomizeEvents: true

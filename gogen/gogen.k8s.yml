@@ -136,6 +136,7 @@ spec:
             - name: GOGEN_OUTPUTTEMPLATE
               value: rfc5424
           image: gogen-datacollection-syslog
+          imagePullPolicy: Always
           name: gogen-datacollection-syslog
           resources:
             limits:

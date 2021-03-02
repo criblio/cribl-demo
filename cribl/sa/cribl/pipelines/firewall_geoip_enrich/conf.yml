@@ -18,15 +18,96 @@ functions:
     conf: {}
     final: true
     groupId: gB4TB7
-  - id: regex_extract
-    filter: sourcetype=='pan:traffic'
+  - id: serde
+    filter: "true"
     disabled: null
     conf:
-      source: _raw
-      iterations: 100
-      regex: /(?:[^,]*,){4}(?<log_subtype>[^,]*),(?:[^,]*,){2}(?<src_ip>[^,]*),(?<dest_ip>[^,]*),(?:[^,]*,){7}(?<src_zone>[^,]*),(?<dest_zone>[^,]*),(?:[^,]*,){11}(?<transport>[^,]*),(?<action>[^,]*),(?:[^,]*,){2}(?<bytes_in>[^,]*)/
-    description: Extract subtype, src/dest zones, transport, action and bytes_in
+      mode: extract
+      type: delim
+      delimChar: ","
+      quoteChar: '"'
+      escapeChar: \
+      nullValue: "-"
+      srcField: _raw
+      fields:
+        - future_use_1
+        - receive_time
+        - serial_number
+        - log_subtype
+        - threat_content_type
+        - future_use_2
+        - generated_time
+        - src_ip
+        - dest_ip
+        - nat_src_ip
+        - nat_dest_ip
+        - rule_name
+        - src_user
+        - dest_user
+        - application
+        - virtual_system
+        - src_zone
+        - dest_zone
+        - inbound_interface
+        - outbound_interface
+        - log_action
+        - future_use_3
+        - session_id
+        - repeat_count
+        - src_port
+        - dest_port
+        - nat_src_port
+        - nat_dest_port
+        - flags
+        - protocol
+        - action
+        - bytes
+        - bytes_sent
+        - bytes_received
+        - packets
+        - start_time
+        - elapsed_time
+        - category
+        - future_use_4
+        - sequence_number
+        - action_flags
+        - src_location
+        - dest_location
+        - future_use_5
+        - packets_sent
+        - packets_received
+        - session_end_reason
+        - device_group_hierarchy_level_1
+        - device_group_hierarchy_level_2
+        - device_group_hierarchy_level_3
+        - device_group_hierarchy_level_4
+        - virtual_system_name
+        - device_name
+        - action_src
+        - src_vm_uuid
+        - dest_vm_uuid
+        - tunnel_id_imsi
+        - monitor_tag_imei
+        - parent_session_id
+        - parent_start_time
+        - tunnel_type
+        - sctp_association_id
+        - sctp_chunks
+        - sctp_chunks_sent
+        - sctp_chunks_received
+      keep:
+        - action
+        - bytes
+        - bytes_sent
+        - bytes_received
+        - dest_ip
+        - src_ip
+        - dest_zone
+        - src_zone
+        - src_port
+        - dest_port
     groupId: gB4TB7
+    description: Parse the comma delimited log format events
   - id: drop
     filter: log_subtype=='start'
     disabled: null
