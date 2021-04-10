@@ -37,6 +37,7 @@ def recurseParams(ssmpath, output, next=""):
 parser = OptionParser()
 parser.add_option("-r", "--region", dest="region", default="us-west-2", help="AWS Region to deploy to")
 parser.add_option("-s", "--ssm-path", dest="ssmpath", default="/cribl/demo", help="SSM path for Environment options")
+parser.add_option("-j", "--job", dest="job", default="daily", help="Which job tag to find")
 (options, args) = parser.parse_args()
 
 output = {}
@@ -45,4 +46,6 @@ recurseParams(options.ssmpath, output)
 #print(json.dumps(output))
 
 for ns in output.keys():
-  print("%s-%s" % (ns, output[ns]['cluster']))
+  if ("job" in output[ns]) and  (output[ns]['job'] == options.job):
+    print("%s-%s" % (ns, output[ns]['cluster']))
+

@@ -16,6 +16,8 @@ import base64
 import urllib3
 from urllib.parse import quote_plus
 
+
+
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -24,6 +26,22 @@ except ImportError:
 #config objects
 services = { "cribl": "Cribl LogStream UI", "grafana": "Grafana Visualization Tool", "influxdb2": "InfluxData's InfluxDB v2", "splunk": "Splunk UI"}
 allowed_ports = [ 3000, 8000, 8086, 9000 ]
+
+def base64_encode(string):
+    """
+    Removes any `=` used as padding from the encoded string.
+    """
+    encoded = base64.urlsafe_b64encode(string)
+    return encoded.rstrip(b"=")
+
+
+def base64_decode(string):
+    """
+    Adds back in the required padding before decoding.
+    """
+    padding = 4 - (len(string) % 4)
+    string = string + ("=" * padding)
+    return base64.urlsafe_b64decode(string)
 
 def get_cluster_name():
   kubectlout = subprocess.run(["kubectl", "config", "current-context"],capture_output=True)
@@ -172,7 +190,11 @@ if chpass:
 # get acct id and hosted zone id
 acct = sts.get_caller_identity()
 (id,email) = acct['UserId'].split(':')
-options.description += "<br><font size=-1>(Created by <a href=mailto:%s>%s</a>)</font>" % (email, email)
+mtch = re.match(r'@', email)
+if mtch:
+  options.description += "<br><font size=-1>(Created by <a href=mailto:%s>%s</a>)</font>" % (email, email)
+else:
+  options.description += "<br><font size=-1>(Created by Automation)</font>"
 zoneid = get_hosted_zone(options)
 
 # Make sure the ECR repos are setup.
@@ -281,26 +303,16 @@ desc = options.description
 #desc=options.description.replace("@","-").replace("<br>"," - ")
 #desc = re.sub(r'Created by A[^:]+:', 'Created by', desc)
 #tagset=quote_plus({"namespace-description":  options.description})
-tdat = base64.urlsafe_b64encode(options.description.encode('utf-8')).decode()
+#options.description+="na"h
+tdat = base64.urlsafe_b64encode(options.description.encode('utf-8')).decode('utf-8')
 cluster_name = get_cluster_name()
-cname = base64.urlsafe_b64encode(cluster_name.encode('utf-8')).decode()
+cname = base64.urlsafe_b64encode(cluster_name.encode('utf-8')).decode('utf-8')
 tagset="cluster=%s&namespace-description=%s" % (cname, tdat)
 
-print("Tagset: %s" % tagset)
+#print("Tagset: %s" % tagset)
 
 # put the index.html file up.
 resp = s3.put_object(Bucket=revhost, Body=htmlb, Key="ns-%s/index.html" % options.ns, ACL='public-read', ContentType='text/html', Tagging=tagset)
-#tagset = {
-#  'TagSet': [
-#    {
-#      'Key': 'namespace-description',
-#      'Value': options.description
-#    }
-#  ]
-#}
-#print("Tagset: %s" % json.dumps(tagset))
-#tagresp = s3.put_object_tagging(Bucket=revhost, Key="ns-%s/index.html" % options.ns, Tagging=tagset)
-#print("TAGRESP: %s" % tagresp)
 print("Done")
 
 print ("Updating R53")
