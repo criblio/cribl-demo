@@ -53,6 +53,25 @@ def get_hosted_zone(options):
     print("No Zone Found - Not Continuing")
     sys.exit(0)
 
+
+# Functions
+# Set up ECR Repos for all the images in the skaffold.yaml file.
+def cleanup_ecr(options):
+  ecr = boto3.client('ecr')
+
+  for image in ["cribl-master", "cribl-worker", "cribl-sa"]:
+
+    try:
+      ecr.delete_repository(repositoryName="%s/%s" % (options.repohead, image), force=True)
+    except botocore.exceptions.ClientError as error:
+      if error.response['Error']['Code'] == "RepositoryAlreadyExistsException":
+        #print("Repo Exists")
+        pass
+      else:
+        print("Unhandled Error: %s" % error.response['Error']['Code'])
+
+  print("Done")
+
 # Set up Command Line Parsing
 parser = OptionParser()
 parser.add_option("-n", "--namespace", dest="ns", default="default", help="Namespace to Interrogate")
@@ -135,3 +154,5 @@ if rval == 0:
 else:
   print("Skaffold Delete Failed")
   sys.exit(rval)
+
+cleanup_ecr(options)

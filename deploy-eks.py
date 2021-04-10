@@ -103,11 +103,12 @@ parser = OptionParser()
 parser.add_option("-n", "--namespace", dest="ns", default="default", help="Namespace to Interrogate")
 parser.add_option("-d", "--domain", dest="domain", default="demo.cribl.io", help="Hosted Zone to Use")
 parser.add_option("-r", "--region", dest="region", default="us-west-2", help="AWS Region to deploy to")
-parser.add_option("-s", "--ssm-cred-path", dest="credpath", help="SSM path for admin password for env")
+parser.add_option("-s", "--ssm-path", dest="ssmpath", default="/cribl/demo", help="SSM path for Environment options")
 parser.add_option("-a", "--description", dest="description", default="Demo Environment")
 parser.add_option("-c", "--container-repo-head", dest="repohead", default="cribl-demo", help="ECR Repo top level")
 parser.add_option("-p", "--profile", dest="profile", help="Skaffold Profile to run with")
 (options, args) = parser.parse_args()
+
 
 # Set default env variables
 if "CRIBL_TAG" not in os.environ:
@@ -119,20 +120,50 @@ sts = boto3.client('sts')
 r53 = boto3.client("route53")
 ssm = boto3.client("ssm")
 
-credpath="/cribl/demo/creds/" + options.ns
+parampath=options.ssmpath + "/" + options.ns
+#print("Parampath: %s" % parampath)
+parameters = {}
 
 chpass=False
 try:
-  pass_param = ssm.get_parameter(Name=credpath, WithDecryption=True)
-  chpass = True
-  print('Credential param exists, using it')
+  pass_param = ssm.get_parameters_by_path(Path=parampath, Recursive=True, WithDecryption=True)
 except botocore.exceptions.ClientError as e:
   if e.response['Error']['Code'] == 'ParameterNotFound':
-    print('credential param does not exist, will use default')
-    chpass = False
+    print('Parameter tree does not exist, Will use command line args exclusively')
+
+# Write a simpler dict to work with...
+for i in pass_param['Parameters']:
+  parameters[i['Name'].replace(parampath + "/","")] = i['Value']
+  #print("Param: %s - %s" % (i['Name'], i['Value']))
+
+
+if "creds/admin" in parameters:
+  chpass = True
+  print('Credential param exists, using it')
+else: 
+  chpass = False
+  print('Using Default Credentials')
+
+if ("repo" in parameters):
+  print("Found Repo")
+  options.repohead = parameters['repo']
+
+if ("description" in parameters):
+  options.description = parameters['description']
+
+if ("domain" in parameters):
+  options.domain = parameters['domain']
+
+if ("profile" in parameters):
+  options.profile = parameters['profile']
+
+if ("tag" in parameters):
+  os.environ['CRIBL_TAG'] = parameters['tag']
+
+#print("Options: %s" % options)
 
 if chpass:
-  cmd="perl -pi.bak -e 's{cribldemo([\"\\\]+)}{" + pass_param['Parameter']['Value'] + "$1}g;' ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
+  cmd="perl -pi.bak -e 's{cribldemo([\"\\\]+)}{" + parameters['creds/admin'] + "$1}g;' ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Password Set Succeeded")
@@ -276,7 +307,7 @@ print ("Updating R53")
 response = r53.change_resource_record_sets(HostedZoneId=zoneid, ChangeBatch = chgbatch)
 print("%s - %s" % (response['ChangeInfo']['Status'], response['ChangeInfo']['Comment']))
 
-if (options.credpath):
+if (chpass):
   cmd="git checkout ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
