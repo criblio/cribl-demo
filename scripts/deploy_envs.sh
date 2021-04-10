@@ -9,7 +9,7 @@ if [ -z "$arg" ]; then
   exit 254
 fi
 
-for dom in $($DIR/enumerate_envs.py -j $arg); do 
+for dom in $($SCRIPT_DIR/enumerate_envs.py -j $arg); do 
   # Remove kubeconfig
   #if [ -e ${HOME}/.kube/config ]; then 
    # rm ${HOME}/.kube/config
