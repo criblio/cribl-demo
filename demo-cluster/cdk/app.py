@@ -19,7 +19,7 @@ class LambdaCronStack(core.Stack):
             runtime=lambda_.Runtime.PYTHON_3_8,
         )
 
-        lambdaFn.add_to_role_policy(iam.PolicyStatement(actions=["ec2:*", "logs:CreateLogStream", "logs:PutLogEvents", "logs:CreateLogGroup" ],resources=['*']))
+        lambdaFn.add_to_role_policy(iam.PolicyStatement(actions=["ec2:RunInstances", "iam:PassRole", "logs:CreateLogStream", "logs:PutLogEvents", "logs:CreateLogGroup" ],resources=['*']))
 
         # Run every day at 6PM UTC
         # See https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html
