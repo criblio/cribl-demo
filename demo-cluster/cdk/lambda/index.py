@@ -7,6 +7,11 @@ import base64
 def main(event, context): 
   userdata="""#!/bin/bash
 
+
+export AWS_DEFAULT_REGION=us-west-2
+export HOME=/root
+
+# Setup
 cd /home/ubuntu
 apt update
 apt remove -y python3.6
@@ -15,16 +20,14 @@ apt install -y python3.8 python3-pip unzip docker.io software-properties-common
 ln -s /usr/bin/python3.8 /usr/bin/python3
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
+usermod -aG docker ubuntu
 ./aws/install
 
-
-export AWS_DEFAULT_REGION=us-west-2
-export HOME=/root
-
+# Dependencies
 curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.17.2/skaffold-linux-amd64 && chmod +x skaffold && mv skaffold /usr/local/bin
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
-    && install kubectl /usr/local/bin && rm kubectl
+&& install kubectl /usr/local/bin && rm kubectl
 
 curl https://baltocdn.com/helm/signing.asc | apt-key add - && \
 apt-get install apt-transport-https --yes && \
@@ -32,14 +35,7 @@ echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sour
 apt-get update && \
 apt-get install -y helm
 
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" && \
-apt update && \
-apt install -y docker-ce && \
-usermod -aG docker ubuntu
-
+# Repo & Run
 git clone https://github.com/criblio/cribl-demo.git
 cd cribl-demo/
 git checkout eks-improvements
@@ -48,6 +44,7 @@ pip3 install -r ./requirements.txt  -t .
 ./scripts/deploy_envs.sh daily
 
 
+# Cleanup
 TOKEN=`curl -sq -X PUT "http://169.254.169.254/latest/apec2-metadata-token-ttl-seconds: 21600"`
 export INSTANCEID=$(curl -sq -H "X-aws-ec2-metadata-token: $TOKEN"  http://169.254.169.254/latest/meta-data/instance-id)
 
