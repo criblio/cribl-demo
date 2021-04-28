@@ -185,6 +185,10 @@ if chpass:
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Password Set Succeeded")
+  cmd="perl -pi.bak -e 's{cribldemo}{" + parameters['creds/admin'] + "}g;' ./cribl/master/scripts/cli-deploy"
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Password Set #2 Succeeded")
 
 
 # get acct id and hosted zone id

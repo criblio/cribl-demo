@@ -26,7 +26,7 @@ config:
 env:
   CRIBL_BEFORE_START_CMD_1: if [ ! -d /opt/cribl/config-volume/groups ] ; then  cp -R /var/opt/cribl/* /opt/cribl/config-volume; fi
   CRIBL_BEFORE_START_CMD_2: ls -al /opt/cribl/config-volume/groups
-  CRIBL_AFTER_START_CMD_1: sleep 300 && $CRIBL_HOME/config-volume/scripts/api-deploy > /tmp/deploy.log
+  CRIBL_AFTER_START_CMD_1: sleep 300 && $CRIBL_HOME/config-volume/scripts/cli-deploy > /tmp/deploy.log
 
 service:
   externalType: LoadBalancer
