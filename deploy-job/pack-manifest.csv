@@ -1,0 +1,3 @@
+pack,workergroup
+logs-to-metrics.crbl,dc1-logs
+pan-firewall-traffic.crbl,dc1-logs

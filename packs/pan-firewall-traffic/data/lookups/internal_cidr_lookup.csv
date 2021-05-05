@@ -1,0 +1,12 @@
+cidr,location
+10.0.0.0/8,Corporate Nets
+10.0.1.0/24,Boston DMZ
+10.0.2.0/24,New York Client Net
+10.0.3.0/24,San Francisco Client Net
+10.0.4.0/24,Dallas DMZ
+192.168.0.0/16,Home Worker Nets
+172.16.0.0/12,Application Nets
+172.16.1.0/24,SAP Net
+172.16.2.0/24,Manufacturing Net
+172.16.3.0/12,HR App Net
+127.0.0.0/8,Loopback
