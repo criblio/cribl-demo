@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.8
 
 from optparse import OptionParser
 from kubernetes import client, config
@@ -53,19 +53,71 @@ def get_hosted_zone(options):
     print("No Zone Found - Not Continuing")
     sys.exit(0)
 
+
+# Functions
+# Set up ECR Repos for all the images in the skaffold.yaml file.
+def cleanup_ecr(options):
+  ecr = boto3.client('ecr')
+
+  for image in ["cribl-master", "cribl-worker", "cribl-sa"]:
+
+    try:
+      ecr.delete_repository(repositoryName="%s/%s" % (options.repohead, image), force=True)
+    except botocore.exceptions.ClientError as error:
+      if error.response['Error']['Code'] == "RepositoryAlreadyExistsException":
+        #print("Repo Exists")
+        pass
+      else:
+        print("Unhandled Error: %s" % error.response['Error']['Code'])
+
+  print("Done")
+
 # Set up Command Line Parsing
 parser = OptionParser()
 parser.add_option("-n", "--namespace", dest="ns", default="default", help="Namespace to Interrogate")
 parser.add_option("-d", "--domain", dest="domain", default="demo.cribl.io", help="Hosted Zone to Use")
 parser.add_option("-r", "--region", dest="region", default="us-west-2", help="AWS Region to deploy to")
 parser.add_option("-c", "--container-repo-head", dest="repohead", default="cribl-demo", help="ECR Repo top level")
+parser.add_option("-s", "--ssm-path", dest="ssmpath", default="/cribl/demo", help="SSM path for Environment options")
 (options, args) = parser.parse_args()
 
 # Set up AWS objects
 s3 = boto3.client('s3')
 sts = boto3.client('sts')
 r53 = boto3.client("route53")
+ssm = boto3.client("ssm")
 
+parampath=options.ssmpath + "/" + options.ns
+#print("Parampath: %s" % parampath)
+parameters = {}
+
+chpass=False
+try:
+  pass_param = ssm.get_parameters_by_path(Path=parampath, Recursive=True, WithDecryption=True)
+except botocore.exceptions.ClientError as e:
+  if e.response['Error']['Code'] == 'ParameterNotFound':
+    print('Parameter tree does not exist, Will use command line args exclusively')
+
+# Write a simpler dict to work with...
+for i in pass_param['Parameters']:
+  parameters[i['Name'].replace(parampath + "/","")] = i['Value']
+  #print("Param: %s - %s" % (i['Name'], i['Value']))
+
+if ("repo" in parameters):
+  print("Found Repo")
+  options.repohead = parameters['repo']
+
+if ("description" in parameters):
+  options.description = parameters['description']
+
+if ("domain" in parameters):
+  options.domain = parameters['domain']
+
+if ("profile" in parameters):
+  options.profile = parameters['profile']
+
+if ("tag" in parameters):
+  os.environ['CRIBL_TAG'] = parameters['tag']
 
 # get acct id and hosted zone id
 acct = sts.get_caller_identity()
@@ -135,3 +187,5 @@ if rval == 0:
 else:
   print("Skaffold Delete Failed")
   sys.exit(rval)
+
+cleanup_ecr(options)

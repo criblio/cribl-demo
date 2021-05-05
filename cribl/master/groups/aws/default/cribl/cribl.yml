@@ -15,5 +15,5 @@ system:
   installType: standalone
   intercom: true 
 workers: 
-  count: -2
+  count: 4
   memory: 2048
