@@ -1,17 +1,13 @@
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: Job
 metadata:
   name: ls-deploy-job
 spec:
-  #schedule: {{ .Values.schedule | quote }}
-  jobTemplate:
-    spec:
       template:
         metadata:
           name: ls-deploy-job
         spec:
-          serviceAccountName: {{ include "pod-killer.fullname" . }}
           restartPolicy: Never
           containers:
           - image: cribl/cribl:next
@@ -22,13 +18,18 @@ spec:
               set -ex
               mkdir /tmp/clone
               cd /tmp/clone
+              echo "Branch: "
+              cat /etc/demo-config/branch
               git clone https://github.com/criblio/cribl-demo.git
               cd cribl-demo
               git checkout $(cat /etc/demo-config/branch)
+              git pull
               cd deploy-job
+              echo "Admin Pass: " 
+              cat /etc/demo-config/admin.pass
               CRIBL_URL=http://cribl:9000 CRIBL_ADMIN_PASSWORD=$(cat /etc/demo-config/admin.pass) ./api-script.sh
             imagePullPolicy: Always
-            name: {{ include "pod-killer.fullname" . }}
+            name: ls-deploy-job
             volumeMounts:
             - name: demo-config
               mountPath: /etc/demo-config

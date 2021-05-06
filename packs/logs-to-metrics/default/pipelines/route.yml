@@ -1,0 +1,23 @@
+id: default
+groups: {}
+routes:
+  - id: Lh4cjK
+    name: default
+    final: false
+    disabled: false
+    pipeline: logs_to_metrics
+    description: ""
+    clones: []
+    filter: "C.vars.accessCombined()"
+  - id: ZLTc0g
+    name: Enrich
+    final: false
+    disabled: false
+    pipeline: enrich
+    description: Use lookups to add context to events
+    clones:
+      - index: cribl-modified
+        source: enrich
+      - index: cribl-modified
+        source: indextimefields
+    filter: C.vars.accessCombined()
