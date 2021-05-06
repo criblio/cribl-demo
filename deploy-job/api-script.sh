@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash  -x
 
 # This works off a secret exposed as an env var in the pod CRIBL_ADMIN_PASSWORD
 if [ -z "$CRIBL_ADMIN_PASSWORD" ]; then
