@@ -2,3 +2,4 @@ pack,workergroup
 logs-to-metrics.crbl,dc1-logs
 pan-firewall-traffic.crbl,dc1-logs
 speedtest-parse.crbl,dc1-metrics
+vpcflow-parse.crbl,aws
