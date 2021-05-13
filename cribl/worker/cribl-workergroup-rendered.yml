@@ -1,0 +1,488 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w0
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w0
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w1
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w2
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w2
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w0
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w0:logstream-workergroup:default
+rules:
+- apiGroups:
+  - core
+  resources:
+  - pods
+  verbs:
+  - get list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w1
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w1:logstream-workergroup:default
+rules:
+- apiGroups:
+  - core
+  resources:
+  - pods
+  verbs:
+  - get list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w2
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w2:logstream-workergroup:default
+rules:
+- apiGroups:
+  - core
+  resources:
+  - pods
+  verbs:
+  - get list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w0
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w0:logstream-workergroup:default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cribl-w0:logstream-workergroup:default
+subjects:
+- kind: ServiceAccount
+  name: cribl-w0
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w1
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w1:logstream-workergroup:default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cribl-w1:logstream-workergroup:default
+subjects:
+- kind: ServiceAccount
+  name: cribl-w1
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w2
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w2:logstream-workergroup:default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cribl-w2:logstream-workergroup:default
+subjects:
+- kind: ServiceAccount
+  name: cribl-w2
+  namespace: default
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstream-config-cribl-w0
+stringData:
+  url-master: tcp://criblmaster@cribl-internal:4200?group=dc1-logs&tag=dc1-logs
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstream-config-cribl-w1
+stringData:
+  url-master: tcp://criblmaster@cribl-internal:4200?group=dc1-metrics&tag=dc1-metrics
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstream-config-cribl-w2
+stringData:
+  url-master: tcp://criblmaster@cribl-internal:4200?group=aws&tag=aws
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w0
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w0
+spec:
+  ports:
+  - name: tcpjson
+    port: 10001
+    protocol: TCP
+    targetPort: 10001
+  - name: s2s
+    port: 9997
+    protocol: TCP
+    targetPort: 9997
+  - name: s2s-alt
+    port: 9999
+    protocol: TCP
+    targetPort: 9999
+  - name: http
+    port: 10080
+    protocol: TCP
+    targetPort: 10080
+  - name: splunkhec
+    port: 10088
+    protocol: TCP
+    targetPort: 10088
+  - name: https
+    port: 10081
+    protocol: TCP
+    targetPort: 10081
+  - name: syslog
+    port: 5140
+    protocol: TCP
+    targetPort: 5140
+  - name: elastic
+    port: 10200
+    protocol: TCP
+    targetPort: 10200
+  selector:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/name: cribl-w0
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/instance: cribl-w1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w1
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w1
+spec:
+  ports:
+  - name: metrics
+    port: 8125
+    protocol: TCP
+    targetPort: 8125
+  - name: metrics-udp
+    port: 8125
+    protocol: UDP
+    targetPort: 8125
+  selector:
+    app.kubernetes.io/instance: cribl-w1
+    app.kubernetes.io/name: cribl-w1
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/instance: cribl-w2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w2
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w2
+spec:
+  ports:
+  - name: tcpjson
+    port: 10001
+    protocol: TCP
+    targetPort: 10001
+  - name: s2s
+    port: 9997
+    protocol: TCP
+    targetPort: 9997
+  - name: s2s-alt
+    port: 9999
+    protocol: TCP
+    targetPort: 9999
+  - name: http
+    port: 10080
+    protocol: TCP
+    targetPort: 10080
+  - name: https
+    port: 10081
+    protocol: TCP
+    targetPort: 10081
+  - name: syslog
+    port: 5140
+    protocol: TCP
+    targetPort: 5140
+  - name: metrics
+    port: 8125
+    protocol: TCP
+    targetPort: 8125
+  - name: metrics-udp
+    port: 8125
+    protocol: UDP
+    targetPort: 8125
+  selector:
+    app.kubernetes.io/instance: cribl-w2
+    app.kubernetes.io/name: cribl-w2
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w0
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: cribl-w0
+      app.kubernetes.io/name: cribl-w0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: cribl-w0
+        app.kubernetes.io/name: cribl-w0
+    spec:
+      containers:
+      - env:
+        - name: CRIBL_DIST_MASTER_URL
+          valueFrom:
+            secretKeyRef:
+              key: url-master
+              name: logstream-config-cribl-w0
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        image: cribl/cribl:latest
+        imagePullPolicy: Always
+        name: logstream-workergroup
+        ports:
+        - containerPort: 10001
+          name: tcpjson
+        - containerPort: 9997
+          name: s2s
+        - containerPort: 9999
+          name: s2s-alt
+        - containerPort: 10080
+          name: http
+        - containerPort: 10088
+          name: splunkhec
+        - containerPort: 10081
+          name: https
+        - containerPort: 5140
+          name: syslog
+        - containerPort: 10200
+          name: elastic
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 1250m
+            memory: 512Mi
+      imagePullSecrets:
+      - name: dhub
+      serviceAccountName: cribl-w0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w1
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: cribl-w1
+      app.kubernetes.io/name: cribl-w1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: cribl-w1
+        app.kubernetes.io/name: cribl-w1
+    spec:
+      containers:
+      - env:
+        - name: CRIBL_DIST_MASTER_URL
+          valueFrom:
+            secretKeyRef:
+              key: url-master
+              name: logstream-config-cribl-w1
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        - name: CRIBL_BEFORE_START_CMD_1
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
+        image: cribl/cribl:latest
+        imagePullPolicy: Always
+        name: logstream-workergroup
+        ports:
+        - containerPort: 8125
+          name: metrics-udp
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 1250m
+            memory: 512Mi
+      imagePullSecrets:
+      - name: dhub
+      serviceAccountName: cribl-w1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w2
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: cribl-w2
+      app.kubernetes.io/name: cribl-w2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: cribl-w2
+        app.kubernetes.io/name: cribl-w2
+    spec:
+      containers:
+      - env:
+        - name: CRIBL_DIST_MASTER_URL
+          valueFrom:
+            secretKeyRef:
+              key: url-master
+              name: logstream-config-cribl-w2
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        image: cribl/cribl:latest
+        imagePullPolicy: Always
+        name: logstream-workergroup
+        ports:
+        - containerPort: 10001
+          name: tcpjson
+        - containerPort: 9997
+          name: s2s
+        - containerPort: 9999
+          name: s2s-alt
+        - containerPort: 10080
+          name: http
+        - containerPort: 10081
+          name: https
+        - containerPort: 5140
+          name: syslog
+        - containerPort: 8125
+          name: metrics-udp
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 1250m
+            memory: 512Mi
+      imagePullSecrets:
+      - name: dhub
+      serviceAccountName: cribl-w2
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl-w0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl-w0
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-workergroup-2.4.5
+  name: cribl-w0-kubernetes
+spec:
+  maxReplicas: 3
+  metrics:
+  - resource:
+      name: cpu
+      targetAverageUtilization: 50
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cribl-w0

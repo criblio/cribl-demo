@@ -4,36 +4,40 @@ kind: Job
 metadata:
   name: ls-deploy-job
 spec:
-      template:
-        metadata:
-          name: ls-deploy-job
-        spec:
-          restartPolicy: Never
-          containers:
-          - image: cribl/cribl:next
-            command:
-            - bash
-            - -c
-            - |
-              set -ex
-              mkdir /tmp/clone
-              cd /tmp/clone
-              echo "Branch: "
-              cat /etc/demo-config/branch
-              git clone https://github.com/criblio/cribl-demo.git
-              cd cribl-demo
-              git checkout $(cat /etc/demo-config/branch)
-              git pull
-              cd deploy-job
-              echo "Admin Pass: " 
-              cat /etc/demo-config/admin.pass
-              CRIBL_URL=http://cribl:9000 CRIBL_ADMIN_PASSWORD=$(cat /etc/demo-config/admin.pass) ./api-script.sh
-            imagePullPolicy: Always
-            name: ls-deploy-job
-            volumeMounts:
-            - name: demo-config
-              mountPath: /etc/demo-config
-          volumes:
-          - name: demo-config
-            configMap:
-              name: demo-config
+  ttlSecondsAfterFinished: 100
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      name: ls-deploy-job
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: dhub
+      containers:
+      - image: cribl/cribl:next
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /tmp/clone
+          cd /tmp/clone
+          echo "Branch: "
+          cat /etc/demo-config/branch
+          git clone https://github.com/criblio/cribl-demo.git
+          cd cribl-demo
+          git checkout $(cat /etc/demo-config/branch)
+          git pull
+          cd deploy-job
+          echo "Admin Pass: " 
+          cat /etc/demo-config/admin.pass
+          CRIBL_URL=http://cribl:9000 CRIBL_ADMIN_PASSWORD=$(cat /etc/demo-config/admin.pass) ./api-script.sh
+        imagePullPolicy: Always
+        name: ls-deploy-job
+        volumeMounts:
+        - name: demo-config
+          mountPath: /etc/demo-config
+      volumes:
+      - name: demo-config
+        configMap:
+          name: demo-config

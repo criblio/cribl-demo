@@ -1,0 +1,93 @@
+# Default values for logstream-master.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+criblImage:
+  repository: cribl/cribl
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: "cribl"
+fullnameOverride: ""
+
+autoscaling:
+  enabled: false
+
+config:
+  scName:
+  criblHome: /opt/cribl
+  rejectSelfSignedCerts: 0
+  healthPort: 9000
+  token: criblmaster
+  groups:
+  - aws
+  - dc1-metrics
+  - dc1-logs
+
+env:
+#  CRIBL_BEFORE_START_CMD_1: if [ ! -d /opt/cribl/config-volume/groups ] ; then  cp -R /var/opt/cribl/* /opt/cribl/config-volume; fi
+  CRIBL_BEFORE_START_CMD_2: if ! [ -d $CRIBL_VOLUME_DIR/groups ]; then mkdir $CRIBL_VOLUME_DIR/groups; for file in /var/tmp/group-config/*.tgz; do tar -xzf $file --dir=$CRIBL_VOLUME_DIR/groups; done; fi
+  CRIBL_BEFORE_START_CMD_3: if ! [ -e $CRIBL_VOLUME_DIR/masterupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl; cp /var/tmp/master-config/* $CRIBL_VOLUME_DIR/local/cribl; touch $CRIBL_VOLUME_DIR/masterupdated-flag; fi
+  CRIBL_BEFORE_START_CMD_4: if ! [ -e $CRIBL_VOLUME_DIR/usersupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl/auth; cp /var/tmp/demo-config/users.json $CRIBL_VOLUME_DIR/local/cribl/auth/users.json; touch $CRIBL_VOLUME_DIR/usersupdated-flag; fi
+
+  #CRIBL_AFTER_START_CMD_1: sleep 300 && $CRIBL_HOME/config-volume/scripts/cli-deploy > /tmp/deploy.log
+
+service:
+  externalType: LoadBalancer
+  internalType: NodePort
+  annotations: {}
+
+  ports:
+  - name: api
+    port: 9000
+    protocol: TCP
+    external: true
+  - name: mastercomm
+    port: 4200
+    protocol: TCP
+    external: false
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: 
+  limits:
+    cpu: 2000m
+    memory: 4096Mi
+  requests:
+    cpu: 750m
+    memory: 1024Mi
+
+extraConfigmapMounts:
+  - name: group-config
+    configMap: group-config
+    mountPath: /var/tmp/group-config
+    readOnly: true
+  - name: master-config
+    configMap: master-config
+    mountPath: /var/tmp/master-config
+    readOnly: true
+  - name: demo-config
+    configMap: demo-config
+    mountPath: /var/tmp/demo-config
+    readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

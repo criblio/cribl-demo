@@ -1,0 +1,7 @@
+resources:
+  - all.yaml
+  - internal-service.yml
+  - job-fix-dbrp.yml
+  - job-apply-templates.yml
+patches:
+  - job-patch.yml

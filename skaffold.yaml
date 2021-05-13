@@ -6,21 +6,21 @@ build:
   artifacts:
   - image: apiserver
     context: apiserver
-  - image: cribl-master
-    context: cribl/master
-    docker:
-      buildArgs:
-        TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
-  - image: cribl-worker
-    context: cribl/worker
-    docker:
-      buildArgs:
-        TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
-  - image: cribl-sa
-    context: cribl/sa
-    docker:
-      buildArgs:
-        TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
+  #- image: cribl-master
+    #context: cribl/master
+    #docker:
+      #buildArgs:
+        #TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
+  #- image: cribl-worker
+    #context: cribl/worker
+    #docker:
+      #buildArgs:
+        #TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
+  #- image: cribl-sa
+    #context: cribl/sa
+    #docker:
+      #buildArgs:
+        #TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
   - image: gogen-bigjson-webhook
     context: gogen/bigjson-webhook
   - image: gogen-businessevent-hec
@@ -47,10 +47,13 @@ build:
     context: splunk
 deploy:
   kustomize:
-    paths: []
+    paths: ["./cribl/master", "./cribl/worker"]
   statusCheckDeadlineSeconds: 600
   kubectl:
     manifests:
+    - cribl/master/cribl-master-rendered.yml
+    - cribl/worker/cribl-workergroup-rendered.yml
+    - influxdb-kustomize/influxdb2-rendered.yml
     - apiserver/apiserver.k8s.yml
     # - cribl/cribl.k8s.yml
     - cribl/sa/cribl-sa.k8s.yml
@@ -61,6 +64,7 @@ deploy:
     - grafana/grafana.k8s.yml
     - redis/redis.k8s.yml
     - splunk/splunk.k8s.yml
+    - deploy-job/deploy-job.k8s.yml
   helm:
     flags:
       upgrade:
@@ -68,38 +72,38 @@ deploy:
       install:
         [--timeout=600s]   
     releases:
-    - name: cribl
-      chartPath: cribl/charts/logstream-master
-      artifactOverrides:
-        image: cribl-master
-      valuesFiles:
-      - cribl/master.values.prod.yml
-    - name: cribl-w0
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/logs-wg.values.yml
-    - name: cribl-w1
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/metrics-wg.values.yml
-    - name: cribl-w2
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/aws-wg.values.yml
+    #- name: cribl
+    #  chartPath: cribl/charts/logstream-master
+    #  artifactOverrides:
+    #    image: cribl-master
+    #  valuesFiles:
+    #  - cribl/master.values.prod.yml
+    #- name: cribl-w0
+      #chartPath: cribl/charts/logstream-workergroup
+      #artifactOverrides:
+        #image: cribl-worker
+      #valuesFiles:
+      #- cribl/logs-wg.values.yml
+    #- name: cribl-w1
+    #  chartPath: cribl/charts/logstream-workergroup
+    #  artifactOverrides:
+    #    image: cribl-worker
+    #  valuesFiles:
+    #  - cribl/metrics-wg.values.yml
+    #- name: cribl-w2
+    #  chartPath: cribl/charts/logstream-workergroup
+    #  artifactOverrides:
+    #    image: cribl-worker
+    #  valuesFiles:
+    #  - cribl/aws-wg.values.yml
     - name: telegraf
       chartPath: telegraf
       valuesFiles:
       - telegraf/values.yaml
-    - name: influxdb2
-      chartPath: influxdb2
-      valuesFiles:
-      - influxdb2/prod-values.yaml
+    #- name: influxdb2
+      #chartPath: influxdb2
+      #valuesFiles:
+      #- influxdb2/prod-values.yaml
 
 profiles:
   - name: dev
@@ -129,7 +133,7 @@ profiles:
       path: /deploy/kustomize/paths
       value: ["./grafana", "./splunk", "./gogen", "./apiserver", "./minio", "./redis"]
     - op: remove
-      path: /deploy/kubectl/manifests/1
+      path: /deploy/kubectl/manifests/2
     - op: replace
       path: /deploy/helm/releases/0/valuesFiles
       value: [ "cribl/master-mini.values.yml" ]
@@ -151,11 +155,11 @@ profiles:
       path: /deploy/kustomize/paths
       value: ["./grafana", "./splunk", "./minio", "./redis"]
     - op: remove
-      path: /deploy/kubectl/manifests/3
+      path: /deploy/kubectl/manifests/4
+    - op: remove
+      path: /deploy/kubectl/manifests/2
     - op: remove
       path: /deploy/kubectl/manifests/1
-    - op: remove
-      path: /deploy/kubectl/manifests/0
     - op: replace
       path: /deploy/helm/releases/0/valuesFiles
       value: [ "cribl/master-mini.values.yml" ]

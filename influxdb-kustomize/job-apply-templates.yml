@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influxdb2-apply-templates
+spec:
+  activeDeadlineSeconds: 900
+  template:
+    metadata:
+      annotations:
+        appscope.dev/disable: "true"
+    spec:
+      containers:
+      - name: influxdb2-apply-templates
+        image: influxdb:2.0.6-alpine
+        env:
+          - name: INFLUXDB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: demo-admin
+                key: adminpass
+          - name: INFLUXDB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: influxdb2-auth
+                key: admin-token
+        command:
+          - bash
+        args:
+          - -c
+          - |
+            sleep 20
+            INF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '"id"' | awk -F\" '{print $4}')
+            [ -z "$INF_ID" ] && exit 255
+            for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml; do \
+            influx apply --force true -f $url \
+            --host http://influxdb2:8086 \
+            -o cribl \
+            -t ${INFLUXDB_TOKEN}; \
+            done
+      restartPolicy: OnFailure

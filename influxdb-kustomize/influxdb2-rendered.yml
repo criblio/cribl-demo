@@ -1,0 +1,236 @@
+apiVersion: v1
+data:
+  admin-password: Y3JpYmxkZW1v
+  admin-token: c0t2UXNSWUI5T1R3RzUzUXN6UnlvRVlkNnQ5OVhwX0hsRzI5R3hEczFzZnhlcDdYSGtNUFdycUtyb01zOG1Tb0dQb2tJdlVsSnVwdGNFU2VfWDh1aWc9PQ==
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/version: 2.0.6
+    helm.sh/chart: influxdb2-2.0.1
+  name: influxdb2-auth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/version: 2.0.6
+    helm.sh/chart: influxdb2-2.0.1
+  name: influxdb2
+spec:
+  ports:
+  - name: http
+    port: 8086
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/name: influxdb2
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb2-internal
+spec:
+  ports:
+  - name: http
+    port: 8086
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/name: influxdb2
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  labels:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/version: 2.0.6
+    helm.sh/chart: influxdb2-2.0.1
+  name: influxdb2
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/version: 2.0.6
+    helm.sh/chart: influxdb2-2.0.1
+  name: influxdb2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: influxdb2
+      app.kubernetes.io/name: influxdb2
+  serviceName: influxdb2
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        app.kubernetes.io/instance: influxdb2
+        app.kubernetes.io/name: influxdb2
+    spec:
+      containers:
+      - env:
+        - name: DOCKER_INFLUXDB_INIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: adminpass
+              name: demo-admin
+        - name: DOCKER_INFLUXDB_INIT_MODE
+          value: setup
+        - name: DOCKER_INFLUXDB_INIT_USERNAME
+          value: admin
+        - name: DOCKER_INFLUXDB_INIT_ORG
+          value: cribl
+        - name: DOCKER_INFLUXDB_INIT_BUCKET
+          value: cribl
+        - name: DOCKER_INFLUXDB_INIT_RETENTION
+          value: 0s
+        - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: admin-token
+              name: influxdb2-auth
+        - name: INFLUXD_BOLT_PATH
+          value: /var/lib/influxdbv2/influxd.bolt
+        - name: INFLUXD_ENGINE_PATH
+          value: /var/lib/influxdbv2
+        image: influxdb:2.0.6-alpine
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+        name: influxdb2
+        ports:
+        - containerPort: 8086
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/influxdbv2
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: influxdb2
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/version: 2.0.6
+    helm.sh/chart: influxdb2-2.0.1
+  name: influxdb2
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: influxdb2
+      app.kubernetes.io/name: influxdb2
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influxdb2-apply-templates
+spec:
+  activeDeadlineSeconds: 900
+  template:
+    metadata:
+      annotations:
+        appscope.dev/disable: "true"
+    spec:
+      containers:
+      - args:
+        - -c
+        - |
+          sleep 20
+          INF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '"id"' | awk -F\" '{print $4}')
+          [ -z "$INF_ID" ] && exit 255
+          for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml; do \
+          influx apply --force true -f $url \
+          --host http://influxdb2:8086 \
+          -o cribl \
+          -t ${INFLUXDB_TOKEN}; \
+          done
+        command:
+        - bash
+        env:
+        - name: INFLUXDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: adminpass
+              name: demo-admin
+        - name: INFLUXDB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: admin-token
+              name: influxdb2-auth
+        image: influxdb:2.0.6-alpine
+        name: influxdb2-apply-templates
+      restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
+    helm.sh/hook-weight: "2"
+  name: influxdb2-fix-dbrp
+spec:
+  activeDeadlineSeconds: 240
+  template:
+    metadata:
+      annotations:
+        appscope.dev/disable: "true"
+    spec:
+      containers:
+      - args:
+        - -cx
+        - "sleep 20; \nINF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '\"id\"' | awk -F\\\" '{print $4}')\n[ -z \"$INF_ID\" ] && exit 255\necho \"INF_ID: $INF_ID\"\ninflux v1 dbrp create --bucket-id $INF_ID  --db cribl --default --org cribl --rp forever --host http://influxdb2-internal:8086  -t ${INFLUXDB_TOKEN} || sleep 20 \n"
+        command:
+        - bash
+        env:
+        - name: INFLUXDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: adminpass
+              name: demo-admin
+        - name: INFLUXDB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: admin-token
+              name: influxdb2-auth
+        image: influxdb:2.0.6-alpine
+        name: influxdb2-fix-dbrp
+      restartPolicy: OnFailure

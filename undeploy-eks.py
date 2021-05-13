@@ -188,4 +188,4 @@ else:
   print("Skaffold Delete Failed")
   sys.exit(rval)
 
-cleanup_ecr(options)
+#cleanup_ecr(options)

@@ -14,7 +14,7 @@ routes:
     name: speedtest
     final: true
     disabled: false
-    pipeline: speedtest-parse
+    pipeline: pack:speedtest-parse
     description: ""
     clones: []
     filter: client && server && download && upload

@@ -21,6 +21,13 @@ spec:
     spec:
       containers:
         - env:
+            - name: SPLUNK_ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: demo-admin
+                  key: adminpass
+            - name: SPLUNK_BEFORE_START_CMD_2
+              value: "edit user admin -password ${SPLUNK_ADMIN_PASS} -auth admin:cribldemo"
             - name: CRIBL_ROUTING_DEMO
               value: "1"
             - name: DONT_TIMEOUT

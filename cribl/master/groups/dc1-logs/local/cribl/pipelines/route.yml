@@ -15,7 +15,7 @@ routes:
     name: Palo Alto Firewall Traffic
     final: true
     disabled: false
-    pipeline: firewall_geoip_enrich
+    pipeline: pack:pan-firewall-traffic
     description: ""
     clones:
       - {}
@@ -35,7 +35,7 @@ routes:
     name: Logs to Metrics
     final: false
     disabled: false
-    pipeline: logs_to_metrics
+    pipeline: pack:logs-to-metrics
     description: Convert Access Combined Logs to Splunk Metrics
     clones:
       - index: cribl-metrics
@@ -46,7 +46,7 @@ routes:
     name: Enrich
     final: false
     disabled: false
-    pipeline: enrich
+    pipeline: pack:logs-to-metrics
     description: Use lookups to add context to events
     clones:
       - index: cribl-modified

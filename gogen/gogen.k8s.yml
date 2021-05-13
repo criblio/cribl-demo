@@ -162,3 +162,46 @@ spec:
               memory: 128Mi
       restartPolicy: Always
 status: {}
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gogen-datacollection-syslog
+  labels:
+    app.kubernetes.io/name: gogen-datacollection-syslog
+spec:
+  activeDeadlineSeconds: 900
+  template:
+    metadata:
+      annotations:
+        appscope.dev/disable: "true"
+      labels:
+        app.kubernetes.io/name: gogen-datacollection-syslog
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+        - env:
+            - name: GOGEN_OUT
+              value: tcp
+            - name: GOGEN_URL
+              value: cribl-sa:5140
+            - name: GOGEN_OUTPUTTEMPLATE
+              value: rfc5424
+          command:        
+          - bash
+          - -c
+          - |
+            set -ex
+            gogen gen &
+            sleep 600 && pkill gogen
+          image: gogen-datacollection-syslog
+          name: gogen-datacollection-syslog
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 250m
+              memory: 128Mi

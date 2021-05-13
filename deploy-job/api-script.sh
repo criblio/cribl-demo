@@ -1,6 +1,7 @@
 #!/bin/bash  -x
 
 # This works off a secret exposed as an env var in the pod CRIBL_ADMIN_PASSWORD
+if [ -z "$CRIBL_ADMIN_PASSWORD" ] || [ -z "$CRIBL_URL" ]; then
 if [ -z "$CRIBL_ADMIN_PASSWORD" ]; then
   CRIBL_ADMIN_PASSWORD=l0gstr3am
 fi
@@ -59,7 +60,7 @@ for grp in ${CRIBL_GROUPS[@]}; do
   #echo "pdata: $patchdata"
   STATUS=$(curl -s -X PATCH -d@/tmp/patch$$ "$CRIBL_URL/api/v1/master/groups/$grp/deploy" \
        -H "accept: application/json" \
-       -H  "Authorization: Bearer $TOKEN" \
+       -H "Authorization: Bearer $TOKEN" \
        -H "Content-Type: application/json" |\
   jq '.items[0].configVersion' -r)
   echo "Deployed $STATUS on $grp"

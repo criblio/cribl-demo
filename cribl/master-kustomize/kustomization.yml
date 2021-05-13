@@ -1,0 +1,5 @@
+resources:
+  - all.yaml
+patches:
+  - deployment-patch.yml
+  - remove-patch.yml
