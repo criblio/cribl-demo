@@ -10,7 +10,7 @@ spec:
     metadata:
       name: ls-deploy-job
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       imagePullSecrets:
       - name: dhub
       containers:
