@@ -21,24 +21,24 @@ build:
     #docker:
       #buildArgs:
         #TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
-  - image: gogen-bigjson-webhook
-    context: gogen/bigjson-webhook
-  - image: gogen-businessevent-hec
-    context: gogen/businessevent-hec
-  - image: gogen-metrics-dogstatsd
-    context: gogen/metrics-dogstatsd
-  - image: gogen-flowlogs-syslog
-    context: gogen/flowlogs-syslog
-  - image: gogen-pantraffic-syslog
-    context: gogen/pantraffic-syslog
-  - image: gogen-statechange-syslog
-    context: gogen/statechange-syslog
+  #- image: gogen-bigjson-webhook
+    #context: gogen/bigjson-webhook
+  #- image: gogen-businessevent-hec
+    #context: gogen/businessevent-hec
+  #- image: gogen-metrics-dogstatsd
+    #context: gogen/metrics-dogstatsd
+  #- image: gogen-flowlogs-syslog
+    #context: gogen/flowlogs-syslog
+  #- image: gogen-pantraffic-syslog
+    #context: gogen/pantraffic-syslog
+  #- image: gogen-statechange-syslog
+    #context: gogen/statechange-syslog
   - image: gogen-accesscombined-forwarder
     context: gogen/accesscombined-forwarder
   - image: gogen-authfailed-filebeat
     context: gogen/authfailed-filebeat
-  - image: gogen-datacollection-syslog
-    context: gogen/datacollection-syslog
+  #- image: gogen-datacollection-syslog
+    #context: gogen/datacollection-syslog
   - image: grafana
     context: grafana
   - image: redis
@@ -47,12 +47,13 @@ build:
     context: splunk
 deploy:
   kustomize:
-    paths: ["./cribl/master", "./cribl/worker"]
+    paths: []
   statusCheckDeadlineSeconds: 600
   kubectl:
     manifests:
+    #- scope/scope.k8s.yml
     - cribl/master/cribl-master-rendered.yml
-    - cribl/worker/cribl-workergroup-rendered.yml
+    - cribl/worker/cribl-worker-rendered.yml
     - influxdb-kustomize/influxdb2-rendered.yml
     - apiserver/apiserver.k8s.yml
     # - cribl/cribl.k8s.yml

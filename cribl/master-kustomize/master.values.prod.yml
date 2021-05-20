@@ -6,11 +6,10 @@ replicaCount: 1
 
 criblImage:
   repository: cribl/cribl
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
-imagePullSecrets: []
 nameOverride: "cribl"
 fullnameOverride: ""
 

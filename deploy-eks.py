@@ -95,6 +95,26 @@ def gen_demo_config(params,options):
     print("Error creating Secret")
   shutil.rmtree(dir)
 
+def run_setup(params,options):
+  cmd="./scripts/setup.sh"
+
+  if not os.path.exists(cmd):
+    print("Error: Not in the Repo Top Level")
+    sys.exit(255)
+
+  #CRIBL_TAG=next ./scripts/setup.sh -a dhub -n logstreamnext
+  if options.pullsecret:
+    cmd += " -a %s" % options.pullsecret
+
+  cmd += " -n %s" % options.ns
+  print ("Running: %s" % cmd)
+  cmdout = subprocess.call(cmd,  shell=True)
+  print ("Setup Run Return: %s" % cmdout)
+  
+
+  
+   
+
 
 def gen_master_config(params,options):
   configmap = "master-config"
@@ -362,6 +382,7 @@ def get_hosted_zone(options):
 parser = OptionParser()
 parser.add_option("-n", "--namespace", dest="ns", default="default", help="Namespace to Interrogate")
 parser.add_option("-d", "--domain", dest="domain", default="demo.cribl.io", help="Hosted Zone to Use")
+parser.add_option("-b", "--pull-secret", dest="pullsecret", help="Pull Secret to use for the namespace default service account")
 parser.add_option("-r", "--region", dest="region", default="us-west-2", help="AWS Region to deploy to")
 parser.add_option("-s", "--ssm-path", dest="ssmpath", default="/cribl/demo", help="SSM path for Environment options")
 parser.add_option("-a", "--description", dest="description", default="Demo Environment")
@@ -419,10 +440,11 @@ if chpass:
     print("Password Set Succeeded")
 
 # print("before call: %s" % parameters)
+run_setup(parameters,options)
 gen_demo_config(parameters,options)
-gen_master_config(parameters,options)
-gen_group_config(parameters,options)
-gen_sa_config(parameters,options)
+#gen_master_config(parameters,options)
+#gen_group_config(parameters,options)
+#gen_sa_config(parameters,options)
 
 # get acct id and hosted zone id
 acct = sts.get_caller_identity()

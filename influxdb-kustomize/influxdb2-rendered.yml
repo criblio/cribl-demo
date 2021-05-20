@@ -86,7 +86,8 @@ spec:
   serviceName: influxdb2
   template:
     metadata:
-      annotations: {}
+      annotations:
+        appscope.dev/disable: "true"
       labels:
         app.kubernetes.io/instance: influxdb2
         app.kubernetes.io/name: influxdb2

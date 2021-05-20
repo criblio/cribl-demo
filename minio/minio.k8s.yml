@@ -21,8 +21,6 @@ spec:
         io.kompose.service: minio
         app.kubernetes.io/name: minio
     spec:
-      imagePullSecrets:
-      - name: dhub
       initContainers:
       - name: install
         image: alpine:latest

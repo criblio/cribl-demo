@@ -203,6 +203,10 @@ spec:
     port: 10081
     protocol: TCP
     targetPort: 10081
+  - name: appscope
+    port: 10090
+    protocol: TCP
+    targetPort: 10090
   - name: syslog
     port: 5140
     protocol: TCP
@@ -323,8 +327,10 @@ spec:
               name: logstream-config-cribl-w0
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
+        - name: CRIBL_BEFORE_START_CMD_1
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
         image: cribl/cribl:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: logstream-workergroup
         ports:
         - containerPort: 10001
@@ -339,20 +345,22 @@ spec:
           name: splunkhec
         - containerPort: 10081
           name: https
+        - containerPort: 10090
+          name: appscope
         - containerPort: 5140
           name: syslog
         - containerPort: 10200
           name: elastic
         resources:
           limits:
-            cpu: 2000m
+            cpu: 4000m
             memory: 4096Mi
           requests:
-            cpu: 1250m
+            cpu: 2500m
             memory: 512Mi
-      imagePullSecrets:
-      - name: dhub
+        volumeMounts: null
       serviceAccountName: cribl-w0
+      volumes: null
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -386,11 +394,13 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
-          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
         image: cribl/cribl:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: logstream-workergroup
         ports:
+        - containerPort: 8125
+          name: metrics
         - containerPort: 8125
           name: metrics-udp
         resources:
@@ -400,9 +410,9 @@ spec:
           requests:
             cpu: 1250m
             memory: 512Mi
-      imagePullSecrets:
-      - name: dhub
+        volumeMounts: null
       serviceAccountName: cribl-w1
+      volumes: null
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -435,8 +445,10 @@ spec:
               name: logstream-config-cribl-w2
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
+        - name: CRIBL_BEFORE_START_CMD_1
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
         image: cribl/cribl:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: logstream-workergroup
         ports:
         - containerPort: 10001
@@ -452,6 +464,8 @@ spec:
         - containerPort: 5140
           name: syslog
         - containerPort: 8125
+          name: metrics
+        - containerPort: 8125
           name: metrics-udp
         resources:
           limits:
@@ -460,9 +474,9 @@ spec:
           requests:
             cpu: 1250m
             memory: 512Mi
-      imagePullSecrets:
-      - name: dhub
+        volumeMounts: null
       serviceAccountName: cribl-w2
+      volumes: null
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -473,7 +487,7 @@ metadata:
     app.kubernetes.io/name: cribl-w0
     app.kubernetes.io/version: 2.4.5
     helm.sh/chart: logstream-workergroup-2.4.5
-  name: cribl-w0-kubernetes
+  name: cribl-w0-dc1-logs
 spec:
   maxReplicas: 3
   metrics:

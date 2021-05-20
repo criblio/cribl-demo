@@ -19,147 +19,335 @@ spec:
       annotations:
         appscope.dev/disable: "true"
     spec:
+      volumes:
+      - name: bigjson-webhook
+        configMap:
+          name: bigjson-webhook
+      - name: businessevent-hec
+        configMap:
+          name: businessevent-hec
+      - name: datacollection-syslog
+        configMap:
+          name: datacollection-syslog
+      - name: flowlogs-syslog
+        configMap:
+          name: flowlogs-syslog
+      - name: metrics-dogstatsd
+        configMap:
+          name: metrics-dogstatsd
+      - name: pantraffic-syslog
+        configMap:
+          name: pantraffic-syslog
+      - name: statechange-syslog
+        configMap:
+          name: statechange-syslog
       containers:
-        - env:
-            - name: GOGEN_OUT
-              value: http
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: json
-            - name: GOGEN_URL
-              value: http://cribl-w2:10080/cribl/_bulk
-          image: gogen-bigjson-webhook
-          name: gogen-bigjson-webhook
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: http
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: splunkhec
-            - name: GOGEN_URL
-              value: http://cribl-w0:10088/services/collector/event
-          image: gogen-businessevent-hec
-          name: gogen-businessevent-hec
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: tcp
-            - name: GOGEN_URL
-              value: cribl-w1:8125
-          image: gogen-metrics-dogstatsd
-          name: gogen-metrics-dogstatsd
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: tcp
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: rfc5424
-            - name: GOGEN_URL
-              value: cribl-w0:5140
-          image: gogen-pantraffic-syslog
-          name: gogen-pantraffic-syslog
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: tcp
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: rfc5424
-            - name: GOGEN_URL
-              value: cribl-w0:5140
-          image: gogen-statechange-syslog
-          name: gogen-statechange-syslog
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: SPLUNK_CMD
-              value: cmd mkdir -p /var/log/httpd
-            - name: SPLUNK_CMD_1
-              value: cmd gogen -v -cd /etc/gogen -o file --filename /var/log/httpd/access_log -lj gen -s shoppingapache 2>/var/log/gogen.log &
-            - name: SPLUNK_CMD_2
-              value: add monitor /var/log/httpd/access_log -auth admin:cribldemo -sourcetype access_combined -index cribl
-            - name: SPLUNK_CMD_3
-              value: add forward-server cribl-w0:9999 -auth admin:cribldemo -ssl-cert-path /opt/splunk/etc/auth/client.pem
-          image: gogen-accesscombined-forwarder
-          name: gogen-accesscombined-forwarder
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: file
-          image: gogen-authfailed-filebeat
-          name: gogen-authfailed-filebeat
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: tcp
-            - name: GOGEN_URL
-              value: cribl-sa:5140
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: rfc5424
-          image: gogen-datacollection-syslog
-          name: gogen-datacollection-syslog
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
-        - env:
-            - name: GOGEN_OUT
-              value: tcp
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: rfc5424
-            - name: GOGEN_URL
-              value: cribl-w2:5140
-          image: gogen-flowlogs-syslog
-          name: gogen-flowlogs-syslog
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
+      - env:
+        - name: GOGEN_OUT
+          value: "http"
+        - name: GOGEN_OUTPUTTEMPLATE
+          value: "json"
+        - name: GOGEN_URL
+          value: "http://cribl-w2:10080/cribl/_bulk"
+        - name: GOGEN_CONFIG_DIR
+          value: "/etc/gogen"
+        - name: GOGEN_ADDTIME
+          value: "true"
+        - name: GOGEN_LOGJSON
+          value: "true"
+        - name: GOGEN_INFO
+          value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: bigjson-webhook
+          mountPath: /var/tmp/gogen-config
+        name: gogen-bigjson-webhook
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+            ls -alR /etc/gogen
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: http
+          - name: GOGEN_OUTPUTTEMPLATE
+            value: splunkhec
+          - name: GOGEN_URL
+            value: http://cribl-w0:10088/services/collector/event
+          - name: GOGEN_CONFIG_DIR 
+            value: /etc/gogen
+          - name: GOGEN_ADDTIME
+            value: "true"
+          - name: GOGEN_LOGJSON
+            value: "true"
+          - name: GOGEN_INFO
+            value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: businessevent-hec
+          mountPath: /var/tmp/gogen-config
+        name: gogen-businessevent-hec
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: tcp
+          - name: GOGEN_URL
+            value: cribl-w1:8125
+          - name: GOGEN_CONFIG_DIR
+            value: /etc/gogen
+          - name: GOGEN_ADDTIME
+            value: "true"
+          - name: GOGEN_LOGJSON
+            value: "true"
+          - name: GOGEN_INFO
+            value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: metrics-dogstatsd
+          mountPath: /var/tmp/gogen-config
+        name: gogen-metrics-dogstatsd
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: tcp
+          - name: GOGEN_OUTPUTTEMPLATE
+            value: rfc5424
+          - name: GOGEN_URL
+            value: cribl-w0:5140
+          - name: GOGEN_CONFIG_DIR
+            value: /etc/gogen
+          - name: GOGEN_ADDTIME
+            value: "true"
+          - name: GOGEN_LOGJSON
+            value: "true"
+          - name: GOGEN_INFO
+            value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: pantraffic-syslog
+          mountPath: /var/tmp/gogen-config
+        name: gogen-pantraffic-syslog
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: tcp
+          - name: GOGEN_OUTPUTTEMPLATE
+            value: rfc5424
+          - name: GOGEN_URL
+            value: cribl-w0:5140
+          - name: GOGEN_CONFIG_DIR
+            value: /etc/gogen
+          - name: GOGEN_ADDTIME
+            value: "true"
+          - name: GOGEN_LOGJSON
+            value: "true"
+          - name: GOGEN_INFO
+            value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: statechange-syslog
+          mountPath: /var/tmp/gogen-config
+        name: gogen-statechange-syslog
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: SPLUNK_CMD
+            value: cmd mkdir -p /var/log/httpd
+          - name: SPLUNK_CMD_1
+            value: cmd gogen -v -cd /etc/gogen -o file --filename /var/log/httpd/access_log -lj gen -s shoppingapache 2>/var/log/gogen.log &
+          - name: SPLUNK_CMD_2
+            value: add monitor /var/log/httpd/access_log -auth admin:cribldemo -sourcetype access_combined -index cribl
+          - name: SPLUNK_CMD_3
+            value: add forward-server cribl-w0:9999 -auth admin:cribldemo -ssl-cert-path /opt/splunk/etc/auth/client.pem
+        image: gogen-accesscombined-forwarder
+        name: gogen-accesscombined-forwarder
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: file
+        image: gogen-authfailed-filebeat
+        name: gogen-authfailed-filebeat
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: tcp
+          - name: GOGEN_URL
+            value: cribl-sa:5140
+          - name: GOGEN_OUTPUTTEMPLATE
+            value: rfc5424
+          - name: GOGEN_CONFIG_DIR
+            value: /etc/gogen
+          - name: GOGEN_ADDTIME
+            value: "true"
+          - name: GOGEN_LOGJSON
+            value: "true"
+          - name: GOGEN_INFO
+            value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: datacollection-syslog
+          mountPath: /var/tmp/gogen-config
+        name: gogen-datacollection-syslog
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+      - env:
+          - name: GOGEN_OUT
+            value: tcp
+          - name: GOGEN_OUTPUTTEMPLATE
+            value: rfc5424
+          - name: GOGEN_URL
+            value: cribl-w2:5140
+          - name: GOGEN_CONFIG_DIR
+            value: /etc/gogen
+          - name: GOGEN_ADDTIME
+            value: "true"
+          - name: GOGEN_LOGJSON
+            value: "true"
+          - name: GOGEN_INFO
+            value: "true"
+        image: clintsharp/gogen:latest
+        volumeMounts:
+        - name: flowlogs-syslog
+          mountPath: /var/tmp/gogen-config
+        name: gogen-flowlogs-syslog
+        command:
+        - bash
+        - -c
+        - |
+          set -ex
+          mkdir /etc/gogen
+          cd /etc/gogen
+          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            tar zxf /var/tmp/gogen-config/gogen.tgz
+          fi
+          /sbin/entrypoint.sh start
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
       restartPolicy: Always
 status: {}
 
@@ -189,14 +377,14 @@ spec:
               value: cribl-sa:5140
             - name: GOGEN_OUTPUTTEMPLATE
               value: rfc5424
-          command:        
+          command:
           - bash
           - -c
           - |
             set -ex
             gogen gen &
             sleep 600 && pkill gogen
-          image: gogen-datacollection-syslog
+          image: clintsharp/gogen:latest
           name: gogen-datacollection-syslog
           resources:
             limits:

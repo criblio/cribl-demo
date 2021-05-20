@@ -6,22 +6,22 @@ replicaCount: 1
 
 criblImage:
   repository: cribl/cribl
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
-imagePullSecrets: []
 nameOverride: "cribl-w0"
 
 config: 
   host: cribl-internal
-  tag: dc1-logs
+  group: dc1-logs
   token: criblmaster
 
 
 podAnnotations: {}
 
-env: {}
+env: 
+  CRIBL_BEFORE_START_CMD_1: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
 
 service:
   type: ClusterIP
@@ -46,6 +46,9 @@ service:
   - name: https
     port: 10081
     protocol: TCP    
+  - name: appscope
+    port: 10090
+    protocol: TCP    
   - name: syslog
     port: 5140
     protocol: TCP
@@ -58,10 +61,10 @@ service:
 
 resources: 
   limits:
-    cpu: 2000m
+    cpu: 4000m
     memory: 4096Mi
   requests:
-    cpu: 1250m
+    cpu: 2500m
     memory: 512Mi
 
 

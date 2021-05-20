@@ -5,3 +5,4 @@ resources:
   - job-apply-templates.yml
 patches:
   - job-patch.yml
+  - scope-patch.yml

@@ -6,23 +6,22 @@ replicaCount: 1
 
 criblImage:
   repository: cribl/cribl
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
-imagePullSecrets: []
 nameOverride: "cribl-w1"
 
 config: 
   host: cribl-internal
-  tag: dc1-metrics
+  group: dc1-metrics
   token: criblmaster
 
 
 podAnnotations: {}
 
 env: 
-  CRIBL_BEFORE_START_CMD_1: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
+  CRIBL_BEFORE_START_CMD_1: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
 
 
 service:

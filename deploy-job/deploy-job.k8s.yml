@@ -9,20 +9,22 @@ spec:
   template:
     metadata:
       name: ls-deploy-job
+      annotations:
+        "appscope.dev/disable": "true"
     spec:
       restartPolicy: OnFailure
-      imagePullSecrets:
-      - name: dhub
       containers:
       - image: cribl/cribl:next
         command:
         - bash
         - -c
         - |
-          set -ex
+          set -x
           mkdir /tmp/clone
           cd /tmp/clone
+          df -h
           echo "Branch: "
+          ls -al /etc/demo-config/
           cat /etc/demo-config/branch
           git clone https://github.com/criblio/cribl-demo.git
           cd cribl-demo
