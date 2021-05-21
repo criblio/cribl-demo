@@ -30,7 +30,7 @@ config:
 env:
 #  CRIBL_BEFORE_START_CMD_1: if [ ! -d /opt/cribl/config-volume/groups ] ; then  cp -R /var/opt/cribl/* /opt/cribl/config-volume; fi
   CRIBL_BEFORE_START_CMD_2: if ! [ -d $CRIBL_VOLUME_DIR/groups ]; then mkdir $CRIBL_VOLUME_DIR/groups; for file in /var/tmp/group-config/*.tgz; do tar -xzf $file --dir=$CRIBL_VOLUME_DIR/groups; done; fi
-  CRIBL_BEFORE_START_CMD_3: if ! [ -e $CRIBL_VOLUME_DIR/masterupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl; cp /var/tmp/master-config/* $CRIBL_VOLUME_DIR/local/cribl; touch $CRIBL_VOLUME_DIR/masterupdated-flag; fi
+  CRIBL_BEFORE_START_CMD_3: if ! [ -e $CRIBL_VOLUME_DIR/masterupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl; cp /var/tmp/master-config/* $CRIBL_VOLUME_DIR/local/cribl; mkdir -p $CRIBL_VOLUME_DIR/scripts; cp /var/tmp/scripts-config/* $CRIBL_VOLUME_DIR/scripts; touch $CRIBL_VOLUME_DIR/masterupdated-flag; fi
   CRIBL_BEFORE_START_CMD_4: if ! [ -e $CRIBL_VOLUME_DIR/usersupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl/auth; cp /var/tmp/demo-config/users.json $CRIBL_VOLUME_DIR/local/cribl/auth/users.json; touch $CRIBL_VOLUME_DIR/usersupdated-flag; fi
 
   #CRIBL_AFTER_START_CMD_1: sleep 300 && $CRIBL_HOME/config-volume/scripts/cli-deploy > /tmp/deploy.log
@@ -79,6 +79,10 @@ extraConfigmapMounts:
   - name: master-config
     configMap: master-config
     mountPath: /var/tmp/master-config
+    readOnly: true
+  - name: scripts-config
+    configMap: scripts-config
+    mountPath: /var/tmp/scripts-config
     readOnly: true
   - name: demo-config
     configMap: demo-config
