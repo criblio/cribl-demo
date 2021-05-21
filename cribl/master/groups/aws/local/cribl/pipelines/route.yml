@@ -24,7 +24,7 @@ routes:
     name: Trim BigJSON
     final: false
     disabled: false
-    pipeline: trim_json
+    pipeline: pack:trim_json
     description: Trim Large JSON Events
     clones:
       - index: cribl-modified

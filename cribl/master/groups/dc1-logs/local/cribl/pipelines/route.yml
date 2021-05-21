@@ -35,7 +35,7 @@ routes:
     name: Apache Access Logs
     final: false
     disabled: false
-    pipeline: pack:apache
+    pipeline: pack:apache-logs
     description: Convert Access Combined Logs to Splunk Metrics
     filter: C.vars.accessCombined()
     output: statsd
@@ -80,19 +80,6 @@ routes:
     clones:
       - index: cribl-modified
     filter: C.vars.criblIndex(sourcetype=='nagios')
-    output: default
-  - id: 0nJxAA
-    name: Sample and Filter
-    final: false
-    disabled: false
-    pipeline: sample_and_filter
-    description: Clean up voluminous weblog data for our needs
-    clones:
-      - index: cribl-modified
-        source: smart_sample
-      - index: cribl-modified
-        source: filter
-    filter: C.vars.accessCombined()
     output: default
   - id: AvIq12
     name: Internal Metrics

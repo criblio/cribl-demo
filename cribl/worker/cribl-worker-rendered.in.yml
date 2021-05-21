@@ -328,7 +328,7 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
-          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip
         image: cribl/cribl:latest
         imagePullPolicy: IfNotPresent
         name: logstream-workergroup
@@ -446,7 +446,7 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
-          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip
         image: cribl/cribl:latest
         imagePullPolicy: IfNotPresent
         name: logstream-workergroup

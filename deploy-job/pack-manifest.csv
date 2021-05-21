@@ -3,3 +3,5 @@ apache-logs.crbl,dc1-logs
 pan-firewall-traffic.crbl,dc1-logs
 speedtest-parse.crbl,dc1-metrics
 vpcflow-parse.crbl,aws
+trim-json.crbl,aws
+trim-json.crbl,dc1-logs
