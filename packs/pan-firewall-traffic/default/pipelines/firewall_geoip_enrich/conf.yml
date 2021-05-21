@@ -188,7 +188,7 @@ functions:
     groupId: Icop75
   - id: reverse_dns
     filter: "true"
-    disabled: false
+    disabled: true
     conf:
       fields:
         - inFieldName: src_ip

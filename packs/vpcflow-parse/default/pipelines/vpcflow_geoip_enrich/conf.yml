@@ -95,7 +95,7 @@ functions:
         (subnet_usage)
   - id: reverse_dns
     filter: "true"
-    disabled: false
+    disabled: true
     conf:
       fields:
         - inFieldName: src_ip
