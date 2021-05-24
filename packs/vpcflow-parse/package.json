@@ -1,6 +1,6 @@
 {
     "name": "vpcflow-parse",
-    "version": "0.0.1",
-    "author":"Cribl",
+    "version": "1.0.0",
+    "author":"Cribl Demo",
     "description":"VPC Flow Log Processing"
 }

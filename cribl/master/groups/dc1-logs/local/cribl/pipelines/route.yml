@@ -89,6 +89,16 @@ routes:
     description: Send internal metrics
     filter: __inputId=='cribl:CriblMetrics'
     output: statsd
+  - id: VAGP6z
+    name: Trim BigJSON
+    final: false
+    disabled: false
+    pipeline: pack:trim-json
+    description: Trim Large JSON Events
+    clones:
+      - index: cribl-modified
+    filter: index=='cribl' && sourcetype=='lambda'
+    output: default
   - id: OsuFhD
     name: Main Route
     final: true

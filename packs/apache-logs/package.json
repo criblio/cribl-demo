@@ -1,4 +1,6 @@
 {
     "name": "apache-logs",
-    "version": "0.0.1"
+    "version": "1.0.0",
+    "author":"Cribl Demo",
+    "description":"For Managing Apache Common Log Format Logs"
 }
