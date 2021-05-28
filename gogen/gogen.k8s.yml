@@ -48,7 +48,7 @@ spec:
         - name: GOGEN_OUTPUTTEMPLATE
           value: "json"
         - name: GOGEN_URL
-          value: "http://cribl-w2:10080/cribl/_bulk"
+          value: "http://cribl-w0:10080/cribl/_bulk"
         - name: GOGEN_CONFIG_DIR
           value: "/etc/gogen"
         - name: GOGEN_ADDTIME

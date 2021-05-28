@@ -20,16 +20,6 @@ routes:
       - __index: bigjson
     filter: "true"
     output: s3
-  - id: VAGP6z
-    name: Trim BigJSON
-    final: false
-    disabled: false
-    pipeline: pack:trim-json
-    description: Trim Large JSON Events
-    clones:
-      - index: cribl-modified
-    filter: index=='cribl' && sourcetype=='lambda'
-    output: default
   - id: AvIq12
     name: Internal Metrics
     final: true
