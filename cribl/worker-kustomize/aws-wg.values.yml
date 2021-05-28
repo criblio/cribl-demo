@@ -32,6 +32,9 @@ service:
   - name: tcpjson
     port: 10001
     protocol: TCP
+  - name: scope
+    port: 10090
+    protocol: TCP
   - name: s2s
     port: 9997
     protocol: TCP

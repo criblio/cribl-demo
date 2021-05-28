@@ -203,10 +203,6 @@ spec:
     port: 10081
     protocol: TCP
     targetPort: 10081
-  - name: appscope
-    port: 10090
-    protocol: TCP
-    targetPort: 10090
   - name: syslog
     port: 5140
     protocol: TCP
@@ -263,6 +259,10 @@ spec:
     port: 10001
     protocol: TCP
     targetPort: 10001
+  - name: scope
+    port: 10090
+    protocol: TCP
+    targetPort: 10090
   - name: s2s
     port: 9997
     protocol: TCP
@@ -345,8 +345,6 @@ spec:
           name: splunkhec
         - containerPort: 10081
           name: https
-        - containerPort: 10090
-          name: appscope
         - containerPort: 5140
           name: syslog
         - containerPort: 10200
@@ -453,6 +451,8 @@ spec:
         ports:
         - containerPort: 10001
           name: tcpjson
+        - containerPort: 10090
+          name: scope
         - containerPort: 9997
           name: s2s
         - containerPort: 9999

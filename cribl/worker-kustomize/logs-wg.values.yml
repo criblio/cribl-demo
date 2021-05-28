@@ -46,9 +46,6 @@ service:
   - name: https
     port: 10081
     protocol: TCP    
-  - name: appscope
-    port: 10090
-    protocol: TCP    
   - name: syslog
     port: 5140
     protocol: TCP

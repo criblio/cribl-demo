@@ -18,6 +18,18 @@ inputs:
     tcpPort: 5140
     maxBufferSize: 1000
     ipWhitelistRegex: /.*/
+  in_appscope:
+    disabled: false
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    ipWhitelistRegex: /.*/
+    maxActiveCxn: 1000
+    enableProxyHeader: false
+    staleChannelFlushMs: 10000
+    authToken: ""
+    type: appscope
+    port: 10090
   CriblMetrics:
     disabled: false
     prefix: cribl.logstream.
