@@ -43,6 +43,8 @@ spec:
           name: statechange-syslog
       containers:
       - env:
+        - name: SCOPE_TAG_service
+          value: gogen-bigjson-webhook
         - name: GOGEN_OUT
           value: "http"
         - name: GOGEN_OUTPUTTEMPLATE
@@ -82,6 +84,8 @@ spec:
             cpu: 250m
             memory: 128Mi
       - env:
+          - name: SCOPE_TAG_service
+            value: gogen-businessevent-hec
           - name: GOGEN_OUT
             value: http
           - name: GOGEN_OUTPUTTEMPLATE
@@ -120,6 +124,8 @@ spec:
             cpu: 250m
             memory: 128Mi
       - env:
+          - name: SCOPE_TAG_service
+            value: gogen-metrics-dogstatsd
           - name: GOGEN_OUT
             value: tcp
           - name: GOGEN_URL
@@ -156,6 +162,8 @@ spec:
             cpu: 250m
             memory: 128Mi
       - env:
+          - name: SCOPE_TAG_service
+            value: gogen-pantraffic-syslog
           - name: GOGEN_OUT
             value: tcp
           - name: GOGEN_OUTPUTTEMPLATE
@@ -194,6 +202,8 @@ spec:
             cpu: 250m
             memory: 128Mi
       - env:
+          - name: SCOPE_TAG_service
+            value: gogen-statechange-syslog
           - name: GOGEN_OUT
             value: tcp
           - name: GOGEN_OUTPUTTEMPLATE
@@ -243,6 +253,8 @@ spec:
             cpu: 250m
             memory: 128Mi
       - env:
+          - name: SCOPE_TAG_service
+            value: gogen-accesscombined-forwarder
           - name: SPLUNK_CMD
             value: cmd mkdir -p /var/log/httpd
           - name: SPLUNK_CMD_1
@@ -261,6 +273,8 @@ spec:
             cpu: 250m
             memory: 128Mi
       - env:
+          - name: SCOPE_TAG_service
+            value: gogen-authfailed-filebeat
           - name: GOGEN_OUT
             value: file
         image: gogen-authfailed-filebeat
@@ -272,45 +286,49 @@ spec:
           requests:
             cpu: 250m
             memory: 128Mi
+      #- env:
+          #- name: SCOPE_TAG_service
+            #value: gogen-datacollection-syslog
+          #- name: GOGEN_OUT
+            #value: tcp
+          #- name: GOGEN_URL
+            #value: cribl-sa:5140
+          #- name: GOGEN_OUTPUTTEMPLATE
+            #value: rfc5424
+          #- name: GOGEN_CONFIG_DIR
+            #value: /etc/gogen
+          #- name: GOGEN_ADDTIME
+            #value: "true"
+          #- name: GOGEN_LOGJSON
+            #value: "true"
+          #- name: GOGEN_INFO
+            #value: "true"
+        #image: clintsharp/gogen:latest
+        #volumeMounts:
+        #- name: datacollection-syslog
+          #mountPath: /var/tmp/gogen-config
+        #name: gogen-datacollection-syslog
+        #command:
+        #- bash
+        #- -c
+        #- |
+          #set -ex
+          #mkdir /etc/gogen
+          #cd /etc/gogen
+          #if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
+            #tar zxf /var/tmp/gogen-config/gogen.tgz
+          #fi
+          #/sbin/entrypoint.sh start
+        #resources:
+          #limits:
+            #cpu: 500m
+            #memory: 1024Mi
+          #requests:
+            #cpu: 250m
+            #memory: 128Mi
       - env:
-          - name: GOGEN_OUT
-            value: tcp
-          - name: GOGEN_URL
-            value: cribl-sa:5140
-          - name: GOGEN_OUTPUTTEMPLATE
-            value: rfc5424
-          - name: GOGEN_CONFIG_DIR
-            value: /etc/gogen
-          - name: GOGEN_ADDTIME
-            value: "true"
-          - name: GOGEN_LOGJSON
-            value: "true"
-          - name: GOGEN_INFO
-            value: "true"
-        image: clintsharp/gogen:latest
-        volumeMounts:
-        - name: datacollection-syslog
-          mountPath: /var/tmp/gogen-config
-        name: gogen-datacollection-syslog
-        command:
-        - bash
-        - -c
-        - |
-          set -ex
-          mkdir /etc/gogen
-          cd /etc/gogen
-          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
-            tar zxf /var/tmp/gogen-config/gogen.tgz
-          fi
-          /sbin/entrypoint.sh start
-        resources:
-          limits:
-            cpu: 500m
-            memory: 1024Mi
-          requests:
-            cpu: 250m
-            memory: 128Mi
-      - env:
+          - name: SCOPE_TAG_service
+            value: gogen-flowlogs-syslog
           - name: GOGEN_OUT
             value: tcp
           - name: GOGEN_OUTPUTTEMPLATE
@@ -371,6 +389,8 @@ spec:
 
       containers:
         - env:
+            - name: SCOPE_TAG_service
+              value: gogen-datacollection-syslog
             - name: GOGEN_OUT
               value: tcp
             - name: GOGEN_URL

@@ -34,6 +34,7 @@ env:
   CRIBL_BEFORE_START_CMD_4: if ! [ -e $CRIBL_VOLUME_DIR/usersupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl/auth; cp /var/tmp/demo-config/users.json $CRIBL_VOLUME_DIR/local/cribl/auth/users.json; touch $CRIBL_VOLUME_DIR/usersupdated-flag; fi
 
   #CRIBL_AFTER_START_CMD_1: sleep 300 && $CRIBL_HOME/config-volume/scripts/cli-deploy > /tmp/deploy.log
+  SCOPE_TAG_service: cribl-leader
 
 service:
   externalType: LoadBalancer

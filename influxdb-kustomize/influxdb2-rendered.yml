@@ -118,6 +118,8 @@ spec:
           value: /var/lib/influxdbv2/influxd.bolt
         - name: INFLUXD_ENGINE_PATH
           value: /var/lib/influxdbv2
+        - name: SCOPE_TAG_service
+          value: influxdb
         image: influxdb:2.0.6-alpine
         imagePullPolicy: IfNotPresent
         livenessProbe:

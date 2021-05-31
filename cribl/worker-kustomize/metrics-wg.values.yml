@@ -22,6 +22,7 @@ podAnnotations: {}
 
 env: 
   CRIBL_BEFORE_START_CMD_1: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
+  SCOPE_TAG_service: cribl-dc1-metrics-wg
 
 
 service:

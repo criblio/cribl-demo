@@ -21,6 +21,8 @@ spec:
     spec:
       containers:
         - env:
+            - name: SCOPE_TAG_service
+              value: splunk
             - name: SPLUNK_ADMIN_PASS
               valueFrom:
                 secretKeyRef:

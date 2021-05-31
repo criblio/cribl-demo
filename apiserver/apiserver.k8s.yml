@@ -24,6 +24,8 @@ spec:
         - env:
             - name: DISABLE_ACCESS_COUNT
               value: "1"
+            - name: SCOPE_TAG_service
+              value: apiserver
           image: apiserver
           livenessProbe:
             httpGet:
@@ -95,6 +97,9 @@ spec:
         io.kompose.service: baddev
     spec:
       containers:
+        - env:
+            - name: SCOPE_TAG_service
+              value: baddev
         - image: apiserver
           livenessProbe:
             httpGet:

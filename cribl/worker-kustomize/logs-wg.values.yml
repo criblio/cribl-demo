@@ -22,6 +22,7 @@ podAnnotations: {}
 
 env: 
   CRIBL_BEFORE_START_CMD_1: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip 
+  SCOPE_TAG_service: cribl-dc1-logs-wg
 
 service:
   type: ClusterIP

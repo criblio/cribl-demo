@@ -149,6 +149,8 @@ spec:
           value: if ! [ -e $CRIBL_VOLUME_DIR/masterupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl; cp /var/tmp/master-config/* $CRIBL_VOLUME_DIR/local/cribl; mkdir -p $CRIBL_VOLUME_DIR/scripts; cp /var/tmp/scripts-config/* $CRIBL_VOLUME_DIR/scripts; touch $CRIBL_VOLUME_DIR/masterupdated-flag; fi
         - name: CRIBL_BEFORE_START_CMD_4
           value: if ! [ -e $CRIBL_VOLUME_DIR/usersupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl/auth; cp /var/tmp/demo-config/users.json $CRIBL_VOLUME_DIR/local/cribl/auth/users.json; touch $CRIBL_VOLUME_DIR/usersupdated-flag; fi
+        - name: SCOPE_TAG_service
+          value: cribl-leader
         - name: CRIBL_BEFORE_START_CMD_1
           value: if [ ! -e $CRIBL_VOLUME_DIR/local/cribl/mappings.yml ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl;  cp /var/tmp/config_bits/groups.yml $CRIBL_VOLUME_DIR/local/cribl/groups.yml; cp /var/tmp/config_bits/mappings.yml $CRIBL_VOLUME_DIR/local/cribl/mappings.yml; fi
         image: cribl/cribl:latest

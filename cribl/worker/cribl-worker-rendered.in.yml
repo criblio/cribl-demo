@@ -329,6 +329,8 @@ spec:
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
           value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip
+        - name: SCOPE_TAG_service
+          value: cribl-dc1-logs-wg
         image: cribl/cribl:latest
         imagePullPolicy: IfNotPresent
         name: logstream-workergroup
@@ -393,6 +395,8 @@ spec:
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
           value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
+        - name: SCOPE_TAG_service
+          value: cribl-dc1-metrics-wg
         image: cribl/cribl:latest
         imagePullPolicy: IfNotPresent
         name: logstream-workergroup
@@ -445,6 +449,8 @@ spec:
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
           value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip
+        - name: SCOPE_TAG_service
+          value: cribl-aws-wg
         image: cribl/cribl:latest
         imagePullPolicy: IfNotPresent
         name: logstream-workergroup

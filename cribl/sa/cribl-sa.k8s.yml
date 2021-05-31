@@ -20,6 +20,8 @@ spec:
          name: sa-config
       containers:
         - env:
+            - name: SCOPE_TAG_service
+              value: cribl-standalone
             # - name: CRIBL_AFTER_START_CMD_1
             #   value: sleep 660 && /bin/kill -TERM 1
             - name: CRIBL_BEFORE_START_CMD_1
