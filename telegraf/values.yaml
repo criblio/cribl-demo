@@ -22,6 +22,8 @@ args: []
 
 env:
   # This pulls HOSTNAME from the node, not the pod.
+  - name: SCOPE_TAG_service
+    value: telegraf
   - name: HOSTNAME
     valueFrom:
       fieldRef:

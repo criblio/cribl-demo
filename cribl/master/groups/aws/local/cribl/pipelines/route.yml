@@ -28,6 +28,15 @@ routes:
     description: Send internal metrics
     filter: __inputId=='cribl:CriblMetrics'
     output: statsd
+  - id: OoiBqE
+    name: appscope
+    final: true
+    disabled: false
+    pipeline: pack:appscope-processing
+    description: Process Appscope Data for the Demo Env.
+    clones: []
+    filter: __inputId=='appscope:in_appscope'
+    output: AppScope
   - id: OsuFhD
     name: Main Route
     final: true

@@ -22,10 +22,11 @@ spec:
     spec:
       containers:
         - env:
-            - name: DISABLE_ACCESS_COUNT
-              value: "1"
-            - name: SCOPE_TAG_service
-              value: apiserver
+          - name: DISABLE_ACCESS_COUNT
+            value: "1"
+          - name: SCOPE_TAG_service
+            value: apiserver
+          name: apiserver
           image: apiserver
           livenessProbe:
             httpGet:
@@ -34,7 +35,6 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 15
             timeoutSeconds: 5
-          name: apiserver
           ports:
             - containerPort: 4000
           resources: 
@@ -97,10 +97,10 @@ spec:
         io.kompose.service: baddev
     spec:
       containers:
-        - env:
-            - name: SCOPE_TAG_service
-              value: baddev
         - image: apiserver
+          env:
+          - name: SCOPE_TAG_service
+            value: baddev
           livenessProbe:
             httpGet:
               path: /health
