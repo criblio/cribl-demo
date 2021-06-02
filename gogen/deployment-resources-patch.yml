@@ -34,10 +34,6 @@ spec:
           resources:
             limits:
             requests:
-        - name: gogen-datacollection-syslog
-          resources:
-            limits:
-            requests:
         - name: gogen-flowlogs-syslog
           resources:
             limits:

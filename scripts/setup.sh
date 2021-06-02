@@ -68,7 +68,7 @@ images:
   newTag: ${CRIBL_TAG}
 EOU
     fi
-    kustomize build > $tempname-rendered.yml
+    kustomize build > tmp/$tempname-rendered.yml
     
   )
 done

@@ -20,7 +20,8 @@ spec:
         app.kubernetes.io/name: splunk
     spec:
       containers:
-        - env:
+        - name: splunk
+          env:
             - name: SCOPE_TAG_service
               value: splunk
             - name: SPLUNK_ADMIN_PASS
@@ -36,7 +37,6 @@ spec:
               value: "1"
           image: splunk
           imagePullPolicy: Always
-          name: splunk
           ports:
             - containerPort: 8000
             - containerPort: 8088
