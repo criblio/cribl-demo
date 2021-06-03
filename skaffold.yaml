@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta9
+apiVersion: skaffold/v2beta16
 kind: Config
 metadata:
   name: cribl-demo
@@ -17,94 +17,125 @@ build:
   - image: splunk
     context: splunk
 deploy:
-  kustomize:
-    paths: []
-  statusCheckDeadlineSeconds: 600
+  helm:
+    releases:
+    - name: telegraf
+      chartPath: telegraf
+      valuesFiles:
+      - telegraf/values.yaml
+    flags:
+      install:
+      - --timeout=600s
+      upgrade:
+      - --timeout=600s
   kubectl:
     manifests:
-    - cribl/master/cribl-master-rendered.yml
+    - cribl/master/tmp/cribl-master-rendered.yml
     - cribl/worker/tmp/cribl-worker-rendered.yml
     - influxdb-kustomize/influxdb2-rendered.yml
     - apiserver/apiserver.k8s.yml
-    # - cribl/cribl.k8s.yml
     - cribl/sa/cribl-sa.k8s.yml
     - minio/minio.k8s.yml
-    # - kafka/kafka.k8s.yml
     - gogen/gogen.k8s.yml
     - telegraf/kube-state-metrics.yml
     - grafana/grafana.k8s.yml
     - redis/redis.k8s.yml
     - splunk/splunk.k8s.yml
     - deploy-job/deploy-job.k8s.yml
-  helm:
-    flags:
-      upgrade:
-        [--timeout=600s]                 # Helm upgrade timeout
-      install:
-        [--timeout=600s]   
-    releases:
-    - name: telegraf
-      chartPath: telegraf
-      valuesFiles:
-      - telegraf/values.yaml
-
+    - gogen/gogen-job.k8s.yml
+  kustomize: {}
+  statusCheckDeadlineSeconds: 600
 profiles:
-  - name: dev
-    patches:
-    - op: add
-      path: /deploy/kustomize/paths
-      value: ["./cribl/worker/tmp", "./cribl/master/tmp", "./grafana", "./splunk", "./gogen", "./apiserver", "./minio", "./redis"]
-
-  - name: minimal
-    patches:
-    - op: add
-      path: /deploy/kustomize/paths
-      value: ["./cribl/worker/tmp", "./cribl/master/tmp", "./grafana", "./splunk", "./gogen", "./apiserver", "./minio", "./redis"]
-
-  - name: nogen
-    patches:
-    - op: add
-      path: /deploy/kustomize/paths
-      value: ["./cribl/worker/tmp", "./cribl/master/tmp", "./grafana", "./splunk", "./minio", "./redis"]
-    - op: remove
-      path: /deploy/kubectl/manifests/9
-    - op: remove
-      path: /deploy/kubectl/manifests/8
-    - op: remove
-      path: /deploy/kubectl/manifests/7
-    - op: remove
-      path: /deploy/kubectl/manifests/6
-    - op: remove
-      path: /deploy/kubectl/manifests/4
-    - op: remove
-      path: /deploy/kubectl/manifests/3
-    - op: remove
-      path: /deploy/kubectl/manifests/2
-
-  - name: forward
-    portForward:
-    - resourceType: deployment
-      resourceName: cribl
-      namespace: minitest
-      port: 9000
-      address: 0.0.0.0
-      localPort: 9000
-    - resourceType: deployment
-      resourceName: grafana
-      namespace: minitest
-      port: 3000
-      address: 0.0.0.0
-      localPort: 3000
-    - resourceType: deployment
-      resourceName: splunk
-      namespace: minitest
-      port: 8000
-      address: 0.0.0.0
-      localPort: 8000
-    - resourceType: deployment
-      resourceName: influxdb2
-      namespace: minitest
-      port: 8086
-      address: 0.0.0.0
-      localPort: 8086
-
+- name: dev
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./cribl/worker/tmp
+    - ./cribl/master/tmp
+    - ./grafana
+    - ./splunk
+    - ./gogen
+    - ./apiserver
+    - ./minio
+    - ./redis
+  - op: remove
+    path: /deploy/kubectl/manifests/12
+  - op: remove
+    path: /deploy/kubectl/manifests/4
+- name: minimal
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./cribl/worker/tmp
+    - ./cribl/master/tmp
+    - ./splunk
+    - ./gogen
+    - ./apiserver
+    - ./minio
+    - ./redis
+  - op: remove
+    path: /deploy/kubectl/manifests/12
+  - op: remove
+    path: /deploy/kubectl/manifests/10
+  - op: remove
+    path: /deploy/kubectl/manifests/8
+  - op: remove
+    path: /deploy/kubectl/manifests/4
+  - op: remove
+    path: /deploy/kubectl/manifests/2
+  
+- name: nogen
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./cribl/worker/tmp
+    - ./cribl/master/tmp
+    - ./grafana
+    - ./splunk
+    - ./minio
+    - ./redis
+  - op: remove
+    path: /deploy/kubectl/manifests/12
+  - op: remove
+    path: /deploy/kubectl/manifests/9
+  - op: remove
+    path: /deploy/kubectl/manifests/8
+  - op: remove
+    path: /deploy/kubectl/manifests/7
+  - op: remove
+    path: /deploy/kubectl/manifests/6
+  - op: remove
+    path: /deploy/kubectl/manifests/4
+  - op: remove
+    path: /deploy/kubectl/manifests/3
+  - op: remove
+    path: /deploy/kubectl/manifests/2
+- name: forward
+  portForward:
+  - resourceType: deployment
+    resourceName: cribl
+    namespace: minitest
+    port: 9000
+    address: 0.0.0.0
+    localPort: 9000
+  - resourceType: deployment
+    resourceName: grafana
+    namespace: minitest
+    port: 3000
+    address: 0.0.0.0
+    localPort: 3000
+  - resourceType: deployment
+    resourceName: splunk
+    namespace: minitest
+    port: 8000
+    address: 0.0.0.0
+    localPort: 8000
+  - resourceType: deployment
+    resourceName: influxdb2
+    namespace: minitest
+    port: 8086
+    address: 0.0.0.0
+    localPort: 8086

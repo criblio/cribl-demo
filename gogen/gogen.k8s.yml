@@ -26,9 +26,6 @@ spec:
       - name: businessevent-hec
         configMap:
           name: businessevent-hec
-      - name: datacollection-syslog
-        configMap:
-          name: datacollection-syslog
       - name: flowlogs-syslog
         configMap:
           name: flowlogs-syslog
@@ -234,17 +231,6 @@ spec:
             tar zxf /var/tmp/gogen-config/gogen.tgz
           fi
           /sbin/entrypoint.sh start
-        command:
-        - bash
-        - -c
-        - |
-          set -ex
-          mkdir /etc/gogen
-          cd /etc/gogen
-          if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
-            tar zxf /var/tmp/gogen-config/gogen.tgz
-          fi
-          /sbin/entrypoint.sh start
         resources:
           limits:
             cpu: 500m
@@ -369,47 +355,3 @@ spec:
       restartPolicy: Always
 status: {}
 
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: gogen-datacollection-syslog
-  labels:
-    app.kubernetes.io/name: gogen-datacollection-syslog
-spec:
-  activeDeadlineSeconds: 900
-  template:
-    metadata:
-      annotations:
-        appscope.dev/disable: "true"
-      labels:
-        app.kubernetes.io/name: gogen-datacollection-syslog
-    spec:
-      restartPolicy: OnFailure
-
-      containers:
-        - env:
-            - name: SCOPE_TAG_service
-              value: gogen-datacollection-syslog
-            - name: GOGEN_OUT
-              value: tcp
-            - name: GOGEN_URL
-              value: cribl-sa:5140
-            - name: GOGEN_OUTPUTTEMPLATE
-              value: rfc5424
-          command:
-          - bash
-          - -c
-          - |
-            set -ex
-            gogen gen &
-            sleep 600 && pkill gogen
-          image: clintsharp/gogen:latest
-          name: gogen-datacollection-syslog
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi

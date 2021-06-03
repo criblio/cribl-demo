@@ -1,5 +1,4 @@
 resources:
-  - splunk.k8s.yml
+  - cribl-master-rendered.yml
 patches:
   - deployment-resources-patch.yml
-  - service-patch.yml
