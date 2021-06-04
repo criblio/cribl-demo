@@ -111,13 +111,13 @@ Using the port-forwarding capability in skaffold (as seen above), will yield 4 s
 |grafana|[http://localhost:4000](http://localhost:4000)|The Grafana UI|
 
 
-## Profiles
+## Profiles<a name=profiles></a>
 
 We have alternate profiles in the skaffold.yaml file:
 
-* dev - this reduced the memory load of the environment by reducing the resource allocations for each pod. The user facing services (logstream master, splunk, grafan and influxdb2) all will run in NodePort mode.
-* minimal - this also reduces the memory load through reduced resource allocations, as well as a lower number of pods. The user facing services (logstream master, splunk, grafan and influxdb2) all will run in NodePort mode.
-* nogen - this is a barebones profile that really only spins up the distributed Cribl LogStream environment, minio and the user facing services.
+* dev - this reduced the memory load of the environment by eliminating the resource allocations for each pod. The user facing services (logstream master, splunk, grafan and influxdb2) all will run in NodePort mode. It will also remove the data creation jobs (gogen-datacollection-syslog and cribl-sa), and the AWS worker group (aka cribl-w2)
+* minimal - this also reduces the memory load through eliminated resource allocations and removes the aws worker group (aka cribl-w2). It also removes influxdb, grafana and splunk. This can be useful when looking to prototype something only in logstream. Beware when running in this profile, since incoming data will cause back pressure on the sources.
+* nogen - this also reduces the memory load through eliminated resource allocations and removes the aws worker group (aka cribl-w2), and removes all of the gogen data generators from the deployed environment. 
 * forward - this profile can be combined with any of the other profiles to forward the user facing services to 0.0.0.0 (instead of the default 127.0.0.1), allowing for access to it from other systems - useful when you're developing on an AWS EC2 instance with no GUI. 
 
 
