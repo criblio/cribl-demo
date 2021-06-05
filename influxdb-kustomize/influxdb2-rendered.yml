@@ -179,7 +179,7 @@ spec:
           sleep 20
           INF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '"id"' | awk -F\" '{print $4}')
           [ -z "$INF_ID" ] && exit 255
-          for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml; do \
+          for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml /var/tmp/influx-templates/*.yml ; do \
           influx apply --force true -f $url \
           --host http://influxdb2:8086 \
           -o cribl \
@@ -200,7 +200,14 @@ spec:
               name: influxdb2-auth
         image: influxdb:2.0.6-alpine
         name: influxdb2-apply-templates
+        volumeMounts:
+        - mountPath: /var/tmp/influx-templates
+          name: influx-templates
       restartPolicy: OnFailure
+      volumes:
+      - configMap:
+        - name: influx-templates
+        name: influx-templates
 ---
 apiVersion: batch/v1
 kind: Job
@@ -220,7 +227,11 @@ spec:
       containers:
       - args:
         - -cx
-        - "sleep 20; \nINF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '\"id\"' | awk -F\\\" '{print $4}')\n[ -z \"$INF_ID\" ] && exit 255\necho \"INF_ID: $INF_ID\"\ninflux v1 dbrp create --bucket-id $INF_ID  --db cribl --default --org cribl --rp forever --host http://influxdb2-internal:8086  -t ${INFLUXDB_TOKEN} || sleep 20 \n"
+        - "sleep 20; \nINF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086
+          --org cribl --name cribl --json | grep '\"id\"' | awk -F\\\" '{print $4}')\n[
+          -z \"$INF_ID\" ] && exit 255\necho \"INF_ID: $INF_ID\"\ninflux v1 dbrp create
+          --bucket-id $INF_ID  --db cribl --default --org cribl --rp forever --host
+          http://influxdb2-internal:8086  -t ${INFLUXDB_TOKEN} || sleep 20 \n"
         command:
         - bash
         env:

@@ -9,6 +9,10 @@ spec:
       annotations:
         appscope.dev/disable: "true"
     spec:
+      volumes:
+      - name: influx-templates
+        configMap: 
+        - name: influx-templates
       containers:
       - name: influxdb2-apply-templates
         image: influxdb:2.0.6-alpine
@@ -23,6 +27,9 @@ spec:
               secretKeyRef:
                 name: influxdb2-auth
                 key: admin-token
+        volumeMounts:
+          - name: influx-templates
+            mountPath: /var/tmp/influx-templates
         command:
           - bash
         args:
@@ -31,7 +38,7 @@ spec:
             sleep 20
             INF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '"id"' | awk -F\" '{print $4}')
             [ -z "$INF_ID" ] && exit 255
-            for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml; do \
+            for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml /var/tmp/influx-templates/*.yml ; do \
             influx apply --force true -f $url \
             --host http://influxdb2:8086 \
             -o cribl \

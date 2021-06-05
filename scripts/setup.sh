@@ -14,7 +14,7 @@ fi
 
 
 # Options (with defaults) for namespace, branch name and admin password.
-while getopts "a:b:n:p:" opt; do
+while getopts "a:b:n:p:s" opt; do
   case ${opt} in
     n ) 
       namespace=$OPTARG
@@ -27,6 +27,9 @@ while getopts "a:b:n:p:" opt; do
       ;;
     a )
       authsecret=$OPTARG
+      ;;
+    s )
+      enablescope=true
       ;;
       
   esac
@@ -162,14 +165,30 @@ rm -rf $dir
   done
 )
 
-# Build the Scope Config
-CFG="scope"
-echo "Creating $CFG configmap"
+# Set Influx Template(s)
+CFG="influx-templates"
+echo "Creating $CFG ConfigMap"
 kubectl get configmap $CFG -n $namespace >/dev/null 2>&1
 if [ $? -eq 0 ]; then
   kubectl delete configmap $CFG -n $namespace >/dev/null 2>&1
 fi
-kubectl create configmap $CFG -n $namespace --from-file=scope.yml=scope/scope.yml 
+kubectl create configmap $CFG -n $namespace --from-file=influxdb-kustomize/templates/
+
+
+if [ -n "$enablescope" ]; then
+  echo "Enabling AppScope for $namespace"
+  kubectl label namespace $namespace scope=enabled --overwrite
+  # Build the Scope Config
+  CFG="scope"
+  echo "Creating $CFG configmap"
+  kubectl get configmap $CFG -n $namespace >/dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    kubectl delete configmap $CFG -n $namespace >/dev/null 2>&1
+  fi
+  kubectl create configmap $CFG -n $namespace --from-file=scope.yml=scope/scope.yml 
+
+fi
+  
 
 if [ -n "$authsecret" ]; then
   kubectl patch serviceaccount default -p "{\"imagePullSecrets\": [{\"name\": \"$authsecret\"}]}" -n $namespace

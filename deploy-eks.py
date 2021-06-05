@@ -106,7 +106,7 @@ def run_setup(params,options):
   if options.pullsecret:
     cmd += " -a %s" % options.pullsecret
 
-  cmd += " -n %s" % options.ns
+  cmd += " -n %s -s" % options.ns
   print ("Running: %s" % cmd)
   cmdout = subprocess.call(cmd,  shell=True)
   print ("Setup Run Return: %s" % cmdout)
@@ -239,7 +239,7 @@ def param_parse(paramtmp, path):
 
   # Write a simpler dict to work with...
   for i in paramtmp:
-    #print("I: %s" % i)
+    print("I: %s" % i)
     i['Name'] = i['Name'].replace(path + "/","")
 
     if "/" in i['Name']:
