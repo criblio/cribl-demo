@@ -12,7 +12,7 @@ spec:
       volumes:
       - name: influx-templates
         configMap: 
-        - name: influx-templates
+          name: influx-templates
       containers:
       - name: influxdb2-apply-templates
         image: influxdb:2.0.6-alpine

@@ -206,7 +206,7 @@ spec:
       restartPolicy: OnFailure
       volumes:
       - configMap:
-        - name: influx-templates
+          name: influx-templates
         name: influx-templates
 ---
 apiVersion: batch/v1
