@@ -272,46 +272,6 @@ spec:
           requests:
             cpu: 250m
             memory: 128Mi
-      #- env:
-          #- name: SCOPE_TAG_service
-            #value: gogen-datacollection-syslog
-          #- name: GOGEN_OUT
-            #value: tcp
-          #- name: GOGEN_URL
-            #value: cribl-sa:5140
-          #- name: GOGEN_OUTPUTTEMPLATE
-            #value: rfc5424
-          #- name: GOGEN_CONFIG_DIR
-            #value: /etc/gogen
-          #- name: GOGEN_ADDTIME
-            #value: "true"
-          #- name: GOGEN_LOGJSON
-            #value: "true"
-          #- name: GOGEN_INFO
-            #value: "true"
-        #image: clintsharp/gogen:latest
-        #volumeMounts:
-        #- name: datacollection-syslog
-          #mountPath: /var/tmp/gogen-config
-        #name: gogen-datacollection-syslog
-        #command:
-        #- bash
-        #- -c
-        #- |
-          #set -ex
-          #mkdir /etc/gogen
-          #cd /etc/gogen
-          #if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
-            #tar zxf /var/tmp/gogen-config/gogen.tgz
-          #fi
-          #/sbin/entrypoint.sh start
-        #resources:
-          #limits:
-            #cpu: 500m
-            #memory: 1024Mi
-          #requests:
-            #cpu: 250m
-            #memory: 128Mi
       - env:
           - name: SCOPE_TAG_service
             value: gogen-flowlogs-syslog

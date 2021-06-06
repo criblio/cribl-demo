@@ -75,14 +75,10 @@ profiles:
     - ./apiserver
     - ./minio
     - ./redis
-  #- op: remove
-    #path: /deploy/kubectl/manifests/12
   - op: remove
     path: /deploy/kubectl/manifests/10
   - op: remove
     path: /deploy/kubectl/manifests/8
-  #- op: remove
-    #path: /deploy/kubectl/manifests/4
   - op: remove
     path: /deploy/kubectl/manifests/2
   
@@ -97,22 +93,14 @@ profiles:
     - ./splunk
     - ./minio
     - ./redis
-  #- op: remove
-    #path: /deploy/kubectl/manifests/12
   - op: remove
     path: /deploy/kubectl/manifests/9
-  #- op: remove
-    #path: /deploy/kubectl/manifests/8
   - op: remove
     path: /deploy/kubectl/manifests/7
   - op: remove
     path: /deploy/kubectl/manifests/6
-  #- op: remove
-    #path: /deploy/kubectl/manifests/4
   - op: remove
     path: /deploy/kubectl/manifests/3
-  #- op: remove
-    #path: /deploy/kubectl/manifests/2
 - name: forward
   portForward:
   - resourceType: deployment
