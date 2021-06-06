@@ -328,7 +328,8 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
-          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends
+            python python-pip
         - name: SCOPE_TAG_service
           value: cribl-dc1-logs-wg
         image: cribl/cribl:latest
@@ -353,10 +354,10 @@ spec:
           name: elastic
         resources:
           limits:
-            cpu: 4000m
+            cpu: 2500m
             memory: 4096Mi
           requests:
-            cpu: 2500m
+            cpu: 2000m
             memory: 512Mi
         volumeMounts: null
       serviceAccountName: cribl-w0
@@ -394,7 +395,8 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
-          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io mtr python python-pip speedtest-cli
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends
+            docker.io mtr python python-pip speedtest-cli
         - name: SCOPE_TAG_service
           value: cribl-dc1-metrics-wg
         image: cribl/cribl:latest
@@ -448,7 +450,8 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
         - name: CRIBL_BEFORE_START_CMD_1
-          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python python-pip
+          value: apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends
+            python python-pip
         - name: SCOPE_TAG_service
           value: cribl-aws-wg
         image: cribl/cribl:latest
@@ -499,7 +502,7 @@ spec:
   metrics:
   - resource:
       name: cpu
-      targetAverageUtilization: 50
+      targetAverageUtilization: 40
     type: Resource
   minReplicas: 1
   scaleTargetRef:
