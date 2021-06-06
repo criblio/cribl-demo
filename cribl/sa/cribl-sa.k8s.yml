@@ -30,7 +30,7 @@ spec:
               value: sleep 720; /opt/cribl/bin/cribl stop; pkill tail
             - name: CRIBL_HOME
               value: /opt/cribl
-          image: cribl/cribl:next
+          image: cribl/cribl:latest
           name: cribl-sa
           ports:
             - containerPort: 9000

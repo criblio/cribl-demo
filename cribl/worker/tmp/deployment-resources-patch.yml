@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cribl-w0
+spec:
+  template:
+    spec:
+      containers:
+        - name: logstream-workergroup
+          resources:
+            limits:
+            requests:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cribl-w1
+spec:
+  template:
+    spec:
+      containers:
+        - name: logstream-workergroup
+          resources:
+            limits:
+            requests:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cribl-w2
+spec:
+  replicas: 0
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cribl-w0-dc1-logs
+spec:
+  maxReplicas: 1

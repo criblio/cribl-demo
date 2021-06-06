@@ -1,0 +1,6 @@
+resources:
+  - cribl-worker-rendered.yml
+patches:
+  - deployment-resources-patch.yml
+#patchesJson6902:
+#  - reduction-patch.yml
