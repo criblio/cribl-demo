@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: beautiful-moore-212001
+    name: cranky-carson-c42001
 spec:
     color: '#00cccc'
     name: cribl-demo
@@ -9,12 +9,17 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: youthful-rubin-e12001
+    name: pensive-fermi-442001
 spec:
     associations:
       - kind: Label
-        name: beautiful-moore-212001
+        name: cranky-carson-c42001
     charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: <center><font size=+3>HTTP Metrics</font></center>
+        width: 12
       - axes:
           - base: "10"
             name: x
@@ -36,7 +41,7 @@ spec:
             name: Nineteen Eighty Four
             type: scale
         geom: line
-        height: 4
+        height: 2
         hoverDimension: auto
         kind: Xy
         legendColorizeRows: true
@@ -53,9 +58,16 @@ spec:
                   |> group(columns: ["service"])
                   |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: true)
                   |> yield(name: "median")
-        width: 4
+        width: 6
         xCol: _time
         yCol: _value
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: <center><font size=+3>System Metrics</font></center>
+        width: 12
+        yPos: 3
       - axes:
           - base: "10"
             name: x
@@ -65,15 +77,15 @@ spec:
             scale: linear
         colors:
           - hex: '#31C0F6'
-            id: c5d54e16-8253-4e1b-ba7b-eecefc940dd5
+            id: 254586e5-04ee-415f-800e-79142bef3dd5
             name: Nineteen Eighty Four
             type: scale
           - hex: '#A500A5'
-            id: 2241b68f-dfae-486d-b829-419f58f67a4c
+            id: d4110664-5786-4d8a-844e-830e7dc62046
             name: Nineteen Eighty Four
             type: scale
           - hex: '#FF7E27'
-            id: 551d7470-a259-4475-9702-936c20914227
+            id: 86711388-4968-4fa5-aa45-1d70bc4ef313
             name: Nineteen Eighty Four
             type: scale
         geom: line
@@ -83,14 +95,14 @@ spec:
         legendColorizeRows: true
         legendOpacity: 1
         legendOrientationThreshold: 1e+08
-        name: Threads
+        name: CPU Percentage
         position: overlaid
         queries:
           - query: |-
                 from(bucket: "cribl")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "proc")
-                  |> filter(fn: (r) => r["_field"] == "thread")
+                  |> filter(fn: (r) => r["_field"] == "cpu_perc")
                   |> filter(fn: (r) => r["service"] == "apiserver" or r["service"] == "baddev" or r["service"] == "cribl-aws-wg" or r["service"] == "cribl-dc1-logs-wg" or r["service"] == "cribl-dc1-metrics-wg" or r["service"] == "cribl-leader" or r["service"] == "grafana" or r["service"] == "splunk" or r["service"] == "telegraf")
                   |> group(columns: ["service"])
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
@@ -99,6 +111,48 @@ spec:
         xCol: _time
         yCol: _value
         yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 254586e5-04ee-415f-800e-79142bef3dd5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d4110664-5786-4d8a-844e-830e7dc62046
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 86711388-4968-4fa5-aa45-1d70bc4ef313
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: File Descriptors
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "cribl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "proc")
+                  |> filter(fn: (r) => r["_field"] == "fd")
+                  |> group(columns: ["service"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 8
       - axes:
           - base: "10"
             name: x
@@ -140,6 +194,95 @@ spec:
                   |> yield(name: "mean")
         width: 4
         xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: c5d54e16-8253-4e1b-ba7b-eecefc940dd5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 2241b68f-dfae-486d-b829-419f58f67a4c
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 551d7470-a259-4475-9702-936c20914227
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: HTTP Request Duration
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "cribl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system" or r["_measurement"] == "http.client")
+                  |> filter(fn: (r) => r["_field"] == "duration")
+                  |> filter(fn: (r) => r["service"] == "cribl-aws-wg" or r["service"] == "cribl-dc1-logs-wg" or r["service"] == "cribl-dc1-metrics-wg" or r["service"] == "cribl-leader" or r["service"] == "grafana" or r["service"] == "telegraf")
+                  |> group(columns: ["service"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)
+                  |> yield(name: "median")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 254586e5-04ee-415f-800e-79142bef3dd5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d4110664-5786-4d8a-844e-830e7dc62046
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 86711388-4968-4fa5-aa45-1d70bc4ef313
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Filesystem Errors
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "cribl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fs")
+                  |> filter(fn: (r) => r["_field"] == "error")
+                  |> filter(fn: (r) => r["service"] == "apiserver" or r["service"] == "baddev" or r["service"] == "cribl-aws-wg" or r["service"] == "cribl-dc1-logs-wg" or r["service"] == "cribl-dc1-metrics-wg" or r["service"] == "cribl-leader" or r["service"] == "grafana" or r["service"] == "splunk")
+                  |> group(columns: ["service"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> yield(name: "sum")
+        width: 6
+        xCol: _time
+        xPos: 6
         yCol: _value
         yPos: 8
       - axes:
@@ -169,104 +312,21 @@ spec:
         legendColorizeRows: true
         legendOpacity: 1
         legendOrientationThreshold: 1e+08
-        name: HTTP Request Duration
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: "cribl")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "system" or r["_measurement"] == "http.client")
-                  |> filter(fn: (r) => r["_field"] == "duration")
-                  |> filter(fn: (r) => r["service"] == "cribl-aws-wg" or r["service"] == "cribl-dc1-logs-wg" or r["service"] == "cribl-dc1-metrics-wg" or r["service"] == "cribl-leader" or r["service"] == "grafana" or r["service"] == "telegraf")
-                  |> group(columns: ["service"])
-                  |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)
-                  |> yield(name: "median")
-        width: 4
-        xCol: _time
-        yCol: _value
-        yPos: 12
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            id: 13a8e6d3-910f-4d7e-ba1e-b3db388626fc
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            id: 3e9acc13-25db-4bc5-8aab-a7fd9a2f75a3
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            id: 8f4e1d12-6c67-4a1a-aa73-a80a35e95261
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        hoverDimension: auto
-        kind: Xy
-        legendColorizeRows: true
-        legendOpacity: 1
-        legendOrientationThreshold: 1e+08
-        name: Proc Metrics
+        name: Threads
         position: overlaid
         queries:
           - query: |-
                 from(bucket: "cribl")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "proc")
-                    |> filter(fn: (r) => exists r["service"] )
+                  |> filter(fn: (r) => r["_field"] == "thread")
+                  |> filter(fn: (r) => r["service"] == "apiserver" or r["service"] == "baddev" or r["service"] == "cribl-aws-wg" or r["service"] == "cribl-dc1-logs-wg" or r["service"] == "cribl-dc1-metrics-wg" or r["service"] == "cribl-leader" or r["service"] == "grafana" or r["service"] == "splunk" or r["service"] == "telegraf")
                   |> group(columns: ["service"])
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-                  |> yield(name: "median")
+                  |> yield(name: "mean")
         width: 4
         xCol: _time
+        xPos: 8
         yCol: _value
-        yPos: 16
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            id: 13a8e6d3-910f-4d7e-ba1e-b3db388626fc
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            id: 3e9acc13-25db-4bc5-8aab-a7fd9a2f75a3
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            id: 8f4e1d12-6c67-4a1a-aa73-a80a35e95261
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        hoverDimension: auto
-        kind: Xy
-        legendColorizeRows: true
-        legendOpacity: 1
-        legendOrientationThreshold: 1e+08
-        name: Filesystem Ops
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: "cribl")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "fs")
-                    |> filter(fn: (r) => exists r["service"] )
-                  |> group(columns: ["service"])
-                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-                  |> yield(name: "median")
-        width: 4
-        xCol: _time
-        yCol: _value
-        yPos: 20
+        yPos: 4
     name: AppScope Metrics
