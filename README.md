@@ -97,6 +97,7 @@ The new step is the addition of a script called `setup.sh`, which sets up all of
 * `-p <password>` - admin password to set for the LogStream, Grafana, Splunk and InfluxDB instances. This defaults to `cribldemo`.
 * `-b <branch>` - to set the branch for the ls-deploy job to run from. This only really necessary when testing changes in an alternate branch. This defaults to `master`
 * `-a <authsecret>` - will update the default service account on the specified (or `default` if not specified) namespace to use the specified authsecret. This has no default.
+* `-s` - enable AppScope in the resulting demo environment - AppScope needs to be installed on the cluster first (see [APPSCOPE.md](APPSCOPE.md) for details). 
 
 **_NOTE_**: Dockerhub, as of November 2020, has implemented fairly restrictive rate limiting for anonymous access. If you see errors that refer to too many requests, you'll need to sign up for a free docker account, create an authsecret (see the kubernetes.io [doc](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#add-imagepullsecrets-to-a-service-account) for details on this), and use the -a option listed above to eliminate those errors. 
 
