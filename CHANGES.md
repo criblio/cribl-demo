@@ -12,6 +12,7 @@ You'll see that In the pipeline/output section, there is now a "pack" icon next 
 * The trim_json pipeline and route has been moved back to the dc1-logs group.
 * AppScope "skeleton" is setup for all services but influx (disabled due to TLS bug with AppScope 0.6.1, will renable after 0.7.0). AppScope is not enabled by default (see [APPSCOPE.md](APPSCOPE.md) for details on enabling it). It is enabled on the Cribl official demo environments.
 * New `AppScope Metrics` dashboard in Influx shows stats for the environment by service. This will evolve over time. 
+* `Windows_Events.crbl` pack deployed to dc1-logs - currently no data generation for it (demoable by sample file).
 
 ### Structural Changes
 * One of the big problem areas in running the demo setup has been the disparity between helm deployment and manifest deployment, specifically with the setup of influxdb - job timeouts have been the biggest contributor to standup failure. In this version, instead of maintaining a copy of helm charts and using the helm capability to install them, we're making use of a pattern where we "hydrate" the chart into a manifest regularly and commit that, which has minimize the use of helm in the setup. 
