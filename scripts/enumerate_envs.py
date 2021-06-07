@@ -47,5 +47,8 @@ recurseParams(options.ssmpath, output)
 
 for ns in output.keys():
   if ("job" in output[ns]) and  (output[ns]['job'] == options.job):
-    print("%s-%s" % (ns, output[ns]['cluster']))
+    if ("branch" in output[ns]):
+      print("%s-%s-%s" % (ns, output[ns]['cluster'], output[ns]['branch']))
+    else:
+      print("%s-%s-master" % (ns, output[ns]['cluster']))
 
