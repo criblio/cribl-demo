@@ -18,7 +18,7 @@ for dom in $($DIR/enumerate_envs.py -j $arg); do
   #fi
   ns=$(echo $dom | awk -F- '{print $1}')
   cluster=$(echo $dom | awk -F- '{print $2}'); 
-  branch=$(echo $dom | awk -F- '{print $2}'); 
+  branch=$(echo $dom | awk -F- '{print $3}'); 
   echo "NS: $ns, Cluster $cluster"
   aws eks update-kubeconfig --name $cluster
   git checkout $branch
