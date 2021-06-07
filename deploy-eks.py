@@ -239,7 +239,7 @@ def param_parse(paramtmp, path):
 
   # Write a simpler dict to work with...
   for i in paramtmp:
-    print("I: %s" % i)
+    #print("I: %s" % i)
     i['Name'] = i['Name'].replace(path + "/","")
 
     if "/" in i['Name']:
