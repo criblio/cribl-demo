@@ -60,6 +60,9 @@ for dir in cribl/worker cribl/master; do
   tempname=$(echo $dir | sed -e "s/\//-/g")
   echo "Tempname: $tempname"
   (cd $dir;
+    if [ ! -d "tmp" ]; then
+      mkdir tmp
+    fi
     echo "resources:" > kustomization.yml
     ls *yml | egrep -v "${tempname}-rendered.yml|kustomization.yml" | awk '{printf("- %s\n", $1)}' >> kustomization.yml
     
@@ -82,6 +85,9 @@ echo "Creating $CFG configmap"
 kubectl get configmap $CFG -n $namespace >/dev/null 2>&1
 if [ $? -eq 0 ]; then
   kubectl delete configmap $CFG -n $namespace >/dev/null 2>&1
+fi
+kubectl get secret $SEC -n $namespace >/dev/null 2>&1
+if [ $? -eq 0 ]; then
   kubectl delete secret $SEC -n $namespace >/dev/null 2>&1
 fi
 dir="/tmp/demo$$"

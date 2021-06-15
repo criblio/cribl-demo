@@ -42,14 +42,14 @@ spec:
           - bash
           - -c
           - |
-            set -ex
+            set -x
             mkdir /etc/gogen
             cd /etc/gogen
             if [ -f /var/tmp/gogen-config/gogen.tgz ]; then
               tar zxf /var/tmp/gogen-config/gogen.tgz
             fi
-            gogen gen &
-            sleep 600 && pkill gogen
+            gogen gen
+            kill 1
           image: clintsharp/gogen:latest
           volumeMounts:
           - name: datacollection-syslog
