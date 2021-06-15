@@ -106,8 +106,8 @@ def run_setup(params,options):
   if options.pullsecret:
     cmd += " -a %s" % options.pullsecret
 
-  cmd += " -n %s -s" % options.ns
-  #cmd += " -n %s " % options.ns
+  #cmd += " -n %s -s" % options.ns
+  cmd += " -n %s " % options.ns
   print ("Running: %s" % cmd)
   cmdout = subprocess.call(cmd,  shell=True)
   print ("Setup Run Return: %s" % cmdout)
