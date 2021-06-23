@@ -1,0 +1,295 @@
+functions:
+  - id: comment
+    filter: "true"
+    disabled: false
+    conf:
+      comment: >-
+        1 - Circuit Breaker to keep non-matching data out.
+
+        2 - Regular Expression Extraction to pull out relevant fields.
+
+        3 - Drop events of log_subtype==start, as they often have incorrect app assignments.
+
+        4 - (disabled) Sampling: Sample traffic with 0 bytes received at 5:1, Sample traffic from trusted-trusted & action allowed at 10:1
+    groupId: gB4TB7
+  - id: eval
+    filter: sourcetype!='pan:traffic'
+    disabled: false
+    conf: {}
+    final: true
+    groupId: gB4TB7
+    description: Ignore anything but Pan Traffic logs
+  - id: serde
+    filter: "true"
+    disabled: null
+    conf:
+      mode: extract
+      type: delim
+      delimChar: ","
+      quoteChar: '"'
+      escapeChar: \
+      nullValue: "-"
+      srcField: _raw
+      fields:
+        - future_use_1
+        - receive_time
+        - serial_number
+        - log_subtype
+        - threat_content_type
+        - future_use_2
+        - generated_time
+        - src_ip
+        - dest_ip
+        - nat_src_ip
+        - nat_dest_ip
+        - rule_name
+        - src_user
+        - dest_user
+        - application
+        - virtual_system
+        - src_zone
+        - dest_zone
+        - inbound_interface
+        - outbound_interface
+        - log_action
+        - future_use_3
+        - session_id
+        - repeat_count
+        - src_port
+        - dest_port
+        - nat_src_port
+        - nat_dest_port
+        - flags
+        - protocol
+        - action
+        - bytes
+        - bytes_sent
+        - bytes_received
+        - packets
+        - start_time
+        - elapsed_time
+        - category
+        - future_use_4
+        - sequence_number
+        - action_flags
+        - src_location
+        - dest_location
+        - future_use_5
+        - packets_sent
+        - packets_received
+        - session_end_reason
+        - device_group_hierarchy_level_1
+        - device_group_hierarchy_level_2
+        - device_group_hierarchy_level_3
+        - device_group_hierarchy_level_4
+        - virtual_system_name
+        - device_name
+        - action_src
+        - src_vm_uuid
+        - dest_vm_uuid
+        - tunnel_id_imsi
+        - monitor_tag_imei
+        - parent_session_id
+        - parent_start_time
+        - tunnel_type
+        - sctp_association_id
+        - sctp_chunks
+        - sctp_chunks_sent
+        - sctp_chunks_received
+      keep:
+        - action
+        - dest_ip
+        - src_ip
+        - dest_zone
+        - src_zone
+        - src_port
+        - dest_port
+    groupId: gB4TB7
+    description: Parse the comma delimited log format
+  - id: drop
+    filter: log_subtype=='start'
+    disabled: false
+    conf: {}
+    description: Drop events of log subtype of start.
+    groupId: gB4TB7
+  - id: sampling
+    filter: "true"
+    disabled: true
+    conf:
+      rules:
+        - filter: bytes_in==0
+          rate: 5
+        - filter: src_zone=='trusted' && dest_zone=='trusted' && action=='allow'
+          rate: 10
+    description: Sample traffic
+    groupId: gB4TB7
+  - id: comment
+    filter: "true"
+    disabled: false
+    conf:
+      comment: "Do GeoIP lookup on both src_ip (resulting in src_geoip) and dest_ip
+        (resulting in dest_geoip) and remove non-english language fields  "
+    groupId: 2vbLEq
+  - id: geoip
+    filter: src_ip || dest_ip
+    disabled: false
+    conf:
+      inField: src_ip
+      outField: src_geoip
+      file: GeoLite2-City.mmdb
+      additionalFields:
+        - extraInField: dest_ip
+          extraOutField: dest_geoip
+    description: Lookup GEOIP of Src and Dest IP address
+    groupId: 2vbLEq
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      remove:
+        - "*.names.de"
+        - "*.names.es"
+        - "*.names.fr"
+        - "*.names.ja"
+        - "*.names.pt-BR"
+        - "*.names.ru"
+        - "*.names.zh-CN"
+        - "*.geoname_id"
+        - "*.continent"
+        - "*.postal"
+        - "*.registered_country"
+        - "*.subdivisions"
+        - "*.country.names"
+        - "*.location.metro_code"
+        - "*.location.accuracy_radius"
+        - "*.location.time_zone"
+      keep: []
+    groupId: 2vbLEq
+    description: Clean Up extraneous GeoIP fields
+  - id: flatten
+    filter: src_geoip || dest_geoip
+    disabled: false
+    conf:
+      fields:
+        - src_geoip
+        - dest_geoip
+      prefix: ""
+      depth: 5
+      delimiter: _
+    groupId: 2vbLEq
+    description: flatten the Geoip fields for simplicity
+  - id: comment
+    filter: "true"
+    disabled: false
+    conf:
+      comment: Reverse DNS to get hostnames of external IP address (
+        (src|dest)_hostname ), and lookup the subnet of internal IP addresses
+        (subnet_usage)
+    groupId: Icop75
+  - id: reverse_dns
+    filter: "true"
+    disabled: true
+    conf:
+      fields:
+        - inFieldName: src_ip
+          outFieldName: src_hostname
+        - inFieldName: dest_ip
+          outFieldName: dest_hostname
+      cacheTTL: 60
+    groupId: Icop75
+    description: Attempt reverse DNS on src and dest
+  - id: lookup
+    filter: C.Net.isPrivate(src_ip)
+    disabled: false
+    conf:
+      matchMode: cidr
+      matchType: specific
+      reloadPeriodSec: 60
+      addToEvent: false
+      inFields:
+        - eventField: src_ip
+          lookupField: cidr
+      outFields:
+        - lookupField: location
+          eventField: subnet_usage
+      file: internal_cidr_lookup.csv
+    groupId: Icop75
+    description: If src is RFC1918 space, look up the subnet
+  - id: lookup
+    filter: C.Net.isPrivate(dest_ip)
+    disabled: false
+    conf:
+      matchMode: cidr
+      matchType: specific
+      reloadPeriodSec: 60
+      addToEvent: false
+      inFields:
+        - eventField: dest_ip
+          lookupField: cidr
+      file: internal_cidr_lookup.csv
+      outFields:
+        - lookupField: location
+          eventField: subnet_usage
+    groupId: Icop75
+    description: If dest is RFC1918 space, look up the subnet
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Enrich data with compromised-ips feed from proofpoint/Emerging Threats
+        Open Source feed
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: compromised
+          value: (C.Lookup('compromised-ips.csv').match(src_ip) ||
+            C.Lookup('compromised-ips.csv').match(dest_ip))
+    description: Check if src or dest are on compromised_ips list
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: _raw
+          value: "message ? message : _raw"
+      remove:
+        - message
+        - severity
+        - facility
+    description: Rewrite _raw from message (if there), and remove numerous fields.
+  - id: rename
+    filter: "true"
+    disabled: null
+    conf:
+      renameExpr: name.replace(/([^_]+)_.*_([^_]+)/,"$1_$2").replace(/code$/, "country")
+    description: Rename the GeoIP fields to make them more sensical
+  - id: serialize
+    filter: "true"
+    disabled: true
+    conf:
+      type: kvp
+      fields:
+        - "!_*"
+        - "!cribl_breaker"
+        - "*"
+      dstField: _raw
+      cleanFields: false
+    description: Turn on to show reserialization into _raw
+groups:
+  gB4TB7:
+    name: Extraction and Reduction
+    description: Eliminate data that shouldn't be here and extract fields.
+    index: 0
+    disabled: false
+  2vbLEq:
+    name: GeoIP
+    description: GeoIP Enrichment
+    index: 1
+    disabled: false
+  Icop75:
+    name: DNS and Local LAN Lookup
+    index: 2
+    disabled: false
+    description: Enrich with DNS and "Local LAN" data

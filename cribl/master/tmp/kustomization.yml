@@ -1,0 +1,4 @@
+resources:
+  - cribl-master-rendered.yml
+patches:
+  - deployment-resources-patch.yml

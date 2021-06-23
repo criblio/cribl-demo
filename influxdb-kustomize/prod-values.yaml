@@ -1,0 +1,73 @@
+nameOverride: ""
+fullnameOverride: ""
+
+env:
+  - name: SCOPE_TAG_service
+    value: influxdb
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## Create default user through Kubernetes job
+## Defaults indicated below
+##
+adminUser:
+  organization: "cribl"
+  bucket: "cribl"
+  user: "admin"
+  ## Leave empty to generate a random password and token.
+  ## Or fill any of these values to use fixed values.
+  password: "cribldemo"
+  token: "sKvQsRYB9OTwG53QszRyoEYd6t99Xp_HlG29GxDs1sfxep7XHkMPWrqKroMs8mSoGPokIvUlJuptcESe_X8uig=="
+
+## Persist data to a persistent volume
+##
+persistence:
+  enabled: true
+  ## If true will use an existing PVC instead of creating one
+  # useExisting: false
+  ## Name of existing PVC to be used in the influx deployment
+  # name:
+  ## influxdb data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+service:
+  type: LoadBalancer
+  port: 8086
+
+ingress:
+  enabled: false
+  tls: false
+  # secretName: my-tls-cert # only needed if tls above is true
+  hostname: influxdb.foobar.com
+  annotations: {}
+    # kubernetes.io/ingress.class: "nginx"
+    # kubernetes.io/tls-acme: "true"
+  path: /
+
+templates:
+- https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
+- https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml

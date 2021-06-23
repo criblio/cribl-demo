@@ -1,0 +1,11 @@
+id: default
+groups: {}
+routes:
+  - id: Lh4cjK
+    name: default
+    final: true
+    disabled: false
+    pipeline: vpcflow_geoip_enrich
+    description: ""
+    clones: []
+    filter: "true"

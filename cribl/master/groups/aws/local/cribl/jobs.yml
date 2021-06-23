@@ -22,10 +22,13 @@ flowlogs:
     enabled: true
   collector:
     conf:
+      awsAuthenticationMethod: manual
       signatureVersion: v4
       enableAssumeRole: false
       recurse: true
       maxBatchSize: 10
+      reuseConnections: true
+      rejectUnauthorized: false
       awsApiKey: ACCESSKEY
       awsSecretKey: "#42:XEx9zmHILves563pWOYuP4FlErel1PynJ2jghEu4G70="
       region: us-east-1
@@ -41,7 +44,7 @@ flowlogs:
     preprocess:
       disabled: true
     throttleRatePerSec: "0"
-    pipeline: vpcflow_geoip_enrich
+    pipeline: "pack:vpcflow-parse"
     output: default
     metadata:
       - name: sourcetype

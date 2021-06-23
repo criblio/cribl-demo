@@ -1,4 +1,4 @@
-{"username":"admin","first":"admin","last":"admin","email":"admin","roles":["admin"],"password":"cribldemo"}
-{"first":"Audit","last":"User","email":"audit@cribl.io","roles":["reader_logs","user"],"username":"audit-user","password":"cribldemo"}
-{"first":"Cloud","last":"Admin","email":"cloud-admin@cribl.io","roles":["admin_aws","user"],"username":"cloud-admin","password":"cribldemo"}
+{"username":"admin","first":"admin","last":"admin","email":"admin","roles":["admin"],"password":"{{PASS}}"}
+{"first":"Audit","last":"User","email":"audit@cribl.io","roles":["reader_logs","user"],"username":"audit-user","password":"{{PASS}}"}
+{"first":"Cloud","last":"Admin","email":"cloud-admin@cribl.io","roles":["admin_aws","user"],"username":"cloud-admin","password":"{{PASS}}"}
 

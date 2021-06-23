@@ -1,0 +1,6 @@
+{
+    "name": "speedtest-parse",
+    "version": "0.0.1",
+    "author":"Cribl Demo",
+    "description":"Parsing Data form the SpeedTest collector"
+}

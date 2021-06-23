@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: cribl-sa
 spec:
-  activeDeadlineSeconds: 660
+  activeDeadlineSeconds: 900
   template:
     metadata:
       annotations:
@@ -14,17 +14,30 @@ spec:
       labels:
         app.kubernetes.io/name: cribl-sa
     spec:
+      volumes:
+      - name: sa-config
+        configMap: 
+         name: sa-config
       containers:
         - env:
+            - name: SCOPE_TAG_service
+              value: cribl-standalone
             # - name: CRIBL_AFTER_START_CMD_1
             #   value: sleep 660 && /bin/kill -TERM 1
+            - name: CRIBL_BEFORE_START_CMD_1
+              value: tar zxf /var/tmp/sa-config/sa.tgz -C /opt/cribl/local
+            - name: CRIBL_AFTER_START_CMD_1
+              value: sleep 720; /opt/cribl/bin/cribl stop; pkill tail
             - name: CRIBL_HOME
               value: /opt/cribl
-          image: cribl-sa
+          image: cribl/cribl:latest
           name: cribl-sa
           ports:
             - containerPort: 9000
             - containerPort: 5140
+          volumeMounts:
+          - name: sa-config
+            mountPath: /var/tmp/sa-config
           resources: 
             limits:
               cpu: 2000m

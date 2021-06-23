@@ -15,7 +15,7 @@ fi
 
 if [ -n "$CRIBL_GROUPS" ]; then
   # call the cli-auth expect script to log into the cli
-  token=$(curl -X POST "http://$host:9000/api/v1/auth/login" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"username\": \"admin\",\"password\":\"cribldemo\"}" | jq -r '.token')
+  token=$(curl -X POST "http://$host:9000/api/v1/auth/login" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"username\": \"admin\",\"password\":\"k8sdemo\"}" | jq -r '.token')
 
   commit=$(curl -v -X POST "http://$host:9000/api/v1/version/commit" -H  "accept: application/json" -H  "Authorization: Bearer $token" | jq -r '.items[0].commit')
   if [ -z "$commit" ]; then

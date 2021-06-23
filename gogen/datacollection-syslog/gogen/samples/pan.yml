@@ -48,7 +48,7 @@ tokens:
   srcField: destination_zone
   group: 1
 fromSample: pan.sample
-count: 60
+count: 10
 interval: 60
-earliest: -60s
 randomizeEvents: true
+earliest: -60s

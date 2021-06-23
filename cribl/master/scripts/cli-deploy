@@ -8,7 +8,7 @@ fi
 
 if [ -n "$CRIBL_GROUPS" ]; then
   # call the cli-auth expect script to log into the cli
-  $CRIBL_HOME/bin/cribl auth login -u admin -p cribldemo
+  $CRIBL_HOME/bin/cribl auth login -u admin -p k8sdemo
 
     #$CRIBL_HOME/bin/cribl groups commit -g default -m "init"
     #$CRIBL_HOME/bin/cribl groups deploy -g default

@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: influxdb2
+spec:
+  template:
+    spec:
+      containers:
+        - name: influxdb2
+          env:
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: demo-admin
+                  key: adminpass

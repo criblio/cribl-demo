@@ -22,8 +22,11 @@ spec:
     spec:
       containers:
         - env:
-            - name: DISABLE_ACCESS_COUNT
-              value: "1"
+          - name: DISABLE_ACCESS_COUNT
+            value: "1"
+          - name: SCOPE_TAG_service
+            value: apiserver
+          name: apiserver
           image: apiserver
           livenessProbe:
             httpGet:
@@ -32,7 +35,6 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 15
             timeoutSeconds: 5
-          name: apiserver
           ports:
             - containerPort: 4000
           resources: 
@@ -42,10 +44,17 @@ spec:
             requests:
               cpu: 250m
               memory: 128Mi
+          volumeMounts: 
+          - name: group-config
+            mountPath: /etc/group-config
 
           securityContext:
             privileged: true
       restartPolicy: Always
+      volumes:
+      - name: group-config
+        configMap: 
+          name: group-config
 status: {}
 ---
 apiVersion: v1
@@ -89,6 +98,9 @@ spec:
     spec:
       containers:
         - image: apiserver
+          env:
+          - name: SCOPE_TAG_service
+            value: baddev
           livenessProbe:
             httpGet:
               path: /health

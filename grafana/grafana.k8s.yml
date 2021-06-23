@@ -40,6 +40,8 @@ spec:
     spec:
       containers:
         - env:
+            - name: SCOPE_TAG_service
+              value: grafana
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: cribldemo
           image: grafana

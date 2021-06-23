@@ -1,0 +1,49 @@
+cribl:
+  enable: true
+  transport:
+    type: tcp
+    host: cribl-w2
+    port: 10090
+metric:
+  enable: true
+  format:
+    type: ndjson
+    verbosity: 8
+event:
+  enable: true
+  format:
+    type: ndjson
+  watch:
+  - type: file
+    name: '[\s\/\\\.]log[s]?[\/\\\.]?'
+    value: .*
+  - type: console
+    name: (stdout|stderr)
+    value: .*
+  - type: http
+    name: .*
+    field: .*
+    value: .*
+  - type: net
+    name: .*
+    field: .*
+    value: .*
+  - type: fs
+    name: .*
+    field: .*
+    value: .*
+  - type: dns
+    name: .*
+    field: .*
+    value: .*
+libscope:
+  configevent: true
+  summaryperiod: 10
+  commanddir: /scope/cmd
+  log:
+    level: warning
+    transport:
+      type: file
+      path: /scope/ldscope.log
+      buffering: line
+

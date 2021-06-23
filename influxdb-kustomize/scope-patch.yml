@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: influxdb2
+spec:
+  template:
+    metadata:
+      annotations:
+        "appscope.dev/disable": "true"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influxdb2-apply-templates
+spec:
+  template:
+    metadata:
+      annotations:
+        "appscope.dev/disable": "true"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influxdb2-fix-dbrp    
+spec:
+  template:
+    metadata:
+      annotations:
+        "appscope.dev/disable": "true"
+---
+

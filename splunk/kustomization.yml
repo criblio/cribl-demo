@@ -1,5 +1,5 @@
 resources:
   - splunk.k8s.yml
-patchesStrategicMerge:
+patches:
   - deployment-resources-patch.yml
   - service-patch.yml

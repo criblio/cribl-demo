@@ -1,0 +1,11 @@
+id: default
+groups: {}
+routes:
+  - id: A8y30n
+    name: speedtest
+    final: true
+    disabled: false
+    pipeline: speedtest-parse
+    description: ""
+    clones: []
+    filter: client && server && download && upload

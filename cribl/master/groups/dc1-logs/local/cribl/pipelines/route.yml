@@ -15,7 +15,7 @@ routes:
     name: Palo Alto Firewall Traffic
     final: true
     disabled: false
-    pipeline: firewall_geoip_enrich
+    pipeline: pack:pan-firewall-traffic
     description: ""
     clones:
       - {}
@@ -32,29 +32,13 @@ routes:
     filter: "true"
     output: s3
   - id: py0d5r
-    name: Logs to Metrics
+    name: Apache Access Logs
     final: false
     disabled: false
-    pipeline: logs_to_metrics
+    pipeline: pack:apache-logs
     description: Convert Access Combined Logs to Splunk Metrics
-    clones:
-      - index: cribl-metrics
-      - index: cribl-metrics-multi
     filter: C.vars.accessCombined()
     output: statsd
-  - id: ZLTc0g
-    name: Enrich
-    final: false
-    disabled: false
-    pipeline: enrich
-    description: Use lookups to add context to events
-    clones:
-      - index: cribl-modified
-        source: enrich
-      - index: cribl-modified
-        source: indextimefields
-    filter: C.vars.accessCombined()
-    output: default
   - id: be12ct
     name: KV to JSON
     final: false
@@ -97,19 +81,6 @@ routes:
       - index: cribl-modified
     filter: C.vars.criblIndex(sourcetype=='nagios')
     output: default
-  - id: 0nJxAA
-    name: Sample and Filter
-    final: false
-    disabled: false
-    pipeline: sample_and_filter
-    description: Clean up voluminous weblog data for our needs
-    clones:
-      - index: cribl-modified
-        source: smart_sample
-      - index: cribl-modified
-        source: filter
-    filter: C.vars.accessCombined()
-    output: default
   - id: AvIq12
     name: Internal Metrics
     final: true
@@ -118,6 +89,16 @@ routes:
     description: Send internal metrics
     filter: __inputId=='cribl:CriblMetrics'
     output: statsd
+  - id: VAGP6z
+    name: Trim BigJSON
+    final: false
+    disabled: false
+    pipeline: trim_json
+    description: Trim Large JSON Events
+    clones:
+      - index: cribl-modified
+    filter: index=='cribl' && sourcetype=='lambda'
+    output: default
   - id: OsuFhD
     name: Main Route
     final: true

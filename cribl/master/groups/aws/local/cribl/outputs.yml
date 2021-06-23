@@ -111,3 +111,16 @@ outputs:
     stagePath: /tmp/flowstage
     endpoint: http://minio:9000
     destPath: ""
+  AppScope:
+    systemFields:
+      - cribl_pipe
+    rules:
+      - final: true
+        filter: _metric
+        output: influxdb2
+        description: Metrics go to Influx
+      - final: true
+        filter: "!_metric"
+        output: splunk
+        description: Events to Splunk
+    type: router

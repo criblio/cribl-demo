@@ -1,0 +1,182 @@
+output: default
+groups: {}
+asyncFuncTimeout: 1000
+functions:
+  - id: serde
+    filter: "true"
+    disabled: null
+    conf:
+      mode: extract
+      type: delim
+      delimChar: " "
+      quoteChar: '"'
+      escapeChar: \
+      nullValue: "-"
+      srcField: _raw
+      fields:
+        - version
+        - aws_account
+        - aws_eni
+        - src_ip
+        - dest_ip
+        - src_port
+        - dest_port
+        - protocol
+        - packets
+        - bytes
+        - st_time
+        - _time
+        - action
+        - log_status
+      keep:
+        - src_ip
+        - dest_ip
+        - aws_account
+        - src_port
+        - dest_port
+    description: Parsing out delimited fields
+  - id: drop
+    filter: C.Net.isPrivate(src_ip) && C.Net.isPrivate(dest_ip)
+    disabled: null
+    conf: {}
+    final: true
+    description: Drop any internal only (east/west) events
+  - id: geoip
+    filter: "true"
+    disabled: null
+    conf:
+      inField: src_ip
+      outField: src_geoip
+      file: GeoLite2-City.mmdb
+      additionalFields:
+        - extraInField: dest_ip
+          extraOutField: dest_geoip
+    description: Lookup both src & dest for Geolocation
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      remove:
+        - "*.names.de"
+        - "*.names.es"
+        - "*.names.fr"
+        - "*.names.ja"
+        - "*.names.pt-BR"
+        - "*.names.ru"
+        - "*.names.zh-CN"
+        - "*.geoname_id"
+        - "*.continent"
+        - "*.postal"
+        - "*.registered_country"
+        - "*.subdivisions"
+        - "*.country.names"
+        - "*.location.metro_code"
+        - "*.location.accuracy_radius"
+        - "*.location.time_zone"
+      keep: []
+    description: Clean out extraneous fields from geoip
+  - id: flatten
+    filter: src_geoip || dest_geoip
+    disabled: false
+    conf:
+      fields:
+        - src_geoip
+        - dest_geoip
+      prefix: ""
+      depth: 5
+      delimiter: _
+    description: Flatten geoip data to simplify event
+  - id: comment
+    filter: "true"
+    disabled: false
+    conf:
+      comment: Reverse DNS to get hostnames of external IP address (
+        (src|dest)_hostname ), and lookup the subnet of internal IP addresses
+        (subnet_usage)
+  - id: reverse_dns
+    filter: "true"
+    disabled: true
+    conf:
+      fields:
+        - inFieldName: src_ip
+          outFieldName: src_hostname
+        - inFieldName: dest_ip
+          outFieldName: dest_hostname
+      cacheTTL: 60
+    description: attempt reverse dns lookup on src/dest
+  - id: redis
+    filter: aws_account
+    disabled: null
+    conf:
+      commands:
+        - outField: aws_account_name
+          command: get
+          keyExpr: "`acctid_${aws_account}`"
+      maxBlockSecs: 60
+      url: redis://redis:6379
+    description: Pull AWS Account Name from REDIS
+  - id: lookup
+    filter: C.Net.isPrivate(src_ip)
+    disabled: false
+    conf:
+      matchMode: cidr
+      matchType: specific
+      reloadPeriodSec: 60
+      addToEvent: false
+      inFields:
+        - eventField: src_ip
+          lookupField: cidr
+      outFields:
+        - lookupField: location
+          eventField: subnet_usage
+      file: internal_cidr_lookup.csv
+    description: if src is private, lookup subnet
+  - id: lookup
+    filter: C.Net.isPrivate(dest_ip)
+    disabled: false
+    conf:
+      matchMode: cidr
+      matchType: specific
+      reloadPeriodSec: 60
+      addToEvent: false
+      inFields:
+        - eventField: dest_ip
+          lookupField: cidr
+      file: internal_cidr_lookup.csv
+      outFields:
+        - lookupField: location
+          eventField: subnet_usage
+    description: if dest is private, lookup subnet
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Enrich data with compromised-ips feed from proofpoint/Emerging Threats
+        Open Source feed
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: compromised
+          value: (C.Lookup('compromised-ips.csv').match(src_ip) ||
+            C.Lookup('compromised-ips.csv').match(dest_ip))
+    description: Lookup src/dest against compromised IP list
+  - id: rename
+    filter: "true"
+    disabled: false
+    conf:
+      renameExpr: name.replace(/([^_]+)_.*_([^_]+)/,"$1_$2").replace(/code$/, "country")
+    description: Rename the Geoip fields to simplify event.
+  - id: serialize
+    filter: "true"
+    disabled: true
+    conf:
+      type: json
+      dstField: _raw
+      fields:
+        - "!_*"
+        - "!cribl_breaker"
+        - "*"
+      cleanFields: false
+    description: Enable to re-serialize back into _raw

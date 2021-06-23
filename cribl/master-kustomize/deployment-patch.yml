@@ -1,0 +1,10 @@
+# Source: logstream-master/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cribl
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: dhub

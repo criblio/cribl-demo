@@ -14,6 +14,11 @@ import time
 import docker
 import base64
 import urllib3
+import collections
+import json
+import tempfile
+import shutil
+import tarfile
 from urllib.parse import quote_plus
 
 
@@ -24,8 +29,266 @@ except ImportError:
     from yaml import Loader, Dumper
 
 #config objects
-services = { "cribl": "Cribl LogStream UI", "grafana": "Grafana Visualization Tool", "influxdb2": "InfluxData's InfluxDB v2", "splunk": "Splunk UI"}
+services = { 
+  "cribl": "Cribl LogStream UI", 
+  "grafana": "Grafana Visualization Tool",  
+  "influxdb2": "InfluxData's InfluxDB v2",
+  "splunk": "Splunk UI"}
 allowed_ports = [ 3000, 8000, 8086, 9000 ]
+
+def gen_demo_config(params,options):
+  configmap = "demo-config"
+  print("Setting up Auth ConfigMap")
+  # Delete first, in case there's already one present.
+    # Check for and delete if already present.
+  kbctlcheck = "kubectl get configmap %s -n %s >/dev/null 2>&1" % (configmap, options.ns)
+  kbctlchkout = subprocess.call(kbctlcheck, shell=True)
+  if (kbctlchkout == 0):
+    print("Deleting Existing Auth Configmap")
+    kbctldel = "kubectl delete configmap %s -n %s" % (configmap, options.ns)
+    kubectlout = subprocess.call(kbctldel,  shell=True)
+
+  #f = tempfile.TemporaryDirectory(dir="/var/tmp")
+  dir = tempfile.mkdtemp(dir = "/var/tmp")
+
+  print("Temp Dir: %s" % dir)
+  # Write the users.json file
+  with open("%s/users.json" % dir, "w") as fp:
+
+    for cred in params['creds']:
+      thiscred = params['creds'][cred];
+      if cred == "admin":
+        fp.write ("{\"username\":\"admin\",\"first\":\"admin\",\"last\":\"admin\",\"email\":\"admin\",\"roles\":[\"admin\"],\"password\":\"%s\"}\n" % thiscred['password'])
+      else:
+        fp.write("{\"first\":\"%s\",\"last\":\"%s\",\"email\":\"%s\",\"roles\":[%s],\"username\":\"%s\",\"password\":\"%s\"}\n" % (thiscred['first'], thiscred['last'],thiscred['email'],re.sub(r',', '","', re.sub(r'^|$','"',thiscred['rolestring'])),cred,thiscred['password']))
+  # Write the branch file
+  with open("%s/branch" % dir, "w") as fp:
+    if "branch" in params:
+      fp.write(params['branch'])
+    else:
+      fp.write("master")
+  # Write the admin.pass file
+  with open("%s/admin.pass" % dir, "w") as fp:
+    if "creds" in params and "admin" in params['creds'] and "password" in params['creds']['admin']:
+      fp.write(params['creds']['admin']['password'])
+    else:
+      fp.write("cribl-demo")
+  
+  # Create the configmap (need to add error handling)
+  kbctlcr = "kubectl create configmap demo-config -n %s --from-file=%s " % (options.ns, dir)
+  kubectlout = subprocess.call(kbctlcr,  shell=True)
+  if (kubectlout != 0):
+    print("Auth Configmap Failed: %s" % kubectlout)
+  
+  print("Creating general secret")
+  secret = "demo-admin"
+  
+  # Check for and delete if already present.
+  kbctlcheck = "kubectl get secret %s -n %s " % (secret, options.ns)
+  kbctlchkout = subprocess.call(kbctlcheck, shell=True)
+  if (kbctlchkout == 0):
+    kbctldel = "kubectl delete secret %s -n %s" % (secret, options.ns)
+    kubectlout = subprocess.call(kbctldel,  shell=True)
+  kbctlsecret = "kubectl create secret generic %s -n %s --from-literal=adminpass=%s" % (secret, options.ns, params['creds']['admin']['password'])
+  kbctlout = subprocess.call(kbctlsecret,  shell=True)
+  if (kbctlout != 0):
+    print("Error creating Secret")
+  shutil.rmtree(dir)
+
+def run_setup(params,options):
+  cmd="./scripts/setup.sh"
+
+  if not os.path.exists(cmd):
+    print("Error: Not in the Repo Top Level")
+    sys.exit(255)
+
+  #CRIBL_TAG=next ./scripts/setup.sh -a dhub -n logstreamnext
+  if options.pullsecret:
+    cmd += " -a %s" % options.pullsecret
+
+  #cmd += " -n %s -s" % options.ns
+  cmd += " -n %s " % options.ns
+  print ("Running: %s" % cmd)
+  cmdout = subprocess.call(cmd,  shell=True)
+  print ("Setup Run Return: %s" % cmdout)
+  
+
+  
+   
+
+
+def gen_master_config(params,options):
+  configmap = "master-config"
+  # This configmap includes the files in cribl/master/local/cribl
+  # direct call to kubectl to create the configmap from those files.
+  dir="cribl/master/local/cribl/"
+
+  if not os.path.exists(dir):
+    print("Error: Not in the Repo Top Level")
+    sys.exit(255)
+
+  print("Setting up ConfigMap %s" % configmap)
+  # Check for and delete if already present.
+  kbctlcheck = "kubectl get configmap %s -n %s > /dev/null 2>&1" % (configmap, options.ns)
+  kbctlchkout = subprocess.call(kbctlcheck, shell=True)
+  if (kbctlchkout == 0):
+    kbctldel = "kubectl delete configmap %s -n %s" % (configmap, options.ns)
+    kubectlout = subprocess.call(kbctldel,  shell=True)
+
+  # Create the configmap (need to add error handling)
+  kbctlcr = "kubectl create configmap %s -n %s --from-file=%s" % (configmap, options.ns, dir)
+  kubectlout = subprocess.call(kbctlcr,  shell=True)
+  if (kubectlout != 0):
+    print("Failed to Create ConfigMap %s: %s" % (configmap, kubectlout))
+
+def gen_group_config(params,options):
+  configmap = "group-config"
+  running_dir = os.getcwd()
+  conf_dir="cribl/master/groups"
+
+  if not os.path.exists(conf_dir):
+    print("Error: Not in the Repo Top Level")
+    sys.exit(255)
+  #change to the source directory
+  os.chdir(conf_dir)
+  # Check for and delete if already present.
+  kbctlcheck = "kubectl get configmap %s -n %s > /dev/null 2>&1" % (configmap, options.ns)
+  kbctlchkout = subprocess.call(kbctlcheck, shell=True)
+  if (kbctlchkout == 0):
+    kbctldel = "kubectl delete configmap %s -n %s" % (configmap, options.ns)
+    kubectlout = subprocess.call(kbctldel,  shell=True)
+
+  source_contents = os.listdir(".")
+  dir = tempfile.mkdtemp(dir = "/var/tmp")
+  print("Temp Dir: %s" % dir)
+
+  for source_dir in source_contents:
+    if os.path.isdir(source_dir):
+  
+      print("Tarring up %s" % source_dir)
+      with tarfile.open("%s/groups-%s.tgz" % (dir,source_dir), "w:gz") as tar:
+        tar.add(source_dir)
+
+  # Create the configmap (need to add error handling)
+  kbctlcr = "kubectl create configmap %s -n %s --from-file=%s" % (configmap, options.ns, dir)
+  kubectlout = subprocess.call(kbctlcr,  shell=True)
+  if (kubectlout != 0):
+    print("Failed to Create ConfigMap %s: %s" % (configmap, kubectlout))
+
+  # Change back to the original directory
+  os.chdir(running_dir)
+  shutil.rmtree(dir)
+  
+def gen_sa_config(params,options):
+  configmap = "sa-config"
+  running_dir = os.getcwd()
+  conf_dir="cribl/sa"
+
+  if not os.path.exists(conf_dir):
+    print("Error: Not in the Repo Top Level")
+    sys.exit(255)
+  #change to the source directory
+  os.chdir(conf_dir)
+  # Check for and delete if already present.
+  kbctlcheck = "kubectl get configmap %s -n %s > /dev/null 2>&1" % (configmap, options.ns)
+  kbctlchkout = subprocess.call(kbctlcheck, shell=True)
+  if (kbctlchkout == 0):
+    kbctldel = "kubectl delete configmap %s -n %s" % (configmap, options.ns)
+    kubectlout = subprocess.call(kbctldel,  shell=True)
+
+  source_contents = ['cribl']
+  dir = tempfile.mkdtemp(dir = "/var/tmp")
+  print("Temp Dir: %s" % dir)
+
+  for source_dir in source_contents:
+    if os.path.isdir(source_dir):
+  
+      print("Tarring up %s" % source_dir)
+      with tarfile.open("%s/sa.tgz" % dir, "w:gz") as tar:
+        tar.add(source_dir)
+
+  # Create the configmap (need to add error handling)
+  kbctlcr = "kubectl create configmap %s -n %s --from-file=%s" % (configmap, options.ns, dir)
+  kubectlout = subprocess.call(kbctlcr,  shell=True)
+  if (kubectlout != 0):
+    print("Failed to Create ConfigMap %s: %s" % (configmap, kubectlout))
+
+  shutil.rmtree(dir)
+  # Change back to the original directory
+  os.chdir(running_dir)
+
+
+def dict_merge(dct, merge_dct):
+    """ Recursive dict merge. Inspired by :meth:``dict.update()``, instead of
+    updating only top-level keys, dict_merge recurses down into dicts nested
+    to an arbitrary depth, updating keys. The ``merge_dct`` is merged into
+    ``dct``.
+    :param dct: dict onto which the merge is executed
+    :param merge_dct: dct merged into dct
+    :return: None
+    """
+    for k, v in merge_dct.items():
+        if (k in dct and isinstance(dct[k], dict)
+                and isinstance(merge_dct[k], collections.abc.Mapping)):
+            dict_merge(dct[k], merge_dct[k])
+        else:
+            dct[k] = merge_dct[k]
+
+
+def param_parse(paramtmp, path):
+  tmpparam = {}
+
+  # Write a simpler dict to work with...
+  for i in paramtmp:
+    #print("I: %s" % i)
+    i['Name'] = i['Name'].replace(path + "/","")
+
+    if "/" in i['Name']:
+      tmp = i['Name'].split("/")
+      #print("Break")
+      myparam = tmpparam
+      for ent in range(0, len(tmp)-1):
+
+        #print("Entry: %s" % tmp[ent])
+        if tmp[ent] not in myparam:
+          myparam[tmp[ent]] = {}
+        myparam = myparam[tmp[ent]]
+      myparam[tmp[len(tmp)-1]]=i['Value']
+
+    else:
+      #print("Param: %s - %s" % (i['Name'], i['Value']))
+      tmpparam[i['Name']] = i['Value']
+
+  return(tmpparam)
+
+
+def pull_params(parampath, namespace):
+  ssm = boto3.client("ssm")
+  params = {}
+
+  fullpath = "%s/%s" % (parampath, namespace)
+  print("Full: %s" % fullpath)
+
+  try:
+    pass_param = ssm.get_parameters_by_path(Path=fullpath, Recursive=True, WithDecryption=True, MaxResults=10)
+  except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'ParameterNotFound':
+      print('Parameter tree does not exist, Will use command line args exclusively')
+    print(e)
+
+  #params.update(param_parse(pass_param['Parameters']))
+  dict_merge(params, param_parse(pass_param['Parameters'], fullpath))
+
+  while("NextToken" in pass_param):
+    try:
+      pass_param = ssm.get_parameters_by_path(Path=fullpath, Recursive=True, WithDecryption=True, MaxResults=10, NextToken=pass_param['NextToken'])
+    except botocore.exceptions.ClientError as e:
+      if e.response['Error']['Code'] == 'ParameterNotFound':
+        print('Parameter tree does not exist, Will use command line args exclusively')
+      print(e)
+
+    dict_merge(params, param_parse(pass_param['Parameters'], fullpath))
+  return params
 
 def base64_encode(string):
     """
@@ -120,6 +383,7 @@ def get_hosted_zone(options):
 parser = OptionParser()
 parser.add_option("-n", "--namespace", dest="ns", default="default", help="Namespace to Interrogate")
 parser.add_option("-d", "--domain", dest="domain", default="demo.cribl.io", help="Hosted Zone to Use")
+parser.add_option("-b", "--pull-secret", dest="pullsecret", help="Pull Secret to use for the namespace default service account")
 parser.add_option("-r", "--region", dest="region", default="us-west-2", help="AWS Region to deploy to")
 parser.add_option("-s", "--ssm-path", dest="ssmpath", default="/cribl/demo", help="SSM path for Environment options")
 parser.add_option("-a", "--description", dest="description", default="Demo Environment")
@@ -140,22 +404,12 @@ ssm = boto3.client("ssm")
 
 parampath=options.ssmpath + "/" + options.ns
 #print("Parampath: %s" % parampath)
-parameters = {}
+parameters = pull_params(options.ssmpath, options.ns)
 
 chpass=False
-try:
-  pass_param = ssm.get_parameters_by_path(Path=parampath, Recursive=True, WithDecryption=True)
-except botocore.exceptions.ClientError as e:
-  if e.response['Error']['Code'] == 'ParameterNotFound':
-    print('Parameter tree does not exist, Will use command line args exclusively')
-
-# Write a simpler dict to work with...
-for i in pass_param['Parameters']:
-  parameters[i['Name'].replace(parampath + "/","")] = i['Value']
-  #print("Param: %s - %s" % (i['Name'], i['Value']))
 
 
-if "creds/admin" in parameters:
+if "creds" in parameters and "admin" in parameters["creds"] and "password" in parameters["creds"]["admin"]:
   chpass = True
   print('Credential param exists, using it')
 else: 
@@ -181,15 +435,17 @@ if ("tag" in parameters):
 #print("Options: %s" % options)
 
 if chpass:
-  cmd="perl -pi.bak -e 's{cribldemo([\"\\\]+)}{" + parameters['creds/admin'] + "$1}g;' ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
+  cmd="perl -pi.bak -e 's{cribldemo([\"\\\]+)}{" + parameters['creds']['admin']['password'] + "$1}g;' ./grafana/grafana.k8s.yml"
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Password Set Succeeded")
-  cmd="perl -pi.bak -e 's{cribldemo}{" + parameters['creds/admin'] + "}g;' ./cribl/master/scripts/cli-deploy"
-  rval = subprocess.call(cmd,  shell=True)
-  if rval == 0:
-    print("Password Set #2 Succeeded")
 
+# print("before call: %s" % parameters)
+run_setup(parameters,options)
+gen_demo_config(parameters,options)
+#gen_master_config(parameters,options)
+#gen_group_config(parameters,options)
+#gen_sa_config(parameters,options)
 
 # get acct id and hosted zone id
 acct = sts.get_caller_identity()
@@ -324,7 +580,7 @@ response = r53.change_resource_record_sets(HostedZoneId=zoneid, ChangeBatch = ch
 print("%s - %s" % (response['ChangeInfo']['Status'], response['ChangeInfo']['Comment']))
 
 if (chpass):
-  cmd="git checkout ./cribl/master/local/cribl/auth/users.json ./cribl/master/scripts/api-deploy ./cribl/master/scripts/cli-deploy ./grafana/grafana.k8s.yml ./splunk/Dockerfile ./influxdb2/prod-values.yaml"
+  cmd="git checkout ./grafana/grafana.k8s.yml"
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Password Unset Succeeded")

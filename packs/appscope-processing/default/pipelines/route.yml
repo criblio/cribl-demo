@@ -1,0 +1,12 @@
+id: default
+groups: {}
+routes:
+  - id: default
+    name: default
+    final: true
+    disabled: false
+    pipeline: appscope_processing
+    description: ""
+    clones: []
+    filter: "true"
+    output: default{}

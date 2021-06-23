@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta9
+apiVersion: skaffold/v2beta16
 kind: Config
 metadata:
   name: cribl-demo
@@ -6,39 +6,10 @@ build:
   artifacts:
   - image: apiserver
     context: apiserver
-  - image: cribl-master
-    context: cribl/master
-    docker:
-      buildArgs:
-        TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
-  - image: cribl-worker
-    context: cribl/worker
-    docker:
-      buildArgs:
-        TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
-  - image: cribl-sa
-    context: cribl/sa
-    docker:
-      buildArgs:
-        TAG: '{{ if .CRIBL_TAG}}{{.CRIBL_TAG}}{{else}}latest{{end}}'
-  - image: gogen-bigjson-webhook
-    context: gogen/bigjson-webhook
-  - image: gogen-businessevent-hec
-    context: gogen/businessevent-hec
-  - image: gogen-metrics-dogstatsd
-    context: gogen/metrics-dogstatsd
-  - image: gogen-flowlogs-syslog
-    context: gogen/flowlogs-syslog
-  - image: gogen-pantraffic-syslog
-    context: gogen/pantraffic-syslog
-  - image: gogen-statechange-syslog
-    context: gogen/statechange-syslog
   - image: gogen-accesscombined-forwarder
     context: gogen/accesscombined-forwarder
   - image: gogen-authfailed-filebeat
     context: gogen/authfailed-filebeat
-  - image: gogen-datacollection-syslog
-    context: gogen/datacollection-syslog
   - image: grafana
     context: grafana
   - image: redis
@@ -46,175 +17,113 @@ build:
   - image: splunk
     context: splunk
 deploy:
-  kustomize:
-    paths: []
-  statusCheckDeadlineSeconds: 600
+  helm:
+    releases:
+    - name: telegraf
+      chartPath: telegraf
+      valuesFiles:
+      - telegraf/values.yaml
+    flags:
+      install:
+      - --timeout=600s
+      upgrade:
+      - --timeout=600s
   kubectl:
     manifests:
+    - cribl/master/tmp/cribl-master-rendered.yml
+    - cribl/worker/tmp/cribl-worker-rendered.yml
+    - influxdb-kustomize/influxdb2-rendered.yml
     - apiserver/apiserver.k8s.yml
-    # - cribl/cribl.k8s.yml
     - cribl/sa/cribl-sa.k8s.yml
     - minio/minio.k8s.yml
-    # - kafka/kafka.k8s.yml
     - gogen/gogen.k8s.yml
     - telegraf/kube-state-metrics.yml
     - grafana/grafana.k8s.yml
     - redis/redis.k8s.yml
     - splunk/splunk.k8s.yml
-  helm:
-    flags:
-      upgrade:
-        [--timeout=600s]                 # Helm upgrade timeout
-      install:
-        [--timeout=600s]   
-    releases:
-    - name: cribl
-      chartPath: cribl/charts/logstream-master
-      artifactOverrides:
-        image: cribl-master
-      valuesFiles:
-      - cribl/master.values.prod.yml
-    - name: cribl-w0
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/logs-wg.values.yml
-    - name: cribl-w1
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/metrics-wg.values.yml
-    - name: cribl-w2
-      chartPath: cribl/charts/logstream-workergroup
-      artifactOverrides:
-        image: cribl-worker
-      valuesFiles:
-      - cribl/aws-wg.values.yml
-    - name: telegraf
-      chartPath: telegraf
-      valuesFiles:
-      - telegraf/values.yaml
-    - name: influxdb2
-      chartPath: influxdb2
-      valuesFiles:
-      - influxdb2/prod-values.yaml
-
+    - deploy-job/deploy-job.k8s.yml
+    - gogen/gogen-job.k8s.yml
+  kustomize: {}
+  statusCheckDeadlineSeconds: 600
 profiles:
-  - name: dev
-    patches:
-    - op: add
-      path: /deploy/kustomize/paths
-      value: ["./grafana", "./splunk", "./gogen", "./apiserver", "./minio", "./redis"]
-    - op: replace
-      path: /deploy/helm/releases/0/valuesFiles
-      value: [ "cribl/master-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/1/valuesFiles
-      value: [ "cribl/logs-wg-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/2/valuesFiles
-      value: [ "cribl/metrics-wg-mini.values.yml" ]
-    - op: replace 
-      path: /deploy/helm/releases/3/valuesFiles
-      value: [ "cribl/aws-wg-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/5/valuesFiles
-      value: [ "influxdb2/values.yaml" ]
-
-  - name: minimal
-    patches:
-    - op: add
-      path: /deploy/kustomize/paths
-      value: ["./grafana", "./splunk", "./gogen", "./apiserver", "./minio", "./redis"]
-    - op: remove
-      path: /deploy/kubectl/manifests/1
-    - op: replace
-      path: /deploy/helm/releases/0/valuesFiles
-      value: [ "cribl/master-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/1/valuesFiles
-      value: [ "cribl/logs-wg-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/2/valuesFiles
-      value: [ "cribl/metrics-wg-mini.values.yml" ]
-    - op: replace 
-      path: /deploy/helm/releases/3/valuesFiles
-      value: [ "cribl/aws-wg-mini.values.yml" ]
-    - op: remove
-      path: /deploy/helm/releases/2
-
-  - name: nogen
-    patches:
-    - op: add
-      path: /deploy/kustomize/paths
-      value: ["./grafana", "./splunk", "./minio", "./redis"]
-    - op: remove
-      path: /deploy/kubectl/manifests/3
-    - op: remove
-      path: /deploy/kubectl/manifests/1
-    - op: remove
-      path: /deploy/kubectl/manifests/0
-    - op: replace
-      path: /deploy/helm/releases/0/valuesFiles
-      value: [ "cribl/master-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/1/valuesFiles
-      value: [ "cribl/logs-wg-mini.values.yml" ]
-    - op: replace
-      path: /deploy/helm/releases/2/valuesFiles
-      value: [ "cribl/metrics-wg-mini.values.yml" ]
-    - op: replace 
-      path: /deploy/helm/releases/3/valuesFiles
-      value: [ "cribl/aws-wg-mini.values.yml" ]
-    - op: remove
-      path: /deploy/helm/releases/2
-    - op: remove
-      path: /build/artifacts/12
-    - op: remove
-      path: /build/artifacts/11
-    - op: remove
-      path: /build/artifacts/10
-    - op: remove
-      path: /build/artifacts/9
-    - op: remove
-      path: /build/artifacts/8
-    - op: remove
-      path: /build/artifacts/7
-    - op: remove
-      path: /build/artifacts/6
-    - op: remove
-      path: /build/artifacts/5
-    - op: remove
-      path: /build/artifacts/4
-    - op: remove
-      path: /build/artifacts/0
-
-  - name: forward
-    portForward:
-    - resourceType: deployment
-      resourceName: cribl
-      namespace: minitest
-      port: 9000
-      address: 0.0.0.0
-      localPort: 9000
-    - resourceType: deployment
-      resourceName: grafana
-      namespace: minitest
-      port: 3000
-      address: 0.0.0.0
-      localPort: 3000
-    - resourceType: deployment
-      resourceName: splunk
-      namespace: minitest
-      port: 8000
-      address: 0.0.0.0
-      localPort: 8000
-    - resourceType: deployment
-      resourceName: influxdb2
-      namespace: minitest
-      port: 8086
-      address: 0.0.0.0
-      localPort: 8086
-
+- name: dev
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./cribl/worker/tmp
+    - ./cribl/master/tmp
+    - ./grafana
+    - ./splunk
+    - ./gogen
+    - ./apiserver
+    - ./minio
+    - ./redis
+  - op: remove
+    path: /deploy/kubectl/manifests/12
+  - op: remove
+    path: /deploy/kubectl/manifests/4
+- name: minimal
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./cribl/worker/tmp
+    - ./cribl/master/tmp
+    - ./splunk
+    - ./gogen
+    - ./apiserver
+    - ./minio
+    - ./redis
+  - op: remove
+    path: /deploy/kubectl/manifests/10
+  - op: remove
+    path: /deploy/kubectl/manifests/8
+  - op: remove
+    path: /deploy/kubectl/manifests/2
+  
+- name: nogen
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./cribl/worker/tmp
+    - ./cribl/master/tmp
+    - ./grafana
+    - ./splunk
+    - ./minio
+    - ./redis
+  - op: remove
+    path: /deploy/kubectl/manifests/9
+  - op: remove
+    path: /deploy/kubectl/manifests/7
+  - op: remove
+    path: /deploy/kubectl/manifests/6
+  - op: remove
+    path: /deploy/kubectl/manifests/3
+- name: forward
+  portForward:
+  - resourceType: deployment
+    resourceName: cribl
+    namespace: minitest
+    port: 9000
+    address: 0.0.0.0
+    localPort: 9000
+  - resourceType: deployment
+    resourceName: grafana
+    namespace: minitest
+    port: 3000
+    address: 0.0.0.0
+    localPort: 3000
+  - resourceType: deployment
+    resourceName: splunk
+    namespace: minitest
+    port: 8000
+    address: 0.0.0.0
+    localPort: 8000
+  - resourceType: deployment
+    resourceName: influxdb2
+    namespace: minitest
+    port: 8086
+    address: 0.0.0.0
+    localPort: 8086

@@ -1,0 +1,35 @@
+id: default
+groups: {}
+routes:
+  - id: apache-logstometrics
+    name: logs-to-metrics
+    final: false
+    disabled: false
+    pipeline: logs_to_metrics
+    description: "Extract Metrics out of Access Logs"
+    clones: []
+    filter: "true"
+  - id: apache-enrich
+    name: enrich
+    final: false
+    disabled: false
+    pipeline: enrich
+    description: Use lookups to add context to events
+    clones:
+      - index: cribl-modified
+        source: enrich
+      - index: cribl-modified
+        source: indextimefields
+    filter: "true"
+  - id: apache-sample_and_filter
+    name: sample_and_filter
+    final: false
+    disabled: false
+    pipeline: sample_and_filter
+    description: Clean up voluminous weblog data for our needs
+    clones:
+      - index: cribl-modified
+        source: smart_sample
+      - index: cribl-modified
+        source: filter
+    filter: "true"

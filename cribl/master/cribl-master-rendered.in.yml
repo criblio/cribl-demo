@@ -1,0 +1,223 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstream-master-config-cribl
+stringData:
+  groups.yml: |
+    aws: {}
+    dc1-metrics: {}
+    dc1-logs: {}
+    default:
+      description: Default Worker Group
+      tags: default
+  mappings.yml: |
+    rulesets:
+      default:
+        conf:
+          functions:
+            - filter: cribl.tags.includes('aws')
+              conf:
+                add:
+                  - name: groupId
+                    value: "'aws'"
+              id: eval
+              final: true
+              description: aws
+            - filter: cribl.tags.includes('dc1-metrics')
+              conf:
+                add:
+                  - name: groupId
+                    value: "'dc1-metrics'"
+              id: eval
+              final: true
+              description: dc1-metrics
+            - filter: cribl.tags.includes('dc1-logs')
+              conf:
+                add:
+                  - name: groupId
+                    value: "'dc1-logs'"
+              id: eval
+              final: true
+              description: dc1-logs
+            - filter: "!cribl.group"
+              id: eval
+              description: Default Mappings
+              disabled: false
+              final: true
+              conf:
+                add:
+                  - name: groupId
+                    value: "'default'"
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/instance: cribl
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-master-2.4.5
+  name: cribl
+spec:
+  ports:
+  - name: api
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app.kubernetes.io/instance: cribl
+    app.kubernetes.io/name: cribl
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/instance: cribl
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-master-2.4.5
+  name: cribl-internal
+spec:
+  ports:
+  - name: api
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  - name: mastercomm
+    port: 4200
+    protocol: TCP
+    targetPort: 4200
+  selector:
+    app.kubernetes.io/instance: cribl
+    app.kubernetes.io/name: cribl
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: cribl
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cribl
+    app.kubernetes.io/version: 2.4.5
+    helm.sh/chart: logstream-master-2.4.5
+  name: cribl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: cribl
+      app.kubernetes.io/name: cribl
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: cribl
+        app.kubernetes.io/name: cribl
+    spec:
+      containers:
+      - env:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        - name: CRIBL_HOME
+          value: /opt/cribl
+        - name: CRIBL_DIST_MODE
+          value: master
+        - name: CRIBL_DIST_MASTER_URL
+          value: tcp://criblmaster@0.0.0.0:4200
+        - name: CRIBL_VOLUME_DIR
+          value: /opt/cribl/config-volume
+        - name: CRIBL_BEFORE_START_CMD_2
+          value: if ! [ -d $CRIBL_VOLUME_DIR/groups ]; then mkdir $CRIBL_VOLUME_DIR/groups; for file in /var/tmp/group-config/*.tgz; do tar -xzf $file --dir=$CRIBL_VOLUME_DIR/groups; done; fi
+        - name: CRIBL_BEFORE_START_CMD_3
+          value: if ! [ -e $CRIBL_VOLUME_DIR/masterupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl; cp /var/tmp/master-config/* $CRIBL_VOLUME_DIR/local/cribl; mkdir -p $CRIBL_VOLUME_DIR/scripts; cp /var/tmp/scripts-config/* $CRIBL_VOLUME_DIR/scripts; touch $CRIBL_VOLUME_DIR/masterupdated-flag; fi
+        - name: CRIBL_BEFORE_START_CMD_4
+          value: if ! [ -e $CRIBL_VOLUME_DIR/usersupdated-flag ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl/auth; cp /var/tmp/demo-config/users.json $CRIBL_VOLUME_DIR/local/cribl/auth/users.json; touch $CRIBL_VOLUME_DIR/usersupdated-flag; fi
+        - name: SCOPE_TAG_service
+          value: cribl-leader
+        - name: CRIBL_BEFORE_START_CMD_1
+          value: if [ ! -e $CRIBL_VOLUME_DIR/local/cribl/mappings.yml ]; then mkdir -p $CRIBL_VOLUME_DIR/local/cribl;  cp /var/tmp/config_bits/groups.yml $CRIBL_VOLUME_DIR/local/cribl/groups.yml; cp /var/tmp/config_bits/mappings.yml $CRIBL_VOLUME_DIR/local/cribl/mappings.yml; fi
+        image: cribl/cribl:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/v1/health
+            port: 9000
+          initialDelaySeconds: 60
+        name: logstream-master
+        ports:
+        - containerPort: 9000
+          name: api
+        - containerPort: 4200
+          name: mastercomm
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/v1/health
+            port: 9000
+          initialDelaySeconds: 60
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 750m
+            memory: 1024Mi
+        volumeMounts:
+        - mountPath: /opt/cribl/config-volume
+          name: config-storage
+        - mountPath: /var/tmp/config_bits
+          name: initial-config
+        - mountPath: /var/tmp/group-config
+          name: group-config
+          readOnly: true
+          subPath: null
+        - mountPath: /var/tmp/master-config
+          name: master-config
+          readOnly: true
+          subPath: null
+        - mountPath: /var/tmp/scripts-config
+          name: scripts-config
+          readOnly: true
+          subPath: null
+        - mountPath: /var/tmp/demo-config
+          name: demo-config
+          readOnly: true
+          subPath: null
+      initContainers: null
+      volumes:
+      - name: initial-config
+        secret:
+          secretName: logstream-master-config-cribl
+      - name: config-storage
+        persistentVolumeClaim:
+          claimName: config-claim
+      - configMap:
+          name: group-config
+        name: group-config
+      - configMap:
+          name: master-config
+        name: master-config
+      - configMap:
+          name: scripts-config
+        name: scripts-config
+      - configMap:
+          name: demo-config
+        name: demo-config

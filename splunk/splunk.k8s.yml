@@ -20,14 +20,23 @@ spec:
         app.kubernetes.io/name: splunk
     spec:
       containers:
-        - env:
+        - name: splunk
+          env:
+            - name: SCOPE_TAG_service
+              value: splunk
+            - name: SPLUNK_ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: demo-admin
+                  key: adminpass
+            - name: SPLUNK_BEFORE_START_CMD_2
+              value: "edit user admin -password ${SPLUNK_ADMIN_PASS} -auth admin:cribldemo"
             - name: CRIBL_ROUTING_DEMO
               value: "1"
             - name: DONT_TIMEOUT
               value: "1"
           image: splunk
           imagePullPolicy: Always
-          name: splunk
           ports:
             - containerPort: 8000
             - containerPort: 8088

@@ -1,0 +1,6 @@
+{
+    "name": "pan-firewall-traffic",
+    "version": "1.0.0",
+    "author":"Cribl Demo",
+    "description":"For Managing PAN Firewall Traffic Logs"
+}

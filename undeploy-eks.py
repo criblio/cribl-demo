@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 from optparse import OptionParser
 from kubernetes import client, config
@@ -188,4 +188,4 @@ else:
   print("Skaffold Delete Failed")
   sys.exit(rval)
 
-cleanup_ecr(options)
+#cleanup_ecr(options)
