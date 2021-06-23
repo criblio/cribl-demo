@@ -86,6 +86,16 @@ as well as with the docker driver:
 minikube start --cpus=4 --memory=8192mb --vm-driver=docker
 ```
 
+minikube and skaffold don't always get along too well when it comes to image caching, so it's important to ensure that 
+skaffold uses the docker environment within minikube. Luckily, this is pretty easy to do. Simple run:
+
+```
+eval $(minikube docker-env)
+```
+
+this will set a few environment variables that will instruct skaffold to use the minikube docker env, rather than the
+systems docker env. 
+
 ## Running a Demo Environment
 
 
