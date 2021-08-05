@@ -475,7 +475,7 @@ skaffbuildcall = "skaffold build --tag=%s" % options.ns
 skaffdeploycall = "skaffold deploy --status-check --tag=%s -n %s" % (options.ns, options.ns)
 if (options.profile):
   skaffbuildcall = "skaffold build --tag=%s --profile=%s" % (options.ns, options.profile)
-  skaffdeploycall = "skaffold deploy --status-check --tag=%s --profile=%s -n %s" % (options.ns, options.profile, options.ns)
+  skaffdeploycall = "skaffold deploy --verbosity='debug' --status-check --tag=%s --profile=%s -n %s" % (options.ns, options.profile, options.ns)
 
 rval = subprocess.call(skaffbuildcall,  shell=True)
 if rval == 0:
