@@ -346,7 +346,7 @@ def setup_ecr(options,acct):
           print("Unhandled Error: %s" % error.response['Error']['Code'])
 
   print("Done")
-  docker_login(options,acct)
+  #docker_login(options,acct)
 
 # Check that the specified namespace exists, and create it if it doesn't
 def check_namespace(options, kubeclient):
@@ -405,6 +405,8 @@ ssm = boto3.client("ssm")
 parampath=options.ssmpath + "/" + options.ns
 #print("Parampath: %s" % parampath)
 parameters = pull_params(options.ssmpath, options.ns)
+print (parameters);
+#sys.exit(0)
 
 chpass=False
 
@@ -431,6 +433,12 @@ if ("profile" in parameters):
 
 if ("tag" in parameters):
   os.environ['CRIBL_TAG'] = parameters['tag']
+
+if ("docker-auth" in parameters):
+  kubecmd="kubectl create secret docker-registry dockreg -n %s --docker-username=%s --docker-password=%s --docker-email=%s" % ( options.ns, parameters['docker-auth']['username'], parameters['docker-auth']['password'], parameters['docker-auth']['email'])
+  rval = subprocess.call(kubecmd,  shell=True)
+  options.pullsecret = "dockreg"
+
 
 #print("Options: %s" % options)
 
