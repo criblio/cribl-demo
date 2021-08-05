@@ -12,6 +12,7 @@ fi
 mv $SCRIPT_DIR/enumerate_envs.py $DIR
 
 for dom in $($DIR/enumerate_envs.py -j $arg); do 
+  
   # Remove kubeconfig
   #if [ -e ${HOME}/.kube/config ]; then 
    # rm ${HOME}/.kube/config
@@ -23,6 +24,7 @@ for dom in $($DIR/enumerate_envs.py -j $arg); do
   aws eks update-kubeconfig --name $cluster
   kubectl config current-context
   git checkout $branch
+  $DIR/scripts/setup.sh -n $ns
   $DIR/undeploy-eks.py -n $ns
   $DIR/deploy-eks.py -n $ns
 done
