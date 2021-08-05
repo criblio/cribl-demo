@@ -21,6 +21,7 @@ for dom in $($DIR/enumerate_envs.py -j $arg); do
   branch=$(echo $dom | awk -F- '{print $3}'); 
   echo "NS: $ns, Cluster $cluster"
   aws eks update-kubeconfig --name $cluster
+  kubectl config current-context
   git checkout $branch
   $DIR/undeploy-eks.py -n $ns
   $DIR/deploy-eks.py -n $ns
