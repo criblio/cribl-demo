@@ -329,8 +329,9 @@ def dockerhub_auth(auth):
     print("Docker Auth not specified")
     sys.exit(222)
 
-  dockercmd = "docker login -u %s -p %s" % (auth['username'], auth['password'])
-  rval = subprocess.call(dockercmd,  shell=True)
+  subprocess.run(["docker", "login", "--username", auth['username'], "--password-stdin"], input=auth['password'].encode('utf-8'))
+  #dockercmd = "docker login -u %s -p %s" % (auth['username'], auth['password'])
+  #rval = subprocess.call(dockercmd,  shell=True)
 
 # Functions
 # Set up ECR Repos for all the images in the skaffold.yaml file.
