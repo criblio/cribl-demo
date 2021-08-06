@@ -354,7 +354,7 @@ def setup_ecr(options,acct):
           print("Unhandled Error: %s" % error.response['Error']['Code'])
 
   print("Done")
-  #docker_login(options,acct)
+  docker_login(options,acct)
 
 # Check that the specified namespace exists, and create it if it doesn't
 def check_namespace(options, kubeclient):
