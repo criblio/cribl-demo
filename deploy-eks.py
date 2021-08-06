@@ -324,6 +324,13 @@ def docker_login(options, acct):
   subprocess.run(["docker", "login", "--username", "AWS", "--password-stdin", registry], input=password.encode('utf-8'))
   print(resp['Status'])
 
+def dockerhub_auth(auth):
+  if "username" not in auth or "password" not in auth:
+    print("Docker Auth not specified")
+    sys.exit(222)
+
+  dockercmd = "docker login -u %s -p %s" % (auth['username'], auth['password'])
+  rval = subprocess.call(dockercmd,  shell=True)
 
 # Functions
 # Set up ECR Repos for all the images in the skaffold.yaml file.
@@ -437,6 +444,7 @@ if ("tag" in parameters):
 if ("docker-auth" in parameters):
   kubecmd="kubectl create secret docker-registry dockreg -n %s --docker-username=%s --docker-password=%s --docker-email=%s" % ( options.ns, parameters['docker-auth']['username'], parameters['docker-auth']['password'], parameters['docker-auth']['email'])
   rval = subprocess.call(kubecmd,  shell=True)
+  dockerhub_auth(parameters['docker-auth'])
   options.pullsecret = "dockreg"
 
 
