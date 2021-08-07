@@ -1,7 +1,8 @@
 pack,workergroup
-apache-logs.crbl,dc1-logs
-pan-firewall-traffic.crbl,dc1-logs
-speedtest-parse.crbl,dc1-metrics
-vpcflow-parse.crbl,aws
-appscope-processing.crbl,aws
-Windows_Events.crbl,dc1-logs
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/apache-logs.crbl,dc1-logs
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/pan-firewall-traffic.crbl,dc1-logs
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/speedtest-parse.crbl,dc1-metrics
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/vpcflow-parse.crbl,aws
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/appscope-processing.crbl,aws
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/Windows_Events.crbl,dc1-logs
+https://github.com/criblio/cribl-demo/raw/3.1-changes/packs/build/statechange.crbl,dc1-logs
