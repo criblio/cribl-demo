@@ -1,0 +1,66 @@
+targets:
+  default:
+    defaultId: system_notifications
+    type: default
+  system_notifications:
+    type: bulletin_message
+    severity: warn
+    text: Notification has been triggered
+    title: Notification
+    onBackpressure: drop
+  _log:
+    type: notifications_log
+    onBackpressure: drop
+  _router:
+    rules:
+      - final: false
+        filter: __notificationTargets.has('sns-email')
+        output: sns-email
+      - final: false
+        filter: (true)
+        output: _log
+      - final: false
+        filter: (true)
+        output: system_notifications
+    type: router
+  sns-email:
+    systemFields:
+      - cribl_host
+    method: POST
+    format: custom
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    maxPayloadEvents: 0
+    compress: false
+    rejectUnauthorized: false
+    timeoutSec: 30
+    flushPeriodSec: 1
+    useRoundRobinDns: false
+    customSourceExpression: "`'${_raw}'`"
+    customDropWhenNull: false
+    customEventDelimiter: \n
+    customContentType: application/json
+    type: webhook
+    url: https://changeme-to-a-valid-webook.com/
+    onBackpressure: drop
+    status:
+      health: Green
+      timestamp: 1628207925621
+      metrics:
+        numBytesInBuffer: 0
+        numEventsInBuffer: 0
+        concurrentRequests: 0
+        lastFlushTime: 1628207888658
+        sentCount: 39
+        numDropped: 0
+        parseErrorCount: 0
+notifications:
+  Splunk-unhealthy:
+    disabled: false
+    targets:
+      - sns-email
+    conf:
+      name: splunk:splunk
+      timeWindow: 60s
+    condition: unhealthy-dest
+    group: dc1-logs
