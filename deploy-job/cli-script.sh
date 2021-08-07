@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z "$CRIBL_HOME" ]; then
+  CRIBL_HOME=/opt/cribl
+fi
+
 # This works off a secret exposed as an env var in the pod CRIBL_ADMIN_PASSWORD
 if [ -z "$CRIBL_ADMIN_PASSWORD" ] || [ -z "$CRIBL_URL" ]; then
   echo "Both CRIBL_ADMIN_PASSWORD AND CRIBL_URL need to be set"
