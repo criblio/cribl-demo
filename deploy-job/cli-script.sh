@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This doesn't work yet, but it's being left in for when the cli can take a remote leader url.
+
 if [ -z "$CRIBL_HOME" ]; then
   CRIBL_HOME=/opt/cribl
 fi

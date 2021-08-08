@@ -33,7 +33,7 @@ spec:
           cd deploy-job
           echo "Admin Pass: " 
           cat /etc/demo-config/admin.pass
-          CRIBL_VOLUME_DIR=/opt/cribl/config-volume CRIBL_URL=http://cribl:9000 CRIBL_ADMIN_PASSWORD=$(cat /etc/demo-config/admin.pass) ./cli-script.sh
+          CRIBL_VOLUME_DIR=/opt/cribl/config-volume CRIBL_URL=http://cribl:9000 CRIBL_ADMIN_PASSWORD=$(cat /etc/demo-config/admin.pass) ./api-script.sh
         imagePullPolicy: Always
         name: ls-deploy-job
         volumeMounts:
