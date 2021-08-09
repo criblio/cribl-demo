@@ -14,8 +14,8 @@ targets:
   _router:
     rules:
       - final: false
-        filter: __notificationTargets.has('sns-email')
-        output: sns-email
+        filter: __notificationTargets.has('webhook-out')
+        output: webhook-out
       - final: false
         filter: (true)
         output: _log
@@ -23,7 +23,7 @@ targets:
         filter: (true)
         output: system_notifications
     type: router
-  sns-email:
+  webhook-out:
     systemFields:
       - cribl_host
     method: POST
@@ -58,7 +58,7 @@ notifications:
   Splunk-unhealthy:
     disabled: false
     targets:
-      - sns-email
+      - webhook-out
     conf:
       name: splunk:splunk
       timeWindow: 60s

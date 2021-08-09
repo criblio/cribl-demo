@@ -1,8 +1,11 @@
 # StateChange
 ----
 
-This pack is for cribl-demo, to show an example of the Code feature in action. It operates on nagios input (which we generate via gogen), and basically filters the state messages ("<hostname> is <UP|DOWN>") down to just the ones that are different
-than the previous event. Thus, the only events that get through are actually when that state has changed. 
+This pack is for cribl-demo, to show an example of the Code feature in action. It operates on nagios input (which we generate via gogen), and basically filters the state messages ("<hostname> is <UP|DOWN>") down to just the ones that are different than the previous event. Thus, the only events that get through are actually when that state has changed. 
+
+## Replacing a Custom Function
+
+This pack's intent is to show that using the Code function can be much simpler than creating a custom function - this was a custom function in a previous iteration of the cribl-demo repo, and one can see how much simpler this code function is than the custom function version [here](https://github.com/criblio/cribl-demo/tree/d1caa131b73c4bd739e2bca33fbfc3eec0d57256/cribl/functions/demo_statechange).
 
 ## Requirements Section
 

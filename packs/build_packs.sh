@@ -8,6 +8,6 @@ if [ -z "${FIND}" ]; then
 fi
 
 for pack in $(${FIND} $DIR -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | egrep -v "build"); do
-  (cd $pack; tar czf ../build/$pack.crbl .)
+  (cd $pack; tar czf ../build/$pack.crbl ???*)
 done
 
