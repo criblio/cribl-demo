@@ -10,10 +10,6 @@ functions:
       iterations: 100
       overwrite: false
       regex: /(?<__host>\S+) is (?<__state>\w+)$/
-  - id: drop
-    filter: __host !== 'auth3.cribl.io'
-    disabled: true
-    conf: {}
   - id: code
     filter: "sourcetype==='nagios' "
     disabled: null
