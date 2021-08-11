@@ -18,6 +18,16 @@ outputs:
     onBackpressure: block
     type: splunk
     host: splunk
+    notifications:
+      - disabled: false
+        targets:
+          - sns-email
+        conf:
+          name: splunk:splunk
+          timeWindow: 60s
+        condition: unhealthy-dest
+        group: dc1-logs
+        id: Splunk-unhealthy
 
   statsd:
     systemFields:

@@ -1,0 +1,5 @@
+prev:
+  type: object
+  lib: custom
+  description: Cache Variable for States by host
+  value: "{}"
