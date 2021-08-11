@@ -5,3 +5,4 @@ speedtest-parse.crbl,dc1-metrics
 vpcflow-parse.crbl,aws
 appscope-processing.crbl,aws
 Windows_Events.crbl,dc1-logs
+statechange.crbl,dc1-logs

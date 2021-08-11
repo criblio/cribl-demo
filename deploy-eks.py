@@ -452,10 +452,17 @@ if ("docker-auth" in parameters):
 #print("Options: %s" % options)
 
 if chpass:
-  cmd="perl -pi.bak -e 's{cribldemo([\"\\\]+)}{" + parameters['creds']['admin']['password'] + "$1}g;' ./grafana/grafana.k8s.yml"
+  cmd="perl -pi -e 's{cribldemo([\"\\\]+)}{" + parameters['creds']['admin']['password'] + "$1}g;' ./grafana/grafana.k8s.yml"
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Password Set Succeeded")
+
+if 'notifyurl' in parameters:
+  cmd="perl -pi -e 's{https://changeme-to-a-valid-webook.com/}{" + parameters['notifyurl'] + "}g;' ./cribl/master/local/cribl/notifications.yml"
+  print("Running %s" % cmd)
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Notification URL Set Succeeded")
 
 # print("before call: %s" % parameters)
 run_setup(parameters,options)
@@ -601,3 +608,9 @@ if (chpass):
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Password Unset Succeeded")
+
+if 'notifyurl' in parameters:
+  cmd="git checkout ./cribl/master/local/cribl/notifications.yml" 
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Notification URL Clear Succeeded")
