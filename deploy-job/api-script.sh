@@ -23,7 +23,7 @@ while IFS=, read -r pack group; do
       CRIBL_GROUPS[last]=$group
     fi
     # Upload the crbl file
-    if [[ $pack =~ ^git+https: ]]; then
+    if [[ $pack =~ ^git\+https: ]]; then
       PACK_SOURCE=$pack
     else
       PACK_SOURCE=$(curl -s -X PUT \
