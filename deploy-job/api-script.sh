@@ -23,11 +23,15 @@ while IFS=, read -r pack group; do
       CRIBL_GROUPS[last]=$group
     fi
     # Upload the crbl file
-    PACK_SOURCE=$(curl -s -X PUT \
+    if [[ $pack =~ /^git+https:/ ]]; then
+      PACK_SOURCE=$pack
+    else
+      PACK_SOURCE=$(curl -s -X PUT \
          -T ../packs/build/$pack $CRIBL_URL/api/v1/m/$group/packs\?filename\=$pack \
          -H "accept: application/json" \
          -H "Authorization: Bearer $TOKEN" |\
-    jq '.source' -r)
+      jq '.source' -r)
+    fi
     # Install the pack
     STATUS=$(curl -s -X POST -d "{\"source\": \"$PACK_SOURCE\"}" \
          -H "Content-Type: application/json" \

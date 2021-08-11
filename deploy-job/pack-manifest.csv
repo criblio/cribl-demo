@@ -6,3 +6,4 @@ vpcflow-parse.crbl,aws
 appscope-processing.crbl,aws
 Windows_Events.crbl,dc1-logs
 statechange.crbl,dc1-logs
+git+https://github.com/criblpacks/cribl-carbon-black.git,default
