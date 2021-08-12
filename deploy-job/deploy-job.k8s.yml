@@ -22,17 +22,11 @@ spec:
           set -x
           mkdir /tmp/clone
           cd /tmp/clone
-          df -h
-          echo "Branch: "
-          ls -al /etc/demo-config/
-          cat /etc/demo-config/branch
           git clone https://github.com/criblio/cribl-demo.git
           cd cribl-demo
           git checkout $(cat /etc/demo-config/branch)
           git pull
           cd deploy-job
-          echo "Admin Pass: " 
-          cat /etc/demo-config/admin.pass
           CRIBL_VOLUME_DIR=/opt/cribl/config-volume CRIBL_URL=http://cribl:9000 CRIBL_ADMIN_PASSWORD=$(cat /etc/demo-config/admin.pass) ./api-script.sh
         imagePullPolicy: Always
         name: ls-deploy-job

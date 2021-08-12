@@ -1,4 +1,4 @@
-#!/bin/bash  -x
+#!/bin/bash 
 
 function install_pack() {
 
@@ -52,12 +52,15 @@ while IFS=, read -r pack group; do
   fi
 done < pack-manifest.csv
 
-#last=${#CRIBL_GROUPS[@]}
-#CRIBL_GROUPS[last]=default
+# Find all of the repos currently in the Packs Dispensary, and puff puff pass.
+PACKS=$(curl https://api.github.com/users/criblpacks/repos | jq '.[].clone_url' -r)
+for pack in $PACKS; do
+  echo $pack
+  install_pack "default" "git+$pack"
 
-#echo ${CRIBL_GROUPS[@]}
+done
 
-
+# Commit all changes 
 commit=$(curl -s -X POST "$CRIBL_URL/api/v1/version/commit" \
               -H  "accept: application/json" \
               -H  "Authorization: Bearer $TOKEN" |\
@@ -66,6 +69,8 @@ if [ -z "$commit" ]; then
   echo "No Commit Found, exiting"
   exit 255
 fi
+
+# Deploy in each worker group that we've installed anything into. 
 for grp in ${CRIBL_GROUPS[@]}; do
 
   echo "Deploying $grp"
@@ -73,7 +78,6 @@ for grp in ${CRIBL_GROUPS[@]}; do
   # Run commit and deploy separately for each worker group (commit-deploy will fail if
   # there is nothing to commit, but we want to push a deploy either way.
   echo $patchdata > /tmp/patch$$
-  #echo "pdata: $patchdata"
   STATUS=$(curl -s -X PATCH -d@/tmp/patch$$ "$CRIBL_URL/api/v1/master/groups/$grp/deploy" \
        -H "accept: application/json" \
        -H "Authorization: Bearer $TOKEN" \
