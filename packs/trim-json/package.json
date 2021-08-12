@@ -1,6 +1,0 @@
-{
-    "name": "trim-json",
-    "version": "1.0.0",
-    "author":"Cribl Demo",
-    "description":"Pack in place in both Logs and AWS including trim_json pipeline"
-}
