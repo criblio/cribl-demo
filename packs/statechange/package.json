@@ -1,1 +1,0 @@
-{"name":"statechange","version":"0.0.1","author":"Cribl, Inc.","description":"Filters Nagios State messages (UP/DOWN) to just the actual changes in state","displayName":"statechange"}
