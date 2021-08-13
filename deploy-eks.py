@@ -102,7 +102,6 @@ def run_setup(params,options):
     print("Error: Not in the Repo Top Level")
     sys.exit(255)
 
-  #CRIBL_TAG=next ./scripts/setup.sh -a dhub -n logstreamnext
   if options.pullsecret:
     cmd += " -a %s" % options.pullsecret
 
@@ -463,6 +462,21 @@ if 'notifyurl' in parameters:
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Notification URL Set Succeeded")
+
+if 'notifysource' in parameters:
+  cmd="perl -pi -e 's{(customSourceExpression:)[^\n]+$}{$1 \"\`" + parameters['notifysource'] + "\`\"}g;' ./cribl/master/local/cribl/notifications.yml"
+  print("Running %s" % cmd)
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Notification Source Set Succeeded")
+
+if 'notifytype' in parameters:
+  cmd="perl -pi -e 's{application/json}{" + parameters['notifytype'] + "}g;' ./cribl/master/local/cribl/notifications.yml"
+  print("Running %s" % cmd)
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("Notification Type Set Succeeded")
+
 
 # print("before call: %s" % parameters)
 run_setup(parameters,options)

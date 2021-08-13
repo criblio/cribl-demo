@@ -1,8 +1,7 @@
 pack,workergroup
-apache-logs.crbl,dc1-logs
-pan-firewall-traffic.crbl,dc1-logs
-speedtest-parse.crbl,dc1-metrics
-vpcflow-parse.crbl,aws
-appscope-processing.crbl,aws
-Windows_Events.crbl,dc1-logs
-statechange.crbl,dc1-logs
+git+https://github.com/criblio/demo-apache-logs.git,dc1-logs
+git+https://github.com/criblio/demo-pan-firewall-traffic.git,dc1-logs
+git+https://github.com/criblio/demo-speedtest-parse.git,dc1-metrics
+git+https://github.com/criblio/demo-vpcflow-parse.git,aws
+git+https://github.com/criblio/demo-appscope-processing.git,aws
+git+https://github.com/criblio/demo-statechange-pack.git,dc1-logs
