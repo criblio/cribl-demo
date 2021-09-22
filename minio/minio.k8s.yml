@@ -38,11 +38,11 @@ spec:
             - server
             - /data
           env:
-            - name: MINIO_ACCESS_KEY
+            - name: MINIO_ROOT_USER
               value: ACCESSKEY
-            - name: MINIO_SECRET_KEY
+            - name: MINIO_ROOT_PASSWORD
               value: SECRETKEY
-          image: minio/minio:latest
+          image: minio/minio:RELEASE.2021-09-15T04-54-25Z.fips
           name: minio
           ports:
             - containerPort: 9000
