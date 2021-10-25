@@ -11,13 +11,23 @@ $PRIVATE_NETS
     public:
 $PUBLIC_NETS
 nodeGroups:
-  - name: a
+  - name: a121
     minSize: 1
     maxSize: 4
     desiredCapacity: 1
     privateNetworking: true
     volumeSize: 200
     availabilityZones: ["$AZ_A"]
+    kubeletExtraConfig:
+      kubeReserved:
+        cpu: "400m"
+        memory: "400Mi"
+        ephemeral-storage: "1Gi"
+      kubeReservedCgroup: "/kube-reserved"
+      systemReserved:
+        cpu: "400m"
+        memory: "400Mi"
+        ephemeral-storage: "1Gi"
 
     ssh:
       allow: true
@@ -27,6 +37,8 @@ nodeGroups:
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
         - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+        - arn:aws:iam::586997984287:policy/LogReader-Core-PassRole
+        - arn:aws:iam::586997984287:policy/demo-eks-deploy
       withAddonPolicies:
         autoScaler: true
         imageBuilder: true
@@ -42,13 +54,23 @@ nodeGroups:
       spotAllocationStrategy: "capacity-optimized"
       instanceTypes: 
         - m5.4xlarge
-  - name: b
+  - name: b121
     minSize: 1
     maxSize: 4
     desiredCapacity: 1
     privateNetworking: true
     volumeSize: 200
     availabilityZones: ["$AZ_B"]
+    kubeletExtraConfig:
+      kubeReserved:
+        cpu: "400m"
+        memory: "400Mi"
+        ephemeral-storage: "1Gi"
+      kubeReservedCgroup: "/kube-reserved"
+      systemReserved:
+        cpu: "400m"
+        memory: "400Mi"
+        ephemeral-storage: "1Gi"
 
     ssh:
       allow: true
@@ -58,6 +80,8 @@ nodeGroups:
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
         - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+        - arn:aws:iam::586997984287:policy/LogReader-Core-PassRole
+        - arn:aws:iam::586997984287:policy/demo-eks-deploy
       withAddonPolicies:
         autoScaler: true
         imageBuilder: true
@@ -73,13 +97,23 @@ nodeGroups:
       spotAllocationStrategy: "capacity-optimized"
       instanceTypes: 
         - m5.4xlarge
-  - name: c
+  - name: c121
     minSize: 1
     maxSize: 4
     desiredCapacity: 1
     privateNetworking: true
     volumeSize: 200
     availabilityZones: ["$AZ_C"]
+    kubeletExtraConfig:
+      kubeReserved:
+        cpu: "400m"
+        memory: "400Mi"
+        ephemeral-storage: "1Gi"
+      kubeReservedCgroup: "/kube-reserved"
+      systemReserved:
+        cpu: "400m"
+        memory: "400Mi"
+        ephemeral-storage: "1Gi"
 
     ssh:
       allow: true
@@ -89,6 +123,8 @@ nodeGroups:
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
         - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+        - arn:aws:iam::586997984287:policy/LogReader-Core-PassRole
+        - arn:aws:iam::586997984287:policy/demo-eks-deploy
       withAddonPolicies:
         autoScaler: true
         imageBuilder: true
