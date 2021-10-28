@@ -105,8 +105,9 @@ def run_setup(params,options):
   if options.pullsecret:
     cmd += " -a %s" % options.pullsecret
 
-  #cmd += " -n %s -s" % options.ns
-  cmd += " -n %s " % options.ns
+  cmd += " -n %s" % options.ns
+  if options.scope:
+    cmd += " -s" 
   print ("Running: %s" % cmd)
   cmdout = subprocess.call(cmd,  shell=True)
   print ("Setup Run Return: %s" % cmdout)
@@ -396,6 +397,7 @@ parser.add_option("-s", "--ssm-path", dest="ssmpath", default="/cribl/demo", hel
 parser.add_option("-a", "--description", dest="description", default="Demo Environment")
 parser.add_option("-c", "--container-repo-head", dest="repohead", default="cribl-demo", help="ECR Repo top level")
 parser.add_option("-p", "--profile", dest="profile", help="Skaffold Profile to run with")
+parser.add_option("-i", "--scope", dest="scope", action="store_true", help="Enable (instrument) appscope through demo")
 (options, args) = parser.parse_args()
 
 

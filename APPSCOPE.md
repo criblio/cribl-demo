@@ -15,7 +15,7 @@ The demo environment has been modified to enable AppScope use to track the metri
 This needs to be executed *before* the cribl-demo is deployed. AppScope needs to be installed in the cluster first. AppScope has a built in kubernetes installation command:
 
 ```
-docker run  cribl/scope:latest scope k8s --cribldest cribl-w2:10090 | kubectl apply -k
+docker run  cribl/scope:latest scope k8s --cribldest tcp://cribl-w2:10090 | kubectl apply -f -
 ```
 
 This will install the mutating admission webhook, and a general config. Now, each namespace that should be "scoped", needs to be enabled for it. The setup.sh script, if you give it a `-s` option, will enable the demo namespace for AppScope use. 
