@@ -440,6 +440,9 @@ if ("domain" in parameters):
 if ("profile" in parameters):
   options.profile = parameters['profile']
 
+if ("scope" in parameters):
+  options.scope = True
+
 if ("tag" in parameters):
   os.environ['CRIBL_TAG'] = parameters['tag']
 
@@ -478,6 +481,7 @@ if 'notifytype' in parameters:
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Notification Type Set Succeeded")
+
 
 
 # print("before call: %s" % parameters)

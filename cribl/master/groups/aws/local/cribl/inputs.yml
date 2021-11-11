@@ -20,6 +20,7 @@ inputs:
     ipWhitelistRegex: /.*/
   in_appscope:
     disabled: false
+    sendToRoutes: false
     host: 0.0.0.0
     tls:
       disabled: true
@@ -27,14 +28,35 @@ inputs:
     maxActiveCxn: 1000
     enableProxyHeader: false
     staleChannelFlushMs: 10000
+    authType: manual
     authToken: ""
     type: appscope
     port: 10090
+    connections:
+      - output: AppScope
+        pipeline: pack:appscope-processing
   CriblMetrics:
     disabled: false
+    sendToRoutes: false
     prefix: cribl.logstream.
     type: criblmetrics
     pipeline: cribl_metrics_rollup
     metadata:
       - name: index
         value: cribl-metrics
+  OTEL:
+    disabled: false
+    sendToRoutes: false
+    host: 0.0.0.0
+    port: 4317
+    tls:
+      disabled: true
+    maxActiveReq: 256
+    enableProxyHeader: false
+    activityLogSampleRate: 100
+    extractSpans: false
+    extractMetrics: false
+    maxActiveCxn: 1000
+    authType: none
+    type: open_telemetry
+    connections: []
