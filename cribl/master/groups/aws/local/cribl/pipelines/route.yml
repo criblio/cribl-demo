@@ -20,14 +20,6 @@ routes:
       - __index: bigjson
     filter: "true"
     output: s3
-  - id: AvIq12
-    name: Internal Metrics
-    final: true
-    disabled: false
-    pipeline: passthru
-    description: Send internal metrics
-    filter: __inputId=='cribl:CriblMetrics'
-    output: statsd
   - id: OoiBqE
     name: appscope
     final: true

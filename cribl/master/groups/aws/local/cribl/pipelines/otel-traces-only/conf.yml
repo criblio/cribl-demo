@@ -1,0 +1,8 @@
+output: default
+groups: {}
+asyncFuncTimeout: 1000
+functions:
+  - id: drop
+    filter: sourcetype!=='trace'
+    disabled: null
+    conf: {}
