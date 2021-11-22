@@ -17,19 +17,6 @@ outputs:
     onBackpressure: block
     type: splunk
     host: splunk
-  statsd:
-    type: router
-    rules:
-      - filter: "true"
-        output: splunk-metrics
-        final: false
-      - filter: "false"
-        output: localhost
-        final: false
-      - filter: "true"
-        output: influxdb2
-        final: false
-    onBackpressure: block
   splunk-metrics:
     systemFields:
       - cribl_pipe

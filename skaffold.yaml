@@ -46,6 +46,12 @@ deploy:
   kustomize: {}
   statusCheckDeadlineSeconds: 600
 profiles:
+- name: live
+  patches:
+  - op: add
+    path: /deploy/kustomize/paths
+    value:
+    - ./splunk
 - name: dev
   patches:
   - op: add

@@ -9,7 +9,7 @@ To see what's changed in the current version, see [CHANGES.md](CHANGES.md)
 
 ## Running Locally
 
-To run this locally, we recommend minikube. Additionally, this environment uses `skaffold` to orchestrate building the requisite containers and deploying into Kubernetes. 
+To run this locally, we recommend minikube. Additionally, this environment uses `skaffold` to orchestrate building the requisite containers and deploying into Kubernetes, and `kustomize` to enable local deployment options. 
 
 _**NOTE**_ - with this version of the repository, we need to use a version of skaffold that's v1.24.0 or greater - the instructions below have been changed to reflect that.  
 
@@ -23,6 +23,9 @@ brew install kubectl
 brew install helm
 curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 && \
 chmod +x skaffold && sudo mv skaffold /usr/local/bin
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+sudo mv kustomize /usr/local/bin
+
 ```
 
 ### On a Mac with MacPorts ([MacPorts Installation Instructions](https://www.macports.org/install.php))
@@ -32,12 +35,17 @@ sudo port select --set helm helm3.5
 sudo port select --set kubectl kubectl1.20
 curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 && \
 chmod +x skaffold && sudo mv skaffold /usr/local/bin
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+sudo mv kustomize /usr/local/bin
 ```
 
 If you don't have homebrew or MacPorts, check out the following links for install instructions:
 
     * Minikube: https://minikube.sigs.k8s.io/docs/start/
+    * Kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/
     * Skaffold: https://skaffold.dev/docs/install/
+    * Helm: https://helm.sh/docs/intro/install/
+    * Kustomize: https://kubectl.docs.kubernetes.io/installation/kustomize/binaries/
 
 
 ### On Linux:
@@ -64,6 +72,8 @@ If you don't have homebrew or MacPorts, check out the following links for instal
 
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
     && sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    sudo mv kustomize /usr/local/bin
 ```
 
 ## Running Minikube locally
