@@ -120,6 +120,15 @@ fi
 
 kubectl create configmap $CFG -n $namespace --from-file=cribl/master/scripts/ >/dev/null 2>&1
 
+CFG="elastic-config"
+echo "Creating $CFG ConfigMap"
+kubectl get configmap $CFG -n $namespace >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+  kubectl delete configmap $CFG -n $namespace >/dev/null 2>&1
+fi
+kubectl create configmap $CFG -n $namespace --from-file=elastic/setup/ >/dev/null 2>&1
+
+
 CFG="group-config"
 echo "Creating $CFG ConfigMap"
 kubectl get configmap $CFG -n $namespace >/dev/null 2>&1

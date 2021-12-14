@@ -1,0 +1,380 @@
+---
+# Source: elasticsearch/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: course-elasticsearch-master
+  labels:
+    app: "course-elasticsearch-master"
+    app.kubernetes.io/name: course-elasticsearch-master
+    sandbox.cribl.io/email: CLEANEMAIL
+    sandbox.cribl.io/course: course
+  annotations:
+    {}
+spec:
+  type: ClusterIP
+  selector:
+    app: "course-elasticsearch-master"
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9200
+  - name: transport
+    protocol: TCP
+    port: 9300
+---
+# Source: elasticsearch/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: course-elasticsearch-master-headless
+  labels:
+    app: "course-elasticsearch-master"
+    app.kubernetes.io/name: course-elasticsearch-master
+    sandbox.cribl.io/email: CLEANEMAIL
+    sandbox.cribl.io/course: course
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None # This is needed for statefulset hostnames like elasticsearch-0 to resolve
+  # Create endpoints also if the related pod isn't ready
+  publishNotReadyAddresses: true
+  selector:
+    app: "course-elasticsearch-master"
+  ports:
+  - name: http
+    port: 9200
+  - name: transport
+    port: 9300
+---
+# Source: elasticsearch/templates/statefulset.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: course-elasticsearch-master
+  labels:
+    app: "course-elasticsearch-master"
+    app.kubernetes.io/name: course-elasticsearch-master
+    sandbox.cribl.io/email: CLEANEMAIL
+    sandbox.cribl.io/course: course
+  annotations:
+    esMajorVersion: "7"
+spec:
+  activeDeadlineSeconds: 86400
+  #serviceName: course-elasticsearch-master-headless
+  # selector:
+  #   matchLabels:
+  #     app: "elasticsearch-master"
+  #replicas: 1
+  #podManagementPolicy: Parallel
+  #updateStrategy:
+  #  type: RollingUpdate
+  #volumeClaimTemplates:
+  #- metadata:
+  #    name: course-elasticsearch-master
+  #  spec:
+  #    accessModes:
+  #    - ReadWriteOnce
+  #    resources:
+  #      requests:
+  #        storage: 30Gi
+  template:
+    metadata:
+      name: "course-elasticsearch-master"
+      labels:
+        app: "course-elasticsearch-master"
+        app.kubernetes.io/name: course-elasticsearch-master
+        sandbox.cribl.io/email: CLEANEMAIL
+        sandbox.cribl.io/course: course
+      annotations:
+        
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - "course-elasticsearch-master"
+            topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 120
+      enableServiceLinks: true
+      initContainers:
+      - name: configure-sysctl
+        securityContext:
+          runAsUser: 0
+          privileged: true
+        image: "docker.elastic.co/elasticsearch/elasticsearch:7.7.1"
+        imagePullPolicy: "IfNotPresent"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+
+      containers:
+      - name: "elasticsearch"
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        image: "docker.elastic.co/elasticsearch/elasticsearch:7.7.1"
+        imagePullPolicy: "IfNotPresent"
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - |
+                #!/usr/bin/env bash -e
+                # If the node is starting up wait for the cluster to be ready (request params: "wait_for_status=yellow&timeout=1s" )
+                # Once it has started only check that the node itself is responding
+                START_FILE=/tmp/.es_start_file
+
+                # Disable nss cache to avoid filling dentry cache when calling curl
+                # This is required with Elasticsearch Docker using nss < 3.52
+                export NSS_SDB_USE_CACHE=no
+
+                http () {
+                  local path="${1}"
+                  local args="${2}"
+                  set -- -XGET -s
+
+                  if [ "$args" != "" ]; then
+                    set -- "$@" $args
+                  fi
+
+                  if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
+                    set -- "$@" -u "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
+                  fi
+
+                  curl --output /dev/null -k "$@" "http://127.0.0.1:9200${path}"
+                }
+
+                if [ -f "${START_FILE}" ]; then
+                  echo 'Elasticsearch is already running, lets check the node is healthy'
+                  HTTP_CODE=$(http "/" "-w %{http_code}")
+                  RC=$?
+                  if [[ ${RC} -ne 0 ]]; then
+                    echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with RC ${RC}"
+                    exit ${RC}
+                  fi
+                  # ready if HTTP code 200, 503 is tolerable if ES version is 6.x
+                  if [[ ${HTTP_CODE} == "200" ]]; then
+                    exit 0
+                  elif [[ ${HTTP_CODE} == "503" && "7" == "6" ]]; then
+                    exit 0
+                  else
+                    echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with HTTP code ${HTTP_CODE}"
+                    exit 1
+                  fi
+
+                else
+                  echo 'Waiting for elasticsearch cluster to become ready (request params: "wait_for_status=yellow&timeout=1s" )'
+                  if http '/_cluster/health?wait_for_status=yellow&timeout=1s' "--fail" ; then
+                    touch ${START_FILE}
+                    exit 0
+                  else
+                    echo 'Cluster is not yet ready (request params: "wait_for_status=yellow&timeout=1s" )'
+                    exit 1
+                  fi
+                fi
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+        ports:
+        - name: http
+          containerPort: 9200
+        - name: transport
+          containerPort: 9300
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+        env:
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: cluster.initial_master_nodes
+            value: "course-elasticsearch-master-0,"
+          - name: discovery.seed_hosts
+            value: "course-elasticsearch-master-headless"
+          - name: cluster.name
+            value: "elasticsearch"
+          - name: network.host
+            value: "0.0.0.0"
+          - name: ES_JAVA_OPTS
+            value: "-Xmx1g -Xms1g"
+          - name: node.data
+            value: "true"
+          - name: node.ingest
+            value: "true"
+          - name: node.master
+            value: "true"
+          - name: node.ml
+            value: "true"
+          - name: node.remote_cluster_client
+            value: "true"
+          - name: discovery.type
+            value: single-node
+          - name: cluster.initial_master_nodes
+            value: null
+        volumeMounts:
+          - name: "course-elasticsearch-master"
+            mountPath: /usr/share/elasticsearch/data
+      volumes: 
+        - name: course-elasticsearch-master
+          emptyDir: {}
+---
+# Source: kibana/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-elasticsearch-kibana
+  labels: 
+    app: kibana
+    app.kubernetes.io/name: course-elasticsearch-kibana
+    sandbox.cribl.io/email: CLEANEMAIL
+    sandbox.cribl.io/course: course
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5601
+      protocol: TCP
+      name: http
+      targetPort: 5601
+  selector:
+    app: kibana
+---
+# Source: kibana/templates/deployment.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: course-elasticsearch-kibana
+  labels: 
+    app: kibana
+    app.kubernetes.io/name: course-elasticsearch-kibana
+    sandbox.cribl.io/email: CLEANEMAIL
+    sandbox.cribl.io/course: course
+spec:
+  activeDeadlineSeconds: 86400
+  #replicas: 1
+  #strategy:
+  #  type: Recreate
+  # selector:
+  #   matchLabels:
+  #     app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+        app.kubernetes.io/name: course-elasticsearch-kibana
+        sandbox.cribl.io/email: CLEANEMAIL
+        sandbox.cribl.io/course: course
+    spec:
+      volumes:
+      - configMap:
+          name: elastic-config
+        name: elastic-config
+      restartPolicy: OnFailure
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: kibana
+        volumeMounts:
+          - name: elastic-config
+            mountPath: /tmp/bundle/setup
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        image: "docker.elastic.co/kibana/kibana:7.7.1"
+        imagePullPolicy: "IfNotPresent"
+        env:
+          - name: ELASTICSEARCH_HOSTS
+            value: "http://course-elasticsearch-master:9200"
+          - name: SERVER_HOST
+            value: "0.0.0.0"
+          - name: NODE_OPTIONS
+            value: --max-old-space-size=1800
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+          exec:
+            command:
+              - sh
+              - -c
+              - |
+                #!/usr/bin/env bash -e
+
+                # Disable nss cache to avoid filling dentry cache when calling curl
+                # This is required with Kibana Docker using nss < 3.52
+                export NSS_SDB_USE_CACHE=no
+
+                http () {
+                    local path="${1}"
+                    set -- -XGET -s --fail -L
+
+                    if [ -n "${ELASTICSEARCH_USERNAME}" ] && [ -n "${ELASTICSEARCH_PASSWORD}" ]; then
+                      set -- "$@" -u "${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}"
+                    fi
+
+                    STATUS=$(curl --output /dev/null --write-out "%{http_code}" -k "$@" "http://localhost:5601${path}")
+                    if [[ "${STATUS}" -eq 200 ]]; then
+                      exit 0
+                    fi
+
+                    echo "Error: Got HTTP code ${STATUS} but expected a 200"
+                    exit 1
+                }
+
+                http "/app/kibana"
+        ports:
+        - containerPort: 5601
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+        lifecycle:
+          postStart:
+            exec:
+              command: 
+                - "/bin/bash"
+                - "-c"
+                - |
+                  #curl -Lso /tmp/bundle.tgz BUNDLEURL
+                  #mkdir -p /tmp/bundle
+                  while [[ "$(curl -s -o /dev/null -w '%{http_code}\n' http://localhost:5601/app/kibana)" != "200" ]]; do sleep 1; done
+
+                  cd /tmp/bundle/setup
+                  for i in *.json; do
+                    obj=$(echo $i | sed -e 's/[0-9]*\-//; s/_/:/; s/.json//')
+                    curl --silent -q -H 'Content-Type: application/json' -XPOST "http://course-elasticsearch-master:9200/.kibana_1/_doc/${obj}" -d @/tmp/bundle/setup/$i 
+                  done
+
+

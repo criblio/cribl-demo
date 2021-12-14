@@ -43,6 +43,7 @@ deploy:
     - splunk/splunk.k8s.yml
     - deploy-job/deploy-job.k8s.yml
     - gogen/gogen-job.k8s.yml
+    - elastic/elastic.k8s.yml
   kustomize: {}
   statusCheckDeadlineSeconds: 600
 profiles:

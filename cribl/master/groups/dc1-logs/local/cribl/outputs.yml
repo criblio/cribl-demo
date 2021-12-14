@@ -165,3 +165,14 @@ outputs:
     pipeline: metrics_to_logs
     type: splunk
     host: splunk
+
+  elastic:
+    type: elastic
+    pipeline: elastic
+    url: http://course-elasticsearch-master:9200/_bulk
+    index: cribl
+    docType: cribl
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    flushPeriodSec: 1
+    onBackpressure: block

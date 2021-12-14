@@ -1,0 +1,54 @@
+{
+    "map": {
+      "title": "FW_Traffic",
+      "description": "",
+      "mapStateJSON": "{\"zoom\":1.54,\"center\":{\"lon\":13.2623,\"lat\":0},\"timeFilters\":{\"from\":\"now-15d\",\"to\":\"now\"},\"refreshConfig\":{\"isPaused\":false,\"interval\":0},\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filters\":[]}",
+      "layerListJSON": "[{\"sourceDescriptor\":{\"type\":\"EMS_TMS\",\"isAutoSelect\":true},\"id\":\"a42e0786-69d3-49db-ad5b-5b1c5e3288d6\",\"label\":null,\"minZoom\":0,\"maxZoom\":24,\"alpha\":1,\"visible\":true,\"style\":{},\"type\":\"VECTOR_TILE\"},{\"sourceDescriptor\":{\"type\":\"EMS_FILE\",\"id\":\"world_countries\",\"tooltipProperties\":[]},\"style\":{\"type\":\"VECTOR\",\"properties\":{\"icon\":{\"type\":\"STATIC\",\"options\":{\"value\":\"marker\"}},\"fillColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"#FFf\"}},\"lineColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"#e1401f\"}},\"lineWidth\":{\"type\":\"DYNAMIC\",\"options\":{\"minSize\":1,\"maxSize\":10,\"field\":{\"label\":\"Compromised\",\"name\":\"__kbnjoin__count_groupby_cribl.src_geoip.country.iso_code.keyword\",\"origin\":\"join\",\"type\":\"number\"},\"fieldMetaOptions\":{\"isEnabled\":true,\"sigma\":3}}},\"iconSize\":{\"type\":\"STATIC\",\"options\":{\"size\":6}},\"iconOrientation\":{\"type\":\"STATIC\",\"options\":{\"orientation\":0}},\"labelText\":{\"type\":\"STATIC\",\"options\":{\"value\":\"\"}},\"labelColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"#000000\"}},\"labelSize\":{\"type\":\"STATIC\",\"options\":{\"size\":14}},\"labelBorderColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"#FFFFFF\"}},\"symbolizeAs\":{\"options\":{\"value\":\"circle\"}},\"labelBorderSize\":{\"options\":{\"size\":\"SMALL\"}}},\"isTimeAware\":true},\"id\":\"bb9cd4bc-5916-4eb3-9cb6-71da4e3343b1\",\"label\":\"Compromised\",\"minZoom\":0,\"maxZoom\":24,\"alpha\":0.43,\"visible\":true,\"type\":\"VECTOR\",\"joins\":[{\"leftField\":\"iso2\",\"right\":{\"id\":\"c4ecedfc-7d2b-4b94-bca2-53c3ee8047e6\",\"indexPatternTitle\":\"cribl\",\"term\":\"src_geoip.country.iso_code.keyword\",\"metrics\":[{\"type\":\"count\",\"label\":\"Compromised\"}],\"whereQuery\":{\"query\":\"compromised : true \",\"language\":\"kuery\"},\"indexPatternRefName\":\"layer_1_join_0_index_pattern\"}}]},{\"sourceDescriptor\":{\"type\":\"EMS_FILE\",\"id\":\"world_countries\",\"tooltipProperties\":[\"iso2\",\"name\"]},\"style\":{\"type\":\"VECTOR\",\"properties\":{\"icon\":{\"type\":\"STATIC\",\"options\":{\"value\":\"marker\"}},\"fillColor\":{\"type\":\"DYNAMIC\",\"options\":{\"color\":\"Greys\",\"colorCategory\":\"palette_0\",\"fieldMetaOptions\":{\"isEnabled\":true,\"sigma\":3},\"type\":\"CATEGORICAL\",\"useCustomColorRamp\":false,\"field\":{\"name\":\"__kbnjoin__count_groupby_cribl*.src_geoip.country.iso_code.keyword\",\"origin\":\"join\"}}},\"lineColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"\"}},\"lineWidth\":{\"type\":\"STATIC\",\"options\":{\"size\":0}},\"iconSize\":{\"type\":\"STATIC\",\"options\":{\"size\":6}},\"iconOrientation\":{\"type\":\"STATIC\",\"options\":{\"orientation\":0}},\"labelText\":{\"type\":\"STATIC\",\"options\":{\"value\":\"\"}},\"labelColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"#000000\"}},\"labelSize\":{\"type\":\"STATIC\",\"options\":{\"size\":14}},\"labelBorderColor\":{\"type\":\"STATIC\",\"options\":{\"color\":\"#FFFFFF\"}},\"symbolizeAs\":{\"options\":{\"value\":\"circle\"}},\"labelBorderSize\":{\"options\":{\"size\":\"SMALL\"}}},\"isTimeAware\":true},\"id\":\"1418b773-3421-4eb7-a9b5-96aa72a67f5b\",\"label\":\"Total Requests by Country\",\"minZoom\":0,\"maxZoom\":24,\"alpha\":0.5,\"visible\":true,\"type\":\"VECTOR\",\"joins\":[{\"leftField\":\"iso2\",\"right\":{\"id\":\"ed2bf709-6e3b-4262-a4e9-bc2fa919326a\",\"indexPatternTitle\":\"cribl*\",\"term\":\"src_geoip.country.iso_code.keyword\",\"indexPatternRefName\":\"layer_2_join_0_index_pattern\"}}]}]",
+      "uiStateJSON": "{\"isLayerTOCOpen\":true,\"openTOCDetails\":[]}",
+      "bounds": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -131.82495,
+              64.71856
+            ],
+            [
+              -131.82495,
+              -64.71856
+            ],
+            [
+              158.34955,
+              -64.71856
+            ],
+            [
+              158.34955,
+              64.71856
+            ],
+            [
+              -131.82495,
+              64.71856
+            ]
+          ]
+        ]
+      }
+    },
+    "type": "map",
+    "references": [
+      {
+        "name": "layer_1_join_0_index_pattern",
+        "type": "index-pattern",
+        "id": "sandbox"
+      },
+      {
+        "name": "layer_2_join_0_index_pattern",
+        "type": "index-pattern",
+        "id": "sandbox"
+      }
+    ],
+    "migrationVersion": {
+      "map": "7.7.0"
+    },
+    "updated_at": "2020-06-04T04:14:32.922Z"
+
+}
