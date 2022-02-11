@@ -42,6 +42,8 @@ outputs:
     flushPeriodSec: 1
     auth:
       disabled: true
+      username: admin
+      password: "#42:sr3FXXrdKPyRQ9wGo0utvGqplJcIAExmW5Wmu3HVd2A="
     onBackpressure: block
     type: influxdb
     url: http://influxdb2-internal:8086/write?rp=forever
