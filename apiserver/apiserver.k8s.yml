@@ -44,18 +44,10 @@ spec:
             requests:
               cpu: 250m
               memory: 128Mi
-          volumeMounts: 
-          - name: group-config
-            mountPath: /etc/group-config
 
           securityContext:
             privileged: true
       restartPolicy: Always
-      volumes:
-      - name: group-config
-        configMap: 
-          name: group-config
-status: {}
 ---
 apiVersion: v1
 kind: Service

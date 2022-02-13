@@ -41,7 +41,7 @@ deploy:
     - grafana/grafana.k8s.yml
     - redis/redis.k8s.yml
     - splunk/splunk.k8s.yml
-    - deploy-job/deploy-job.k8s.yml
+    #- deploy-job/deploy-job.k8s.yml
     - gogen/gogen-job.k8s.yml
   kustomize: {}
   statusCheckDeadlineSeconds: 600
