@@ -3,3 +3,4 @@ resources:
 patches:
   #- deployment-patch.yml
   - remove-patch.yml
+  - post-deploy.yml

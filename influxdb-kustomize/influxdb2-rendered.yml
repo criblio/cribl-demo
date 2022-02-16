@@ -120,7 +120,7 @@ spec:
           value: /var/lib/influxdbv2
         - name: SCOPE_TAG_service
           value: influxdb
-        image: influxdb:2.0.6-alpine
+        image: influxdb:2.0.8-alpine
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -135,10 +135,60 @@ spec:
           httpGet:
             path: /health
             port: http
-        resources: {}
+        resources: 
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
         volumeMounts:
         - mountPath: /var/lib/influxdbv2
           name: data
+        command:
+        - "/bin/bash"
+        - "-c"
+        - |
+          while [ true ]; do
+            apk add grep
+            if [ $? -eq 0 ]; then
+              break
+            fi
+          done
+          /entrypoint.sh influxd
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - "/bin/bash"
+                - "-c"
+                - |
+                  set -x
+                  sleep 20
+                  bucketid=""
+                  while [ -z "$bucketid" ]; do
+                    bucketid=$(influx bucket ls \
+                    -t sKvQsRYB9OTwG53QszRyoEYd6t99Xp_HlG29GxDs1sfxep7XHkMPWrqKroMs8mSoGPokIvUlJuptcESe_X8uig== \
+                    --host http://localhost:8086 --org cribl --name cribl --json | grep -oP "id\"\s*:\s*\"\K[^\"]+")
+                    echo "BucketID: $s" >> /tmp/influx-lf-out
+                    if [ -z "$bucketid" ]; then 
+                      sleep 5
+                    fi
+                  done
+                  influx v1 dbrp create --bucket-id $bucketid \
+                    --db cribl --default --org cribl --rp forever --host http://localhost:8086/ \
+                    -t sKvQsRYB9OTwG53QszRyoEYd6t99Xp_HlG29GxDs1sfxep7XHkMPWrqKroMs8mSoGPokIvUlJuptcESe_X8uig== 2>&1 >>/tmp/influx-lf-out
+                  influx apply --force true -f https://cdn.cribl.io/sbx-data/logstream_metrics_sandbox.yml \
+                    --host http://localhost:8086/ -o cribl \
+                    -t sKvQsRYB9OTwG53QszRyoEYd6t99Xp_HlG29GxDs1sfxep7XHkMPWrqKroMs8mSoGPokIvUlJuptcESe_X8uig== 2>&1 >>/tmp/influx-lf-out
+                  for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml /var/tmp/influx-templates/*.yml ; do \
+                    influx apply --force true -f $url \
+                      --host http://localhost:8086 \
+                      -o cribl \
+                      -t ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN} 2>&1 >>/tmp/influx-lf-out
+                  done
+                  echo "end of lf file cat"
+                  cat /tmp/influx-lf-out
       volumes:
       - name: data
         persistentVolumeClaim:
@@ -160,91 +210,3 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: influxdb2
       app.kubernetes.io/name: influxdb2
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: influxdb2-apply-templates
-spec:
-  activeDeadlineSeconds: 900
-  template:
-    metadata:
-      annotations:
-        appscope.dev/disable: "true"
-    spec:
-      containers:
-      - args:
-        - -c
-        - |
-          sleep 20
-          INF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086 --org cribl --name cribl --json | grep '"id"' | awk -F\" '{print $4}')
-          [ -z "$INF_ID" ] && exit 255
-          for url in https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml https://raw.githubusercontent.com/criblio/community-templates/master/criblio_logstream/cribl_logstream.yml /var/tmp/influx-templates/*.yml ; do \
-          influx apply --force true -f $url \
-          --host http://influxdb2:8086 \
-          -o cribl \
-          -t ${INFLUXDB_TOKEN}; \
-          done
-        command:
-        - bash
-        env:
-        - name: INFLUXDB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: adminpass
-              name: demo-admin
-        - name: INFLUXDB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: admin-token
-              name: influxdb2-auth
-        image: influxdb:2.0.6-alpine
-        name: influxdb2-apply-templates
-        volumeMounts:
-        - mountPath: /var/tmp/influx-templates
-          name: influx-templates
-      restartPolicy: OnFailure
-      volumes:
-      - configMap:
-          name: influx-templates
-        name: influx-templates
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  annotations:
-    helm.sh/hook: post-install
-    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
-    helm.sh/hook-weight: "2"
-  name: influxdb2-fix-dbrp
-spec:
-  activeDeadlineSeconds: 240
-  template:
-    metadata:
-      annotations:
-        appscope.dev/disable: "true"
-    spec:
-      containers:
-      - args:
-        - -cx
-        - "sleep 20; \nINF_ID=$(influx bucket ls -t ${INFLUXDB_TOKEN} --host http://influxdb2-internal:8086
-          --org cribl --name cribl --json | grep '\"id\"' | awk -F\\\" '{print $4}')\n[
-          -z \"$INF_ID\" ] && exit 255\necho \"INF_ID: $INF_ID\"\ninflux v1 dbrp create
-          --bucket-id $INF_ID  --db cribl --default --org cribl --rp forever --host
-          http://influxdb2-internal:8086  -t ${INFLUXDB_TOKEN} || sleep 20 \n"
-        command:
-        - bash
-        env:
-        - name: INFLUXDB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: adminpass
-              name: demo-admin
-        - name: INFLUXDB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: admin-token
-              name: influxdb2-auth
-        image: influxdb:2.0.6-alpine
-        name: influxdb2-fix-dbrp
-      restartPolicy: OnFailure
