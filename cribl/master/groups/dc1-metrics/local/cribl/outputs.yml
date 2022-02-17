@@ -29,23 +29,31 @@ outputs:
     host: splunk
     pipeline: metrics_to_logs
   default:
-    defaultId: influxdb
+    defaultId: influxdb2
     type: default
   influxdb2:
+    systemFields:
+      - cribl_pipe
     timestampPrecision: ms
     dynamicValueFieldName: true
     valueFieldName: value
     concurrency: 5
     maxPayloadSizeKB: 4096
+    maxPayloadEvents: 0
+    compress: false
+    rejectUnauthorized: false
     flushPeriodSec: 1
+    useRoundRobinDns: false
+    failedRequestLoggingMode: none
+    safeHeaders: []
     auth:
       disabled: true
       username: admin
       password: "#42:sr3FXXrdKPyRQ9wGo0utvGqplJcIAExmW5Wmu3HVd2A="
-    onBackpressure: block
     type: influxdb
-    url: http://influxdb2-internal:8086/write?rp=forever
+    url: http://demo-influxdb2:8086/write?rp=forever
     database: cribl
+    onBackpressure: block
     extraHttpHeaders:
       - name: Authorization
         value: Token
