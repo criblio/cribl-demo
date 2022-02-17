@@ -19,7 +19,7 @@ outputs:
     authType: none
     metricsFlushPeriodSec: 60
     type: prometheus
-    url: http://demo-prometheus:9090/write
+    url: http://demo-prometheus:9090/api/v1/write
   splunk-metrics:
     systemFields:
       - cribl_pipe
@@ -51,3 +51,22 @@ outputs:
         filter: "false"
         output: prometheus
     type: router
+  influxdb:
+    timestampPrecision: ms
+    dynamicValueFieldName: true
+    valueFieldName: value
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    flushPeriodSec: 1
+    auth:
+      disabled: true
+    onBackpressure: block
+    type: influxdb
+    url: http://influxdb2-internal:8086/write?rp=forever
+    database: cribl
+    extraHttpHeaders:
+      - name: Authorization
+        value: 'Token
+          sKvQsRYB9OTwG53QszRyoEYd6t99Xp_HlG29GxDs1sfxep7XHkMPWrqKroMs8mSoGPokIvUlJuptcESe_X8uig=='
+      - name: User-Agent
+        value: Cribl-42.0-5eea030d
