@@ -18,7 +18,7 @@ routes:
     description: ""
     clones: []
     filter: client && server && download && upload
-    output: influxdb2
+    output: prometheus
   - id: M6yz8j
     name: mtr
     final: true
@@ -27,7 +27,7 @@ routes:
     description: ""
     clones: []
     filter: report.mtr
-    output: influxdb2
+    output: prometheus
   - id: A1JddJ
     name: statsd
     final: true
