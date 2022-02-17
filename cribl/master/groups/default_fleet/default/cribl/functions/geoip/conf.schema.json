@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "required": ["file"],
+  "properties": {
+    "file": {
+       "type": "string",
+       "title": "GeoIP File (.mmdb)",
+       "description": "Select an uploaded Maxmind database or specify path to a Maxmind database with .mmdb extension",
+       "minLength": 1
+    },
+    "inField": {
+       "type":"string",
+       "title": "IP Field",
+       "description": "Field name where to find an IP to lookup, can be nested",
+       "default":"ip"
+    },
+    "outField": {
+       "type":"string",
+       "title": "Result Field",
+       "description": "Field name where to store the GeoIP lookup results",
+       "default":"geoip"
+    },
+    "additionalFields": {
+      "type": "array",
+      "title": "Additional fields",
+      "description": "Additional event Field(s) to process.",
+      "items": {
+        "type": "object",
+        "required": ["extraInField","extraOutField"],
+        "properties": {
+          "extraInField" :{
+            "type": "string",
+            "title": "IP Field",
+            "description": "Field name where to find an IP to lookup, can be nested"
+          },
+          "extraOutField" :{
+            "type": "string",
+            "title": "Result Field",
+            "description": "Field name where to store the GeoIP lookup results"
+          }
+        }
+      }
+    }
+  }
+}

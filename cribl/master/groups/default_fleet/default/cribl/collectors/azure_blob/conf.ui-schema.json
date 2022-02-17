@@ -1,0 +1,81 @@
+{
+  "outputName": {
+    "ui:widget": "OutputName",
+    "ui:forceRender": true,
+    "ui:options": {
+      "outputType": "azure_blob",
+      "outputProps": {
+        "containerName": "containerName",
+        "connectionString": "connectionString",
+        "authType": "authType",
+        "textSecret": "textSecret",
+        "path": [
+          "destPath",
+          {
+            "id": "partitionExpr",
+            "expression": true
+          }
+        ]
+      }
+    }
+  },
+  "extractors": {
+    "ui:widget": "Table",
+    "items": {
+      "key": {
+        "ui:options": { "columnWidth": "30%" },
+        "ui:placeholder": "Enter extractor token"
+      },
+      "expression": {
+        "ui:widget": "JsInputWithoutPopup",
+        "ui:options": { "columnWidth": "70%" },
+        "ui:placeholder": "Enter extractor expression"
+      }
+    }
+  },
+  "recurse": {
+    "ui:options": { "inline": true, "width": "30%" }
+  },
+  "maxBatchSize": {
+    "ui:options": { "inline": true, "width": "30%" }
+  },
+  "containerName": {
+    "ui:placeholder": "Enter Azure blob container name.",
+    "ui:widget" : "JsInput"
+  },
+  "authType": {
+    "ui:widget": "Radio",
+    "ui:options": {
+      "uiEnumOptions": [
+        { "value": "manual", "label": "Manual", "description": "Enter connection string directly" },
+        { "value": "secret", "label": "Secret", "description": "Select (or create) a stored text secret" }
+      ],
+      "toggle": true
+    }
+  },
+  "connectionString": {
+    "ui:placeholder": "Enter Azure blob connection string"
+  },
+  "textSecret": {
+    "ui:widget": "ApiLookupWithCreate",
+    "ui:options": {
+      "createType": "secret",
+      "typeName": "text secret",
+      "url": "/system/secrets?type=text",
+      "createUrl": "/settings/secrets",
+      "valueProp": "id",
+      "secretType": "text"
+    }
+  },
+  "ui:options": {
+    "groups": {
+      "authentication": {
+        "title": "Authentication",
+        "collapsed": false,
+        "properties": [
+          "authType", "connectionString", "textSecret"
+        ]
+      }
+    }
+  }
+}

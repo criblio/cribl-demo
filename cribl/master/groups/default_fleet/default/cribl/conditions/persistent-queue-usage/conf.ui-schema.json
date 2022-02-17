@@ -1,0 +1,8 @@
+{
+  "name": {
+    "type": "string",
+    "description": "Destination ID",
+    "default": "${DESTINATION_ID}",
+    "ui:disabled": true
+  }
+}

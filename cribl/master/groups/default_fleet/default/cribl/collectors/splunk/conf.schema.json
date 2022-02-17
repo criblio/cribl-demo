@@ -1,0 +1,245 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["search","searchHead","endpoint","authentication","outputMode"],
+  "properties": {
+    "searchHead": {
+      "type": "string",
+      "title": "Search head",
+      "default": "https://localhost:8089",
+      "description": "Search Head base URL, can be expression, default is https://localhost:8089."
+    },
+    "search": {
+      "type": "string",
+      "title": "Search",
+      "description": "Enter Splunk search here. For example: 'index=myAppLogs level=error channel=myApp' OR '| mstats avg(myStat) as myStat WHERE index=myStatsIndex.'"
+    },
+    "earliest": {
+      "title": "Earliest",
+      "type": "string",
+      "description": "The earliest time boundary for the search. Can be an exact or relative time. For example: '2022-01-14T12:00:00Z' or '-16m@m'"
+    },
+    "latest": {
+      "title": "Latest",
+      "type": "string",
+      "description": "The latest time boundary for the search. Can be an exact or relative time. For example: '2022-01-14T12:00:00Z' or '-1m@m'"
+    },
+    "endpoint": {
+      "type": "string",
+      "title": "Search endpoint",
+      "default": "/services/search/jobs/export",
+      "description": "REST API used to create a search."
+    },
+    "outputMode": {
+      "type": "string",
+      "title": "Output mode",
+      "description": "Format of the returned output",
+      "enum": ["csv", "json"],
+      "default": "json"
+    },
+    "collectRequestParams": {
+      "title": "Extra parameters",
+      "description": "Optional collect request parameters.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name","value"],
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string",
+            "description": "Parameter name"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string",
+            "description": "JavaScript expression to compute the parameter value (can be a constant).",
+            "jsExpression": true
+          }
+        }
+      }
+    },
+    "collectRequestHeaders": {
+      "title": "Extra headers",
+      "description": "Optional collect request headers.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name","value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Header Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "JavaScript expression to compute the header value (can be a constant).",
+            "jsExpression": true,
+            "encrypt": true
+          }
+        }
+      }
+    },
+    "authentication": {
+      "type": "string",
+      "title": "Authentication",
+      "description": "Authentication method for Discover and Collect REST calls.",
+      "enum": ["none", "basic", "basicSecret"],
+      "enumNames": ["None", "Basic", "Basic (credentials secret)"],
+      "default": "basic"
+    },
+    "timeout" : {
+      "type": "number",
+      "title": "Request Timeout (secs)",
+      "description": "HTTP request inactivity timeout, use 0 to disable",
+      "minimum": 0,
+      "maximum": 1800,
+      "default": 0
+    },
+    "useRoundRobinDns": {
+      "type":"boolean",
+      "title": "Round-robin DNS",
+      "description": "Enable to use round-robin DNS lookup. Suitable when DNS server returns multiple addresses in sort order.",
+      "default": false
+    },
+    "disableTimeFilter": {
+      "type": "boolean",
+      "title": "Disable time filter",
+      "description": "Used to disable collector event time filtering when a date range is specified.",
+      "default": true
+    }
+  },
+  "dependencies": {
+    "authentication": {
+      "oneOf": [
+        {
+          "properties": {
+            "authentication": {
+              "enum":["none"]
+            }
+          }
+        },
+        {
+          "required": [ "username","password"],
+          "properties": {
+            "authentication": {
+              "enum":["basic"]
+            },
+            "username": {
+              "type": "string",
+              "title": "Username",
+              "description": "Basic authentication username",
+              "encrypt": true
+            },
+            "password": {
+              "type": "string",
+              "title": "Password",
+              "description": "Basic authentication password",
+              "encrypt": true
+            }
+          }
+        }, {
+          "required": ["credentialsSecret"],
+          "properties": {
+            "authentication": { "enum":["basicSecret"] },
+            "credentialsSecret": {
+              "type": "string",
+              "title": "Credentials secret",
+              "secret": { "type": "credentials", "target": ["username", "password"] },
+              "description": "Select (or create) a stored secret that references your credentials"
+            }
+          }
+        },
+        {
+          "required": [ "loginUrl","username","password","loginBody","tokenRespAttribute","authHeaderExpr"],
+          "properties": {
+            "authentication": {
+              "enum":["login"]
+            },
+            "loginUrl": {
+              "type": "string",
+              "title": "Login URL",
+              "description": "URL to use for login API call. This call is expected to be a POST.",
+              "default": "`https://localhost:9000/api/v1/auth/login`",
+              "jsExpression": true
+            },
+            "username": {
+              "type": "string",
+              "title": "Username",
+              "description": "Login username",
+              "minLength": 1,
+              "encrypt": true
+            },
+            "password": {
+              "type": "string",
+              "title": "Password",
+              "description": "Login password",
+              "minLength": 1,
+              "encrypt": true
+            },
+            "loginBody": {
+              "type": "string",
+              "title": "POST Body",
+              "description": "Template for POST body to send with login request, ${username} and ${password} are used to specify location of these attributes in the message",
+              "default": "`{ \"username\": \"${username}\", \"password\": \"${password}\" }`",
+              "jsExpression": true
+            },
+            "tokenRespAttribute": {
+              "type": "string",
+              "title": "Token Attribute",
+              "description": "Path to token attribute in login response body. Nested attributes are OK.",
+              "default": "token"
+            },
+            "authHeaderExpr": {
+              "type": "string",
+              "title": "Authorize Expression",
+              "description": "JavaScript expression to compute the Authorization header to pass in discover and collect calls. The value ${token} is used to reference the token obtained from login.",
+              "default": "`Bearer ${token}`",
+              "jsExpression": true
+            }
+          }
+        }, {
+          "required": [ "loginUrl","credentialsSecret","loginBody","tokenRespAttribute","authHeaderExpr"],
+          "properties": {
+            "authentication": { "enum":["loginSecret"] },
+            "loginUrl": {
+              "type": "string",
+              "title": "Login URL",
+              "description": "URL to use for login API call, this call is expected to be a POST.",
+              "default": "`https://localhost:9000/api/v1/auth/login`",
+              "jsExpression": true
+            },
+            "credentialsSecret": {
+              "type": "string",
+              "title": "Credentials secret",
+              "secret": { "type": "credentials", "target": ["username", "password"] },
+              "description": "Select (or create) a stored secret that references your login credentials"
+            },
+            "loginBody": {
+              "type": "string",
+              "title": "POST Body",
+              "description": "Template for POST body to send with login request, ${username} and ${password} are used to specify location of these attributes in the message",
+              "default": "`{ \"username\": \"${username}\", \"password\": \"${password}\" }`",
+              "jsExpression": true
+            },
+            "tokenRespAttribute": {
+              "type": "string",
+              "title": "Token Attribute",
+              "description": "Path to token attribute in login response body. Nested attributes are OK.",
+              "default": "token"
+            },
+            "authHeaderExpr": {
+              "type": "string",
+              "title": "Authorize Expression",
+              "description": "JavaScript expression to compute the Authorization header to pass in discover and collect calls. The value ${token} is used to reference the token obtained from login.",
+              "default": "`Bearer ${token}`",
+              "jsExpression": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

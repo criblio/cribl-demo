@@ -1,0 +1,22 @@
+api:
+  host: 0.0.0.0
+  port: 9000
+  disabled: false
+  loginRateLimit: 2/second
+auth:
+  type: local
+kms.local:
+  type: local
+crypto:
+  keyPath: $CRIBL_HOME/local/cribl/auth/keys.json
+system:
+  upgrade: api
+  restart: api
+  installType: standalone
+  intercom: true 
+workers: 
+  count: -2
+  minimum: 2
+  memory: 2048
+proxy:
+  useEnvVars: true

@@ -1,0 +1,51 @@
+inputs:
+  in_system_metrics:
+    disabled: false
+    sendToRoutes: false
+    type: system_metrics
+    persistence:
+      enable: true
+      maxDataSize: 100MB
+    connections:
+      - output: devnull
+  in_file_auto:
+    type: file
+    disabled: true
+    sendToRoutes: false
+    mode: auto
+  in_file_varlog:
+    type: file
+    disabled: true
+    sendToRoutes: false
+    mode: manual
+    interval: 10
+    path: /var/log/
+    filenames:
+      - "!*.journal*"
+      - "!*.gz"
+      - "*"
+  in_appscope:
+    disabled: false
+    sendToRoutes: true
+    tags: []
+    ipWhitelistRegex: /.*/
+    maxActiveCxn: 1000
+    enableProxyHeader: false
+    staleChannelFlushMs: 10000
+    enableUnixPath: true
+    authType: manual
+    authToken: ""
+    tls:
+      disabled: true
+    host: 0.0.0.0
+    port: 10090
+    unixSocketPath: $CRIBL_HOME/state/appscope.sock
+    unixSocketPerms: 777
+    type: appscope
+  CriblLogs:
+    type: cribl
+    disabled: true
+  CriblMetrics:
+    type: criblmetrics
+    disabled: true
+    pipeline: cribl_metrics_rollup

@@ -1,0 +1,14 @@
+activeId: default
+rulesets:
+  default:
+    conf:
+      functions:
+        - filter: "!cribl.group"
+          id: eval
+          description: Default Mappings
+          disabled: false
+          final: true
+          conf:
+            add:
+              - name: groupId
+                value: "'default'"

@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "fields": {
+      "type": "array",
+      "title": "Fields to Publish",
+      "description": "Wildcard list of fields to publish to the Prometheus endpoint.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "batchWriteInterval": {
+      "type": "number",
+      "title": "Batch Write Interval",
+      "description": "How often, in milliseconds, the contents should be published.",
+      "default": 5000
+    },
+    "passthrough": {
+      "type": "boolean",
+      "title": "Passthrough Mode",
+      "description": "If No, suppresses output to downstream Functions' Destinations. (Overrides the Final slider's setting.)",
+      "default": false
+    },
+    "update": {
+      "type": "boolean",
+      "title": "Update Mode",
+      "description": "Determines whether the publisher updates (versus overwrites) the published output.",
+      "default": true
+    }
+  }
+}

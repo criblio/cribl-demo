@@ -1,0 +1,11 @@
+{
+  "dimensions": {
+    "ui:field": "Tags"
+  },
+  "timeWindow": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "gaugeRollup": {
+    "ui:options": { "inline": true, "width": "50%" }
+  }
+}  

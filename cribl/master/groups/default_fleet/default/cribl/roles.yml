@@ -1,0 +1,44 @@
+admin:
+  description: 'Members with admin role have permission to do anything and everything in the system.'
+  policy:
+    - '* *'
+reader_all:
+  description: 'Members with reader_all role get read-only access to all Worker Groups.'
+  policy:
+    - GroupRead *
+collect_all:
+  description: 'Members of this group can run existing collection jobs of all Worker Groups'
+  policy:
+    - GroupCollect *
+editor_all:
+  description: 'Members with editor_all role get read/write access to all Worker Groups.'
+  policy:
+    - GroupEdit *
+owner_all:
+  description: 'Members with owner_all role get read/write access as well as Deploy permissions to all Worker Groups.'
+  policy:
+    - GroupFull *
+notification_admin:
+  description: 'Members with notification_admin role get read/write access to all Notifications.'
+  policy:
+    - '* /notifications'
+    - '* /notifications/*'
+    - '* /notification-targets'
+    - '* /notification-targets/*'
+    - '* /system/messages'
+    - '* /system/messages/*'
+gitops:
+  description: 'Members with the gitops role will be able to sync the LogStream deployment with a remote repo.'
+  policy:
+    - POST /version/sync
+user:
+  description: 'The base user role allows users to see the system info along with their own profile settings.'
+  policy:
+    - GET /system/authentication/info
+    - GET /system/info
+    - GET /system/info/*
+    - GET /system/users
+    - GET /system/instance/distributed
+    - GET /system/instance/distributed/*
+    - GET /clui
+    - PATCH /ui/*

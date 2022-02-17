@@ -1,0 +1,64 @@
+{
+  "dnsLookupFields": {
+    "ui:field": "Table",
+    "items": {
+      "inFieldName": {
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "outFieldName": {
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter field name"
+      }
+    }
+  },
+  "reverseLookupFields": {
+    "ui:field": "Table",
+    "items": {
+      "inFieldName": {
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "outFieldName": {
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "resourceRecordType": {
+        "ui:options": { "inline": true, "width": "50%" }
+      }
+    }
+  },
+  "dnsServers": {
+    "ui:field": "Tags",
+    "ui:placeholder": "DNS IP"
+  },
+  "cacheTTL": {
+    "ui:options": {
+      "width": "50%",
+      "inline": true
+    }
+  },
+  "maxCacheSize": {
+    "ui:options": {
+      "width": "50%",
+      "inline": true
+    }
+  },
+  "ui:options": {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": ["dnsServers", "cacheTTL", "maxCacheSize"]
+      }
+    }
+  }
+}

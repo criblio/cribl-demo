@@ -1,0 +1,28 @@
+{
+  "add": {
+    "ui:field": "Table",
+    "items": {
+      "name": {
+        "ui:options": {
+          "columnWidth": "30%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "value": {
+        "ui:widget": "JsInput",
+        "ui:options": {
+          "columnWidth": "70%"
+        },
+        "ui:placeholder": "Enter value expression"
+      }
+    }
+  },
+  "keep": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names"
+  },
+  "remove":{
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names"
+  }
+}

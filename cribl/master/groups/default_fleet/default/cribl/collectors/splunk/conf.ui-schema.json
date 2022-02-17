@@ -1,0 +1,116 @@
+{
+  "outputName": {
+    "ui:widget": "OutputName",
+    "ui:forceRender": true,
+    "ui:options": {
+      "outputType": "splunk",
+      "outputProps": {
+        "searchHead": "searchHead",
+        "endpoint": "endpoint",
+        "search": "search",
+        "earliest": "earliest",
+        "latest": "latest",
+        "collectRequestParams": "collectRequestParams",
+        "collectRequestHeaders": "collectRequestHeaders",
+        "authentication": "authentication",
+        "username": "username",
+        "password": "password",
+        "loginUrl": "loginUrl",
+        "loginBody": "loginBody",
+        "tokenRespAttribute": "tokenRespAttribute",
+        "authHeaderExpr": "authHeaderExpr",
+        "timeout": "timeout",
+        "useRoundRobinDns": "useRoundRobinDns"
+      }
+    }
+  },
+  "searchHead": { "ui:placeholder": "https://localhost:8089" },
+  "search": { "ui:placeholder": "index=_internal" },
+  "earliest": { "ui:placeholder": "-16m@m",  "ui:options": { "inline": true, "width": "15%" } },
+  "latest": { "ui:placeholder": "-1m@m", "ui:options": { "inline": true, "width": "15%" } },
+  "endpoint": { "ui:placeholder": "/services/search/jobs/export", "ui:options": { "columnWidth": "60%" } },
+  "collectRequestParams": {
+    "ui:field": "Table",
+    "items": {
+      "name": { "ui:placeholder": "Enter parameter name", "ui:options": { "columnWidth": "40%" } },
+      "value": { "ui:widget": "JsInput", "ui:placeholder": "Enter parameter value expression", "ui:options": { "columnWidth": "60%" } }
+    }
+  },
+  "collectRequestHeaders": {
+    "ui:field": "Table",
+    "items": {
+      "name": { "ui:placeholder": "Enter header name", "ui:options": { "columnWidth": "40%" } },
+      "value": { "ui:widget": "JsInput", "ui:placeholder": "Enter header value", "ui:options": { "columnWidth": "60%" } }
+    }
+  },
+  "authentication": {
+    "ui:widget": "Radio",
+    "ui:options": {
+      "uiEnumOptions": [
+        {"value": "none", "label": "None"},
+        {"value": "basic", "label": "Basic"},
+        {"value": "basicSecret", "label": "Basic (credentials secret)"}
+      ],
+      "toggle": true
+    }
+  },
+  "loginUrl": {
+    "ui:widget": "JsInput", "ui:placeholder": "Enter URL expression for the login url", "ui:options": { "columnWidth": "60%" }
+  },
+  "credentialsSecret": {
+    "ui:widget": "ApiLookupWithCreate",
+    "ui:options": {
+      "createType": "secret",
+      "typeName": "credentials secret",
+      "url": "/system/secrets?type=credentials",
+      "createUrl": "/settings/secrets",
+      "valueProp": "id",
+      "secretType": "credentials"
+    }
+  },
+  "loginBody": {
+    "ui:widget": "TextareaUpload",
+    "ui:options": {
+      "rows": 1
+    }
+  },
+  "timeout": {"ui:options": {"inline": true, "width": "15%"}},
+  "useRoundRobinDns": {"ui:options": {"inline": true, "width": "15%"}},
+  "disableTimeFilter": {"ui:options": {"inline": true, "width": "15%"}},
+  "ui:options": {
+    "groups": {
+      "collect": {
+        "title": "Search",
+        "collapsed": false,
+        "properties": [
+          "search",
+          "searchHead",
+          "earliest",
+          "latest"
+        ]
+      },
+      "authentication": {
+        "title": "Authentication",
+        "collapsed": false,
+        "properties": [
+          "authentication",
+          "loginUrl",
+          "authType",
+          "credentialsSecret",
+          "username",
+          "password",
+          "loginBody",
+          "tokenRespAttribute",
+          "authHeaderExpr"
+        ]
+      },
+      "advanced": {
+        "title": "Additional Collector Settings",
+        "collapsed": true,
+        "properties": [
+          "endpoint","outputMode","collectRequestParams","collectRequestHeaders","timeout", "useRoundRobinDns", "disableTimeFilter"
+        ]
+      }
+    }
+  }
+}

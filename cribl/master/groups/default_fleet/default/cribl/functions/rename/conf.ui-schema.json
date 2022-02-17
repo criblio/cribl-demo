@@ -1,0 +1,39 @@
+{
+  "baseFields": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Parent field name(s)",
+    "ui:options": {
+      "typeaheadItems": "fields"
+    }
+  },
+  "rename": {
+    "ui:field": "Table",
+    "items": {
+      "currentName": {
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter current field name"
+      },
+      "newName": {
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter new field name"
+      }
+    }
+  },
+  "renameExpr": {
+    "ui:widget": "JsInput",
+    "ui:placeholder": "Enter renaming expression"
+  },
+  "ui:options": {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": ["wildcardDepth"]
+      }
+    }
+  }
+}

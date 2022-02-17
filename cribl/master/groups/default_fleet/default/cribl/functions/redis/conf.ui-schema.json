@@ -1,0 +1,95 @@
+{
+  "commands": {
+    "ui:field": "Table",
+    "items": {
+      "outField": {
+        "ui:options": { "columnWidth": "25%" }
+      },
+      "command": {
+        "ui:widget": "AutoComplete",
+        "ui:options": { 
+          "columnWidth": "20%",
+          "editable": true,
+          "uiEnumOptions": [
+            {"value": "get"},
+            {"value": "set"},
+            {"value": "del"},
+            {"value": "exists"},
+            {"value": "incr"},
+            {"value": "incrby"},
+            {"value": "decr"},
+            {"value": "decrby"},
+            {"value": "hget"},
+            {"value": "hset"},
+            {"value": "hdel"},
+            {"value": "hexists"},
+            {"value": "hincr"},
+            {"value": "hincrby"},
+            {"value": "hkeys"},
+            {"value": "hvals"},
+            {"value": "echo"},
+            {"value": "expire"},
+            {"value": "persist"},
+            {"value": "ttl"}
+          ]   
+        }
+      },
+      "keyExpr": {
+        "ui:options": { "columnWidth": "30%" }
+      },
+      "argsExpr": {
+        "ui:options": { "columnWidth": "25%" }
+      }
+    }
+  },
+  "url": {
+    "ui:placeholder": "URL to connect to, e.g. redis://localhost:6379"
+  },
+  "authType": {
+    "ui:widget": "Radio",
+    "ui:options": {
+      "uiEnumOptions": [
+        { "value": "none", "label": "None", "description": "Authentication is either not required, or provided in the URL"},
+        { "value": "manual", "label": "Manual", "description": "Provide Redis username and password below" },
+        { "value": "credentialsSecret", "label": "User Secret", "description": "Select a Secret that references a Redis username and password" },
+        { "value": "textSecret", "label": "Admin Secret", "description": "Select a Secret that references a Redis admin password" }
+      ],
+      "toggle": true
+    }
+  },
+  "credentialsSecret": {
+    "ui:widget": "ApiLookupWithCreate",
+    "ui:options": {
+      "url": "/system/secrets?type=credentials",
+      "createUrl": "/settings/secrets",
+      "valueProp": "id",
+      "createType": "secret",
+      "secretType": "credentials",
+      "createUiSchema": {
+        "secretType": { "ui:disabled": true }
+      }
+    }
+  },    
+  "textSecret": {
+    "ui:widget": "ApiLookupWithCreate",
+    "ui:options": {
+      "url": "/system/secrets?type=text",
+      "createUrl": "/settings/secrets",
+      "valueProp": "id",
+      "createType": "secret",
+      "secretType": "text",
+      "createUiSchema": {
+        "secretType": { "ui:disabled": true }
+      }
+    }
+  },    
+  "ui:options": {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": ["maxBlockSecs"]
+      }
+    }
+  }
+}

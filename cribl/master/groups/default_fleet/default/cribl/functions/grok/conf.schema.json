@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["pattern"],
+  "properties": {
+    "pattern": {
+      "type": "string",
+      "title": "Pattern",
+      "description": "Grok pattern to extract fields. Syntax supported: %{PATTERN_NAME:FIELD_NAME}"
+    },
+    "patternList": {
+      "type": "array",
+      "title": "Additional Grok patterns",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": ["pattern"],
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "title": "Pattern",
+            "description": "Grok pattern to extract fields. Syntax supported: %{PATTERN_NAME:FIELD_NAME}"
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "title": "Source Field",
+      "description": "Field on which to perform Grok extractions.",
+      "default": "_raw"
+    }
+  }
+}

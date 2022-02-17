@@ -1,0 +1,15 @@
+{
+  "keyExpr": {
+    "ui:widget": "JsInput",
+    "ui:placeholder": "Enter key expression"
+  },
+  "ui:options":  {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": [ "maxCacheSize", "cacheIdleTimeoutPeriods", "numEventsIdleTimeoutTrigger" ]
+      }
+    }
+  }
+}

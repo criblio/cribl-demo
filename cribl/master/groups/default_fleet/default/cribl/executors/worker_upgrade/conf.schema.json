@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["packages", "authToken"],
+  "properties": {
+    "authToken": {
+      "type": "string",
+      "title": "Auth token",
+      "description": "Package download auth token",
+      "minLength": 1,
+      "encrypt": true
+    },
+    "packages": {
+      "type":"array",
+      "items": {
+        "type":"object",
+        "required": ["packageUrl", "packageFile", "version", "localPackageUrl", "variant"],
+        "properties": {
+          "packageUrl": {
+            "type": "string",
+            "title": "Package URL",
+            "description": "Download URL for the LogStream binary",
+            "minLength": 1
+          },
+          "packageFile": {
+            "type": "string",
+            "title": "Package destination",
+            "description": "Package destination in the master node",
+            "minLength": 1
+          },
+          "hashUrl": {
+            "type": "string",
+            "title": "Hash URL",
+            "description": "Download URL for package checksum",
+            "minLength": 1
+          },
+          "hashFile": {
+            "type": "string",
+            "title": "Hash destination",
+            "description": "Hash file destination in the master node",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "title": "LogStream version",
+            "description": "Version to install",
+            "minLength": 1
+          },
+          "hashType": {
+            "type": "string",
+            "title": "Hash type",
+            "description": "Type of verification hash used",
+            "minLength": 1
+          },
+          "localHashUrl": {
+            "type": "string",
+            "title": "Verification hash URL",
+            "description": "Internal download URL for the verification hash file",
+            "minLength": 1
+          },
+          "localPackageUrl": {
+            "type": "string",
+            "title": "Package URL",
+            "description": "Internal download URL for the LogStream binary",
+            "minLength": 1
+          },
+          "variant": {
+            "type":"array",
+            "title": "Build variant",
+            "contains": {
+              "type": "string"
+            },
+            "description": "Target platform and architecture tuple, e.g. linux, x64 ",
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    }
+  }
+}

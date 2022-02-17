@@ -1,0 +1,14 @@
+{
+  "keyExpr": {
+    "ui:widget": "JsInput"
+  },
+  "ui:options":  {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": [ "samplePeriod", "minEvents", "maxSampleRate" ]
+      }
+    }
+  }
+}

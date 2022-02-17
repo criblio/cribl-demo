@@ -1,0 +1,61 @@
+functions:
+  - id: eval
+    filter: sourcetype!='cisco:estreamer:data'
+    disabled: false
+    conf:
+      {}
+    description: Short-circuit all events that are NOT of sourcetype cisco:estreamer:data
+    final: true
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: >
+        Use the Parser function in K=V mode to re-write original events
+        satisfying these conditions:
+
+        * Keep all fields enumerated in the "Fields To Keep", regardless of their values.
+
+        * Remove fields with no value.
+
+        * Remove fields with value 'N/A'.
+
+        * Remove fields with '0', '-' or ':' only.
+
+        * Remove fields with value '[Uu]nknown'
+  - id: serde
+    filter: "true"
+    disabled: null
+    conf:
+      mode: reserialize
+      type: kvp
+      srcField: _raw
+      fields:
+        []
+      keep:
+        - dest_port
+        - dest_ip
+        - dest_bytes
+        - src_port
+        - web_app
+        - src_ip
+        - iface_ingress
+        - fw_rule_reason
+        - client_app
+        - fw_rule_action
+        - sec_zone_ingress
+        - src_bytes
+        - user_agent
+        - http_response
+        - fw_policy
+        - ip_proto
+        - dest_pkts
+        - app_proto
+        - fw_rule
+        - sensor
+      remove:
+        []
+      fieldFilterExpr: >-
+        !(value.length==0 || value=='N/A' || value.match(/^[0\-:]+$/) ||
+        value.toLowerCase()=='unknown')
+    description: Rewrite events with required fields only.

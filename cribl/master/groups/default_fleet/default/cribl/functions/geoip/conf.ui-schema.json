@@ -1,0 +1,29 @@
+{
+  "inField": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "outField": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "file": {
+    "ui:placeholder": "Select one or enter lookup file path",
+    "ui:widget": "ApiLookup",
+    "ui:options": {
+      "url": "/system/lookups?ext=%5C.mmdb",
+      "valueProp": "id",
+      "labelProp": "id",
+      "editable": true
+    }
+  },
+  "additionalFields": {
+    "ui:field": "Table",
+    "items": {
+      "extraInField": {
+        "ui:placeholder": "Enter IP Field"
+      },
+      "extraOutField" :{
+        "ui:placeholder": "Enter Result Field"
+      }
+    }
+  }
+}

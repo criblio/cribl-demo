@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["tenant_id","app_id","client_secret","content_type"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant identifier",
+      "minLength": 1,
+      "description": "Directory ID (tenant identifier) in Azure Active Directory"
+    },
+    "app_id": {
+      "type": "string",
+      "title": "Application identifier",
+      "minLength": 1,
+      "description": "Identifier of the registered application in Azure Active Directory."
+    },
+    "client_secret": {
+      "type": "string",
+      "title": "Client secret",
+      "description": "Application key of the registered application.",
+      "minLength": 1,
+      "encrypt": true
+    },
+    "content_type": {
+      "type": "string",
+      "title": "Content type",
+      "description": "The type of content to retrieve from the Office 365 service communications API.",
+      "enum": [ "CurrentStatus", "HistoricalStatus", "Messages" ],
+      "enumNames": [ "Current status", "Historical status", "Service messages" ],
+      "default": "CurrentStatus"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "comment": {
+    "ui:widget": "textarea",
+    "ui:options": {
+      "autoSize": true
+    },
+    "ui:placeholder": "Enter comment"
+  }
+}

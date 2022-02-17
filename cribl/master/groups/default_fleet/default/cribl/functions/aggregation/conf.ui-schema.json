@@ -1,0 +1,85 @@
+{
+  "aggregations": {
+    "items": {
+      "ui:widget": "AggInput",
+      "ui:placeholder": "Enter an aggregate function"
+    }
+  },
+  "groupbys": {
+    "ui:field": "Tags",
+    "ui:placeholder": "One or more fields (or wildcard expression) to group by. Optional."
+  },
+  "timeWindow": {
+    "ui:options": {
+      "labelInline": true,
+      "width": "200px"
+    }
+  },
+  "flushEventLimit": {
+    "ui:options": { "inline": true, "width": "50%" },
+    "ui:placeholder":"Defaults to unlimited"
+  },
+  "flushMemLimit": {
+    "ui:options": { "inline": true, "width": "50%" },
+    "ui:placeholder":"Defaults to unlimited"
+  },
+  "passthrough": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "sufficientStatsOnly": {
+    "ui:options": { "inline": true, "width": "50%",
+      "inlineStyle": { "padding": "0" }
+    }
+  },
+  "preserveGroupBys": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "metricsMode": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "lagTolerance": {
+    "ui:options": { "inline": true, "width": "50%" },
+    "ui:placeholder":"Defaults to the smaller of Time Window and 1 minute"
+  },
+  "idleTimeLimit": {
+    "ui:options": { "inline": true, "width": "50%" },
+    "ui:placeholder":"Defaults to the smaller of Time Window and 1 minute"
+  },
+  "add": {
+    "ui:field": "Table",
+    "items": {
+      "name": {
+        "ui:options": {
+          "columnWidth": "30%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "value": {
+        "ui:widget": "JsInput",
+        "ui:options": {
+          "columnWidth": "70%"
+        },
+        "ui:placeholder": "Enter value expression"
+      }
+    }
+  },
+  "ui:options": {
+    "groups": {
+      "windowType": {
+        "title": "Time Window Settings",
+        "collapsed": true,
+        "properties": ["cumulative","lagTolerance","idleTimeLimit"]
+      },
+      "modeSettings": {
+        "title": "Output Settings",
+        "collapsed": true,
+        "properties": ["passthrough", "metricsMode", "sufficientStatsOnly", "preserveGroupBys", "prefix"]
+      },
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": ["flushEventLimit", "flushMemLimit", "flushOnInputClose"]
+      }
+    }
+  }
+}

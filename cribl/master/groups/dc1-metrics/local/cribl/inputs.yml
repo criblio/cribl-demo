@@ -15,3 +15,18 @@ inputs:
     metadata:
       - name: index
         value: cribl-metrics
+  edge-in:
+    disabled: false
+    sendToRoutes: true
+    streamtags: []
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    ipWhitelistRegex: /(10\.244\.82\.9|10\.244\.82\.14|10\.244\.82\.12|10\.244\.82\.11)/
+    maxActiveCxn: 1000
+    enableProxyHeader: false
+    authType: manual
+    authToken: "#42:x+TQu3fHE6ogQe4yXx+7EkzXQbvZjzAR3NvuswPzSV6zvdMqoxt8kGJzb/WldejN1570\
+      9hURjThWeRChW6RqZA=="
+    type: logstream
+    port: 10250

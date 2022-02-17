@@ -1,0 +1,40 @@
+inputs:
+  in_system_metrics:
+    disabled: false
+    sendToRoutes: false
+    streamtags: []
+    interval: 10
+    host:
+      mode: all
+    container:
+      mode: basic
+      dockerSocket:
+        - /var/run/docker.sock
+        - /run/docker.sock
+      dockerTimeout: 5
+    persistence:
+      enable: true
+      timeWindow: 10m
+      maxDataSize: 100MB
+      maxDataTime: 24h
+      compress: gzip
+      destPath: $CRIBL_HOME/state/system_metrics
+    type: system_metrics
+    connections:
+      - output: dc1-metrics-ls
+        pipeline: ""
+  in_file_auto:
+    disabled: false
+    sendToRoutes: false
+    streamtags: []
+    mode: auto
+    interval: 10
+    filenames:
+      - "!*.journal"
+      - "*/log/*"
+      - "*log"
+    staleChannelFlushMs: 10000
+    type: file
+    connections:
+      - output: dc1-logs-ls
+        pipeline: ""

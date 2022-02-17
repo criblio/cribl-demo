@@ -1,0 +1,11 @@
+{
+  "tenant_id": {
+    "ui:placeholder": "Enter Tenant Identifier"
+  },
+  "app_id": {
+    "ui:placeholder": "Enter Application Identifier"
+  },
+  "client_secret": {
+    "ui:placeholder": "Enter Application Secret"
+  }
+}

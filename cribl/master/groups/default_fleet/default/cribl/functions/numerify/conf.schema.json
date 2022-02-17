@@ -1,0 +1,57 @@
+{
+  "title": "",
+  "type": "object",
+  "properties": {
+    "ignoreFields": {
+      "title": "Ignore fields",
+      "description": "Fields to NOT numerify. Takes precedence over 'Include expression' when set.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "Field to ignore"
+      }
+    },
+    "filterExpr": {
+      "title": "Include expression",
+      "description": "Optional JS expression to determine whether a field should be numerified. If left empty, LogStream assumes 'numerify all'. Use the 'name' and 'value' global variables to access fields' names/values. Examples: `value != null` or `name=='fieldname'`. You can access other fields' values via `__e.<fieldName>`.",
+      "type": "string",
+      "jsExpression": true
+    },
+    "format":{
+      "title": "Format",
+      "description": "Defines how to format numbers.",
+      "type": "string",
+      "enum": ["none", "fix", "floor", "ceil"],
+      "enumNames": ["None", "Fix", "Floor", "Ceil"],
+      "default": "none"
+    }
+  },
+  "dependencies": {
+    "format": {
+      "oneOf": [
+        {
+          "properties": {
+            "format": {
+              "enum":["fix"]
+            },
+            "digits": {
+              "type": "number",
+              "title": "Digits",
+              "description": "Number of digits after the decimal point; this may be a value between 0 and 20. It defaults to 2 if omitted.",
+              "default": 2,
+              "minimum": 0,
+              "maximum": 20
+            }
+          }
+        },
+        {
+          "properties": {
+            "format": {
+              "enum":["none", "floor", "ceil"]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

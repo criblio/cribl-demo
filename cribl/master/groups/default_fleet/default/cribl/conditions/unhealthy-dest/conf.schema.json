@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Destination name",
+      "description": "The name of the destination to produce notifications"
+    },
+    "timeWindow": {
+      "type": "string",
+      "duration": { "min": "60s" },
+      "title": "Time window",
+      "description": "Time window for notifications to potentially be sent out over",
+      "default": "60s"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["srcExpr", "dstField"],
+  "properties": {
+    "srcExpr": {
+      "type": "string",
+      "title": "Source Field Expression",
+      "description": "Field where to find/calculate the array to unroll, e.g. _raw, _raw.split(/\\n/)",
+      "default": "_raw",
+      "jsExpression": true
+    },
+    "dstField": {
+      "type": "string",
+      "title": "Destination Field",
+      "description": "Field in destination event where to place unrolled value",
+      "default": "_raw"
+    }
+  }
+}

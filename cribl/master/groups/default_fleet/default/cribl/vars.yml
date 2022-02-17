@@ -1,0 +1,42 @@
+unixtime:
+  type: expression
+  lib: cribl
+  value: Math.floor(Date.now()/1000)
+  description: Current epoch time
+  tags: cribl,sample
+datetime:
+  type: expression
+  lib: cribl
+  value: new Date().toISOString()
+  args: []
+  description: Current UTC date/time in ISO8601 format
+  tags: cribl,sample
+theAnswer:
+  type: number
+  lib: cribl
+  description: "Sample number variable "
+  value: "42"
+  tags: cribl,sample
+myObject:
+  type: object
+  lib: cribl
+  value: '{foo:"bar",baz:"qux"}'
+  description: "Sample object variable "
+  tags: cribl,sample
+myArray:
+  type: array
+  lib: cribl
+  value: "['foo', 'bar', 'baz', 'qux']"
+  tags: cribl,sample
+  description: Sample array variable
+convertBytes:
+  type: expression
+  lib: cribl
+  value: "`${Math.round(bytes / Math.pow(1024, (Math.floor(Math.log(bytes) /
+    Math.log(1024)))), 2)}${['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB',
+    'ZiB', 'YiB'][(Math.floor(Math.log(bytes) / Math.log(1024)))]}`"
+  args:
+    - type: number
+      name: bytes
+  tags: cribl,sample
+  description: "Sample expression variable to convert bytes to human readable "

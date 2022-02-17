@@ -1,0 +1,15 @@
+{
+  "fields": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names"
+  },
+  "prefix": {
+    "ui:options": { "inline": true, "width": "60%" }
+  },
+  "depth": {
+    "ui:options": { "inline": true, "width": "20%" }
+  },
+  "delimiter": {
+    "ui:options": { "inline": true, "width": "20%" }
+  }
+}

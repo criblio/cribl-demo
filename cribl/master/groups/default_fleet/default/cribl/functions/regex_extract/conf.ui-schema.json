@@ -1,0 +1,37 @@
+{
+  "regex": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression",
+    "ui:options": {
+      "eventFieldProperty": "source"
+    }
+  },
+  "regexList": {
+    "ui:field": "Table",
+    "items": {
+      "regex": {
+        "ui:placeholder": "Regular expression",
+        "ui:widget": "RegexInput",
+        "ui:options": {
+          "eventFieldProperty": "source",
+          "columnWidth": "100%"
+        }
+      }
+    }
+  },
+  "fieldNameExpression": {
+    "ui:widget": "JsInput",
+    "ui:placeholder": "Enter field name format expression."
+  },
+  "ui:options": {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": [
+          "iterations", "fieldNameExpression","overwrite"
+        ]
+      }
+    }
+  }
+}

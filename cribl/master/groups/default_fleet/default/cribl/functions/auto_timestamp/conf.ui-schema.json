@@ -1,0 +1,82 @@
+{
+  "srcField": {
+    "ui:options": { "inline": true, "width": "34%" }
+  },
+  "dstField": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "defaultTimezone": {
+    "ui:placeholder": "Select a timezone",
+    "ui:widget": "ApiLookup",
+    "ui:options": {
+      "url": "/timezoneInfo",
+      "ignorePackContext": true,
+      "valueProp": "value",
+      "labelProp": "label",
+      "editable": false,
+      "inline": true, 
+      "width": "33%"
+    }
+  },
+  "timeExpression": {
+    "ui:widget": "JsInput"
+  },
+  "timestamps": {
+    "ui:field": "Table",
+    "items": {
+      "regex": {
+        "ui:widget": "RegexInput",
+        "ui:options": {
+          "popupEditor": "RegexEditor",
+          "eventFieldProperty": "srcField"
+        }
+      },
+      "strptime": {
+        "ui:widget": "AutoComplete",
+        "ui:options": {
+          "editable": true,
+          "uiEnumOptions": [
+             {"value": "%Y-%m-%d %H:%M:%S"},
+             {"value": "%m-%d-%Y %H:%M:%S %Z"},
+             {"value": "%Y-%m-%d %H:%M:%S %Z"},
+             {"value": "%b %d %H:%M:%S"},
+             {"value": "%s"},
+             {"value": "%Q"},
+             {"value": "%A %B %d %T %Y"},
+             {"value": "%y%m%d %H:%M:%S %Z"},
+             {"value": "%y%m%d %H:%M:%S"},
+             {"value": "%d-%b-%Y %H:%M:%S"},
+             {"value": "%d%b%Y %H:%M:%S"},
+             {"value": "%Y/%m/%d %H:%M:%S"},
+             {"value": "%Y-%m-%dT%H:%M:%S"},
+             {"value": "%Y-%m-%dT%H:%M:%S.%L"}
+          ]
+        }
+      }
+    }
+  },  
+  "offset": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "maxLen": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "defaultTime": {
+    "ui:options": { "inline": true, "width": "34%" }
+  },
+  "latestDateAllowed": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "earliestDateAllowed": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "ui:options":  {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": [ "timeExpression", "offset", "maxLen", "defaultTime" , "earliestDateAllowed", "latestDateAllowed" ]
+      }
+    }
+  }
+}

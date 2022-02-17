@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "fields": {
+      "title": "Reverse DNS lookup field(s)",
+      "description": "List of field names to perform reverse DNS lookup for.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["inFieldName"],
+        "properties": {
+          "inFieldName": {
+            "type": "string",
+            "title": "Lookup field name",
+            "description": "Name of the field containing the IP to lookup. If the field value is not in ipv4 or ipv6 format, the lookup is skipped."
+          },
+          "outFieldName": {
+            "type": "string",
+            "title": "Output field name",
+            "description": "Name of field to add the resolved domain to. Leave blank to overwrite the lookup field."
+          }
+        }
+      }
+    },
+    "cacheTTL": {
+      "type": "number",
+      "title": "Reload period (minutes)",
+      "description": "Interval at which to refresh DNS cache. Use 0 to disable.",
+      "default": 60
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "discoverScript": {
+    "ui:widget": "TextareaUpload",
+    "ui:options": {
+      "rows": 5
+    },
+    "ui:placeholder": "Discover script"
+  },
+  "collectScript": {
+    "ui:widget": "TextareaUpload",
+    "ui:options": {
+      "rows": 5
+    },
+    "ui:placeholder": "Collect script"
+  }
+}

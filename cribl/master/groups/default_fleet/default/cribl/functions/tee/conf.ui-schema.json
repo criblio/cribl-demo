@@ -1,0 +1,19 @@
+{
+  "command": {
+    "ui:placeholder": "Enter command"
+  },
+  "env":{
+    "ui:field": "KeyValue",
+    "key": {
+      "ui:placeholder": "Enter key"
+    },
+    "value": {
+      "ui:placeholder": "Enter value"
+    }
+  },
+  "args": {
+    "items": {
+      "ui:placeholder": "Enter command argument"      
+    }
+  }
+}

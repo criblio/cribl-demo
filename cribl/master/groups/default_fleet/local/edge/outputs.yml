@@ -1,0 +1,37 @@
+outputs:
+  dc1-metrics-ls:
+    systemFields:
+      - cribl_pipe
+    streamtags: []
+    loadBalanced: false
+    compression: gzip
+    throttleRatePerSec: "0"
+    tls:
+      disabled: true
+    connectionTimeout: 10000
+    writeTimeout: 60000
+    onBackpressure: block
+    authType: manual
+    authToken: "#42:QuPuIdfxRGOUI5C0+tmtpwQdus/T2eA+cXSPEpQC1kftG4dpgd960o2UtlNQHUe4pX2V\
+      VuR9OYhuDPmWls7m9w=="
+    type: logstream
+    host: demo-cribl-w1
+    port: 10250
+  dc1-logs-ls:
+    systemFields:
+      - cribl_pipe
+    streamtags: []
+    loadBalanced: false
+    compression: gzip
+    throttleRatePerSec: "0"
+    tls:
+      disabled: true
+    connectionTimeout: 10000
+    writeTimeout: 60000
+    onBackpressure: block
+    authType: manual
+    authToken: "#42:XBiKj92FyugvtjJleCgou+90IZEZvNVWRhhobSBgyaRbXFyeolMe61dv+wFPw6/ocT1x\
+      LcsTb36EFM2qrNaUQw=="
+    type: logstream
+    host: demo-cribl-w0
+    port: 10250

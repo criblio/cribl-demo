@@ -1,0 +1,8 @@
+{
+  "srcExpr": {
+    "ui:widget": "JsInput"
+  },
+  "dstField": {
+    "ui:placeholder": "Destination field name"
+  }
+}

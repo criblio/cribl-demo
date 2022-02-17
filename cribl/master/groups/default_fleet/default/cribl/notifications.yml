@@ -1,0 +1,9 @@
+targets:
+  default:
+    defaultId: system_notifications
+    type: default
+  system_notifications:
+    type: bulletin_message
+    severity: warn
+    text: "Notification has been triggered"
+    title: "Notification"

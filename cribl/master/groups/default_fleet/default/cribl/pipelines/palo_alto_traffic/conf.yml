@@ -1,0 +1,60 @@
+functions:
+  - id: eval
+    filter: sourcetype!='pan:traffic'
+    disabled: null
+    conf:
+      {}
+    description: Short-circuit all events that are NOT sourcetype pan:traffic
+    final: true
+  - id: regex_extract
+    filter: "true"
+    disabled: null
+    conf:
+      regex: /(?:[^,]*,){4}(?<__log_subtype>[^,]*),(?:[^,]*,){11}(?<__src_zone>[^,]*),(?<__dest_zone>[^,]*),(?:[^,]*,){11}(?<__transport>[^,]*),(?<__action>[^,]*),(?:[^,]*,){2}(?<__bytes_in>[^,]*)/
+      source: _raw
+    description: Extract subtype, src/dest zones, transport, action and bytes_in
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop events of log_subtype=start as they often have incorrect app
+        assignment. Log_subtype=end contain better information.
+  - id: drop
+    filter: __log_subtype=='start'
+    disabled: null
+    conf:
+      {}
+    description: Drop events of log subtype of start.
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Sample traffic with 0 bytes received at 5:1
+
+        Sample traffic from trusted-trusted & action allowed at 10:1
+  - id: sampling
+    filter: "true"
+    disabled: null
+    conf:
+      rules:
+        - filter: __bytes_in==0
+          rate: 5
+        - filter: __src_zone=='trusted' && __dest_zone=='trusted' &&
+            __action=='allow'
+          rate: 10
+    description: Sample traffic
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Drop all date_* fields from each event. They're unreliable (non TZ
+        aware) and are very rarely used.
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      remove:
+        - date_*
+    description: Drop fields that start with date_*
+output: default
+description: Filter and Sample Palo Alto traffic events

@@ -1,0 +1,18 @@
+{
+  "regex": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression"
+  },
+  "regexList": {
+    "ui:field": "Table",
+    "items": {
+      "regex": {
+        "ui:placeholder": "Regular expression",
+        "ui:widget": "RegexInput",
+        "ui:options": {
+          "columnWidth": "100%"
+        }
+      }
+    }
+  }
+}

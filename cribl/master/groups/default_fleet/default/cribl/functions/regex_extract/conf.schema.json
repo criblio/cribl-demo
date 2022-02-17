@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["regex"],
+  "properties": {
+    "regex": {
+      "type": "string",
+      "title": "Regex",
+      "description": "Regex literal with named capturing groups – e.g., (?&lt;foo&gt;bar) – or _NAME_ and _VALUE_ capturing groups, e.g.: (?<_NAME_0>[^ =]+)=(?<_VALUE_0>[^,]+).",
+      "regexp": true
+    },
+    "regexList": {
+      "type": "array",
+      "title": "Additional Regex",
+      "items": {
+        "type": "object",
+        "required": ["regex"],
+        "properties": {
+          "regex": {
+            "type": "string",
+            "title": "Regex",
+            "description": "Regex literal with named capturing groups – e.g., (?&lt;foo&gt;bar) – or _NAME_ and _VALUE_ capturing groups, e.g.: (?<_NAME_0>[^ =]+)=(?<_VALUE_0>[^,]+).",
+            "minLength": 1,
+            "regexp": true
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "title": "Source Field",
+      "description": "Field on which to perform regex field extraction.",
+      "default": "_raw"
+    },
+    "iterations": {
+      "type": "number",
+      "title": "Max Exec",
+      "description": "The maximum number of times to apply regex to source field when the global flag is set, or when using _NAME_ and _VALUE_ capturing groups.",
+      "default": 100,
+      "minimum" : 1
+    },
+    "fieldNameExpression": {
+      "title": "Field Name Format Expression",
+      "description": "JS expression to format field names when _NAME_n and _VALUE_n capturing groups are used. Original field name is in global variable 'name'. E.g., to append XX to all field names: `${name}_XX` (backticks are literal). If empty, names will be sanitized using this regex: /^[_0-9]+|[^a-zA-Z0-9_]+/g.  You can access other fields' values via __e.<fieldName>.",
+      "type": "string",
+      "jsExpression": true
+    },
+    "overwrite": {
+      "type": "boolean",
+      "title": "Overwrite Existing Fields",
+      "description": "Overwrite existing event fields with extracted values. If set to No, existing fields will be converted to an array.",
+      "default": false
+    }
+  }
+}

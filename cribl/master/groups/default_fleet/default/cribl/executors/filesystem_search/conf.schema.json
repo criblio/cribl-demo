@@ -1,0 +1,68 @@
+{
+    "type": "object",
+    "title": "",
+    "required": ["path"],
+    "properties": {
+      "path": {
+        "type": "string",
+        "title": "Directory",
+        "description": "The directory from which to collect data. Templating is supported, e.g.: myDir/${datacenter}/${host}/${app}/. Time-based tokens are also supported, e.g.: myOtherDir/${_time:%Y}/${_time:%m}/${_time:%d}/.",
+        "minLength": 1,
+        "templated": true
+      },
+      "recurse": {
+        "type": "boolean",
+        "title": "Recursive",
+        "description": "Recurse through subdirectories.",
+        "default": true
+      },
+      "maxResults": {
+        "type": "number",
+        "title": "Max results size",
+        "description": "Maximum number of results per task.",
+        "default": 500
+      },
+      "batchSize": {
+        "type": "number",
+        "title": "Result Batch size",
+        "description": "Number of results to emit per read.",
+        "minimum": 1,
+        "default": 10
+      },
+      "filter": {
+        "type": "string",
+        "title": "Path filter",
+        "description": "Filter files based on the path/filename.",
+        "default": "(true)"
+      },
+      "contentFilter": {
+        "type": "string",
+        "title": "Content Filter",
+        "description": "Filter results by content.",
+        "default": "(true)"
+      },
+      "compareExpression": {
+        "type": "string",
+        "title": "Sort compare expression",
+        "description": "Expression by which events are sorted, populated with evtA and evtB."
+      },
+      "reverse": {
+        "type": "boolean",
+        "title": "Reverse read",
+        "description": "Read files in reverse order.",
+        "default": true
+      },
+      "addNodeFields": {
+        "type": "boolean",
+        "title": "Add Worker Fields",
+        "description": "Add extra worker node fields to events ",
+        "default": false
+      },
+      "rawResults" : { 
+        "type": "boolean",
+        "title": "Raw results",
+        "description": "Write raw results (without extended fields size, content etc).",
+        "default": false
+      }
+    }
+  }

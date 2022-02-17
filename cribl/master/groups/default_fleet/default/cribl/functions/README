@@ -1,0 +1,50 @@
+A directory of functions. Each function is encapsulated in a directory, the entry point for the function is index.js (in its directory)
+
+The following method is expected to be exported: `process` - see example below
+
+```
+exports.process = (event) => {
+  return event; // noop
+}
+
+exports.process = (event) => {
+  return null; // filter
+}
+
+exports.process = (event) => {
+  return [event, event]; // clone
+}
+
+exports.process = (event) => {
+  return Promise.resolve(event); // async noop
+}
+
+```
+
+Optional fields (strongly encouraged)
+
+```
+exports.name = <string, name of this function>
+exports.version = <string, version of this function>
+exports.disabled= <boolean, true iff function is disabled>
+```
+
+Optional functions
+
+```
+exports.init = (opt) => {
+  // opt.conf - will contain contents of conf.json iff present in function's dir
+}
+```
+
+Configuration:
+In the function's directory you can include a file called conf.json/yml; - if present the file will be read, merged with configuration
+from the pipeline (for this function) and passed to the function at initialzation time, ie init()
+
+```
+exports.unload = () => {
+  // called on function disable and during pipeline reconfigure
+}
+
+If the function can any resources that need to be released when the function is reinitialized or disabled, implement `unload` to
+get the chance to release those resources (file handles, network connections, timers etc)

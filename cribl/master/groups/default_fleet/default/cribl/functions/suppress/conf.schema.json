@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["keyExpr","allow","suppressPeriodSec"],
+  "properties": {
+    "keyExpr": {
+      "type": "string",
+      "title": "Key Expression",
+      "description": "Suppression key expression used to uniquely identify events to suppress. For example, `${ip}:${port}` will use fields ip and port from each event to generate the key.",
+      "jsExpression": true
+    },
+    "allow": {
+      "type": "number",
+      "title": "Number to Allow",
+      "default": 1,
+      "minimum": 1,
+      "description": "The number of events to allow per time period."
+    },
+    "suppressPeriodSec": {
+      "type": "number",
+      "title": "Suppression Period (sec)",
+      "default": 30,
+      "minimum": 0,
+      "description": "The number of seconds to suppress events after 'Number to Allow' events are received."
+    },
+    "dropEventsMode": {
+      "type": "boolean",
+      "title": "Drop Suppressed Events",
+      "default": true,
+      "description": "Specifies if suppressed events should be dropped or just tagged with suppress=1."
+    },
+    "maxCacheSize": {
+      "type": "number",
+      "title": "Maximum Cache Size",
+      "default": 50000,
+      "description": "The maximum number of keys that can be cached before idle entries are removed. Leave at default unless you understand the implications of changing."
+    },
+    "cacheIdleTimeoutPeriods": {
+      "type": "number",
+      "title": "Suppression Period Timeout",
+      "default": 2,
+      "description": "The number of suppression periods 'Suppression Period' of inactivity before a cache entry is considered idle. Leave at default unless you understand the implications of changing."
+    },
+    "numEventsIdleTimeoutTrigger": {
+      "type": "number",
+      "title": "Num Events to Trigger Cache Clean-Up",
+      "default": 10000,
+      "description": "Check cache for idle sessions every N events when cache size is > 'Maximum Cache Size'. Leave at default unless you understand the implications of changing."
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "baseFields": {
+      "title": "Parent fields",
+      "description": "Specify fields whose children will inherit the Rename fields and Rename expression operations. Supports wildcards. If empty, only top-level fields will be renamed.",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "rename": {
+      "title": "Rename fields",
+      "description": "Set of key-value pairs to rename fields, where key is the current name and value is the new name",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["currentName", "newName"],
+        "properties": {
+          "currentName": {
+            "type": "string",
+            "title": "Current name",
+            "description": "Name of the field to rename. Literal identifiers must be quoted."
+          },
+          "newName": {
+            "type": "string",
+            "title": "New name",
+            "description": "The name the field will be renamed to. Literal identifiers must be quoted."
+          }
+        }
+      }
+    },
+    "renameExpr": {
+      "title": "Rename expression",
+      "description": "Optional JS expression whose returned value will be used to rename fields. Use the 'name' and 'value' global variables to access fields' names/values. Example: `name.startsWith('data') ? name.toUpperCase() : name`. You can access other fields' values via __e.<fieldName>.",
+      "type": "string",
+      "jsExpression": true,
+      "renameExpr": true
+    },
+    "wildcardDepth": {
+      "type": "integer",
+      "title": "Parent field wildcard depth",
+      "description": "For wildcards specified in Parent fields, sets the maximum depth within events to match and rename fields. Enter `0` to match only top-level fields. Defaults to `5` levels down.",
+      "default": 5,
+      "minimum": 0
+    }
+  }
+}

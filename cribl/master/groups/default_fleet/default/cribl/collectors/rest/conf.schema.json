@@ -1,0 +1,550 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["collectUrl","collectMethod","authentication"],
+  "properties": {
+    "discovery": {
+      "type": "object",
+      "required": [ "discoverType" ],
+      "properties": {
+        "discoverType": {
+          "type": "string",
+          "title": "Discover Type",
+          "description": "Defines how task discovery will be performed. Use None to skip the discovery. Use HTTP Request to make a REST call to discover tasks. Use Item List to enumerate items for collect to retrieve. Use JSON Response to manually define discover tasks as a JSON array of objects. Each entry returned by the discover operation will result in a collect task.",
+          "enum": [ "http", "json", "list", "none" ],
+          "enumNames": [ "HTTP Request", "JSON Response", "Item List" ,"None" ],
+          "default": "none"
+        }
+      },
+      "errorMessage": "Please choose one of the discovery options.",
+      "dependencies": {
+        "discoverType": {
+          "oneOf": [
+            {
+              "required": [ "discoverUrl", "discoverMethod" ],
+              "properties": {
+                "discoverType": {
+                  "enum": [ "http" ]
+                },
+                "discoverUrl": {
+                  "type": "string",
+                  "title": "Discover URL",
+                  "description": "Expression to derive URL to use for the Discover operation (can be a constant).",
+                  "jsExpression": true
+                },
+                "discoverMethod": {
+                  "type": "string",
+                  "title": "Discover method",
+                  "description": "Discover HTTP method.",
+                  "enum": [ "get", "post", "post_with_body" ],
+                  "enumNames": [ "GET", "POST", "POST with Body" ],
+                  "default": "get"
+                },
+                "discoverRequestParams": {},
+                "discoverBody": {},
+                "discoverRequestHeaders": {
+                  "title": "Discover Headers",
+                  "description": "Optional discover request headers.",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [ "name", "value" ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Header name."
+                      },
+                      "value": {
+                        "type": "string",
+                        "title": "Value",
+                        "description": "JavaScript expression to compute the header value (can be a constant).",
+                        "jsExpression": true,
+                        "encrypt": true
+                      }
+                    }
+                  }
+                },
+                "discoverDataField": {
+                  "type": "string",
+                  "title": "Discover Data Field",
+                  "description": "Path to field in the response object which contains discover results (e.g.: level1.name), leave blank if the result is an array."
+                }
+              },
+              "dependencies" : {
+                "discoverMethod" : {
+                  "oneOf" : [
+                    {
+                      "properties": {
+                        "discoverMethod": {
+                          "enum": [ "get" ]
+                        },
+                        "discoverRequestParams": {
+                          "title": "Discover parameters",
+                          "description": "Optional discover request parameters.",
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "name",
+                              "value"
+                            ],
+                            "properties": {
+                              "name": {
+                                "title": "Name",
+                                "type": "string",
+                                "description": "Parameter name."
+                              },
+                              "value": {
+                                "title": "Value",
+                                "type": "string",
+                                "description": "JavaScript expression to compute the parameter value (can be a constant).",
+                                "jsExpression": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "discoverMethod": {
+                          "enum": [ "post" ]
+                        },
+                        "discoverRequestParams": {
+                          "title": "Discover parameters",
+                          "description": "Optional discover request parameters.",
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "name",
+                              "value"
+                            ],
+                            "properties": {
+                              "name": {
+                                "title": "Name",
+                                "type": "string",
+                                "description": "Parameter name."
+                              },
+                              "value": {
+                                "title": "Value",
+                                "type": "string",
+                                "description": "JavaScript expression to compute the parameter value (can be a constant).",
+                                "jsExpression": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "discoverMethod": {
+                          "enum": [ "post_with_body" ]
+                        },
+                        "discoverBody": {
+                          "type": "string",
+                          "title": "Discover POST Body",
+                          "description": "Template for POST body to send with the discover request.",
+                          "default": "`{ }`",
+                          "jsExpression": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "required": [ "manualDiscoverResult" ],
+              "properties": {
+                "discoverType": {
+                  "enum": [ "json" ]
+                },
+                "manualDiscoverResult": {
+                  "type": "string",
+                  "title": "Discover result",
+                  "description": "Allows hard-coding the Discover result. Must be a JSON object. Works with the Discover Data field."
+                },
+                "discoverDataField": {
+                  "type": "string",
+                  "title": "Discover data field",
+                  "description": "Within the response JSON, name of the field or array element to pull results from. Leave blank if the result is an array of values. Sample entry: items, json: { items: [{id: 'first'},{id: 'second'}] }"
+                }
+              }
+            },
+            {
+              "required": [ "itemList" ],
+              "properties": {
+                "discoverType": {
+                  "enum": [ "list" ]
+                },
+                "itemList": {
+                  "type": "array",
+                  "title": "Discover items",
+                  "description": "Comma-separated list of items to return from the Discover task. Each item returned will generate a collect task, and can be referenced using `${id}` in the collect URL, headers, or parameters.",
+                  "minItems": 1,
+                  "default": [],
+                  "items": {
+                    "type": "string",
+                    "title": "Items",
+                    "description": "List of items to return from discovery."
+                  }
+                }
+              }
+            },
+            {
+              "properties": {
+                "discoverType": {
+                  "enum": [ "none" ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "collectUrl": {
+      "type": "string",
+      "title": "Collect URL",
+      "description": "Expression to derive URL to use for the collect operation (can be a constant).",
+      "jsExpression": true
+    },
+    "collectMethod": {
+      "type": "string",
+      "title": "Collect method",
+      "description": "Collect HTTP method.",
+      "enum": [ "get", "post", "post_with_body" ],
+      "enumNames": [ "GET", "POST", "POST with Body" ],
+      "default": "get"
+    },
+    "collectRequestParams": {},
+    "collectBody": {},
+    "collectRequestHeaders": {
+      "title": "Collect headers",
+      "description": "Optional collect request headers.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name","value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Header Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "JavaScript expression to compute the header value (can be a constant).",
+            "jsExpression": true,
+            "encrypt": true
+          }
+        }
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "required": [ "type" ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Pagination",
+          "description": "Select collect pagination scheme",
+          "enum": [ "none", "response_body", "response_header", "response_header_link"],
+          "enumNames": [ "None", "Response Body Attribute", "Response Header Attribute", "RFC 5988 - Web Linking"],
+          "default": "none"
+        }
+      },
+      "errorMessage": "Please choose one of the pagination options.",
+      "dependencies": {
+        "type": {
+          "oneOf": [
+            {
+              "properties": {
+                "type": {
+                  "enum" : ["none"]
+                }
+              }
+            },
+            {
+              "required": ["attribute","maxPages"],
+              "properties": {
+                "type" : { "enum" : ["response_body","response_header"] },
+                "attribute": {
+                  "type": ["array", "string"],
+                  "title": "Response Attribute",
+                  "description": "The name of the attribute in the response that contains next page information",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "maxPages": {
+                  "type": "number",
+                  "title": "Max Pages",
+                  "description": "The maximum number of pages to retrieve, set to 0 to retrieve all pages",
+                  "default": 50,
+                  "minimum": 0
+                }
+              }
+            },
+            {
+              "required": ["nextRelationAttribute","maxPages"],
+              "properties": {
+                "type" : { "enum" : ["response_header_link"] },
+                "nextRelationAttribute": {
+                  "type": "string",
+                  "title": "Next page relation name",
+                  "description": "Relation name used in the link header that refers to the next page in the result set. In this example link header, rel=\"next\" to the next page of results: <https://myHost/curPage>; rel=\"self\" <https://myHost/nextPage>; rel=\"next\"",
+                  "default": "next"
+                },
+                "curRelationAttribute": {
+                  "type": "string",
+                  "title": "Current page relation name",
+                  "description": "Optional relation name used in the link header that refers to the current result set. In this example link header, rel=\"self\" refers to the current page of results: <https://myHost/curPage>; rel=\"self\" <https://myHost/nextPage>; rel=\"next\""
+                },
+                "maxPages": {
+                  "type": "number",
+                  "title": "Max Pages",
+                  "description": "The maximum number of pages to retrieve, set to 0 to retrieve all pages",
+                  "default": 50,
+                  "minimum": 0
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "authentication": {
+      "type": "string",
+      "title": "Authentication",
+      "description": "Authentication method for Discover and Collect REST calls. You can specify API Key–based authentication by adding the appropriate Collect headers.",
+      "enum": ["none", "basic", "basicSecret", "login", "loginSecret"],
+      "enumNames": ["None", "Basic", "Basic (credentials secret)", "Login", "Login (credentials Secret)"],
+      "default": "none"
+    },
+    "timeout" : {
+      "type": "number",
+      "title": "Request Timeout (secs)",
+      "description": "HTTP request inactivity timeout, use 0 to disable",
+      "minimum": 0,
+      "maximum": 1800,
+      "default": 0
+    },
+    "useRoundRobinDns": {
+      "type":"boolean",
+      "title": "Round-robin DNS",
+      "description": "Enable to use round-robin DNS lookup. Suitable when DNS server returns multiple addresses in sort order.",
+      "default": false
+    },
+    "disableTimeFilter": {
+      "type": "boolean",
+      "title": "Disable time filter",
+      "description": "Used to disable collector event time filtering when a date range is specified.",
+      "default": false
+    }
+  },
+  "dependencies": {
+   "collectMethod": {
+     "oneOf": [
+       {
+         "properties": {
+           "collectMethod" : { "enum" :  ["get"] },
+           "collectRequestParams": {
+             "title": "Collect parameters",
+             "description": "Optional collect request parameters.",
+             "type": "array",
+             "items": {
+               "type": "object",
+               "required": ["name","value"],
+               "properties": {
+                 "name": {
+                   "title": "Name",
+                   "type": "string",
+                   "description": "Parameter name"
+                 },
+                 "value": {
+                   "title": "Value",
+                   "type": "string",
+                   "description": "JavaScript expression to compute the parameter value (can be a constant).",
+                   "jsExpression": true
+                 }
+               }
+             }
+           }
+         }
+       },
+       {
+         "properties": {
+           "collectMethod" : { "enum" :  ["post"] },
+           "collectRequestParams": {
+             "title": "Collect parameters",
+             "description": "Optional collect request parameters.",
+             "type": "array",
+             "items": {
+               "type": "object",
+               "required": ["name","value"],
+               "properties": {
+                 "name": {
+                   "title": "Name",
+                   "type": "string",
+                   "description": "Parameter name."
+                 },
+                 "value": {
+                   "title": "Value",
+                   "type": "string",
+                   "description": "JavaScript expression to compute the parameter value (can be a constant).",
+                   "jsExpression": true
+                 }
+               }
+             }
+           }
+         }
+       },
+       {
+         "properties": {
+           "collectMethod" : { "enum" :  ["post_with_body"] },
+           "collectBody": {
+             "type": "string",
+             "title": "Collect POST Body",
+             "description": "Template for POST body to send with the Collect request. You can reference parameters from the Discover response, using template params of the form: ${variable}.",
+             "default": "`{ }`",
+             "jsExpression": true
+           }
+         }
+       }
+     ]
+   },
+    "authentication": {
+      "oneOf": [
+        {
+          "properties": {
+            "authentication": {
+              "enum":["none"]
+            }
+          }
+        },
+        {
+          "required": [ "username","password"],
+          "properties": {
+            "authentication": {
+              "enum":["basic"]
+            },
+            "username": {
+              "type": "string",
+              "title": "Username",
+              "description": "Basic authentication username",
+              "encrypt": true
+            },
+            "password": {
+              "type": "string",
+              "title": "Password",
+              "description": "Basic authentication password",
+              "encrypt": true
+            }
+          }
+        }, {
+          "required": ["credentialsSecret"],
+          "properties": {
+            "authentication": { "enum":["basicSecret"] },
+            "credentialsSecret": {
+              "type": "string",
+              "title": "Credentials secret",
+              "secret": { "type": "credentials", "target": ["username", "password"] },
+              "description": "Select (or create) a stored secret that references your credentials"
+            }
+          }
+        },
+        {
+          "required": [ "loginUrl","username","password","loginBody","tokenRespAttribute","authHeaderExpr"],
+          "properties": {
+            "authentication": {
+              "enum":["login"]
+            },
+            "loginUrl": {
+              "type": "string",
+              "title": "Login URL",
+              "description": "URL to use for login API call. This call is expected to be a POST.",
+              "default": "`https://localhost:9000/api/v1/auth/login`",
+              "jsExpression": true
+            },
+            "username": {
+              "type": "string",
+              "title": "Username",
+              "description": "Login username",
+              "minLength": 1,
+              "encrypt": true
+            },
+            "password": {
+              "type": "string",
+              "title": "Password",
+              "description": "Login password",
+              "minLength": 1,
+              "encrypt": true
+            },
+            "loginBody": {
+              "type": "string",
+              "title": "POST Body",
+              "description": "Template for POST body to send with login request, ${username} and ${password} are used to specify location of these attributes in the message",
+              "default": "`{ \"username\": \"${username}\", \"password\": \"${password}\" }`",
+              "jsExpression": true
+            },
+            "tokenRespAttribute": {
+              "type": "string",
+              "title": "Token Attribute",
+              "description": "Path to token attribute in login response body. Nested attributes are OK.",
+              "default": "token"
+            },
+            "authHeaderExpr": {
+              "type": "string",
+              "title": "Authorize Expression",
+              "description": "JavaScript expression to compute the Authorization header to pass in discover and collect calls. The value ${token} is used to reference the token obtained from login.",
+              "default": "`Bearer ${token}`",
+              "jsExpression": true
+            }
+          }
+        }, {
+          "required": [ "loginUrl","credentialsSecret","loginBody","tokenRespAttribute","authHeaderExpr"],
+          "properties": {
+            "authentication": { "enum":["loginSecret"] },
+            "loginUrl": {
+              "type": "string",
+              "title": "Login URL",
+              "description": "URL to use for login API call, this call is expected to be a POST.",
+              "default": "`https://localhost:9000/api/v1/auth/login`",
+              "jsExpression": true
+            },
+            "credentialsSecret": {
+              "type": "string",
+              "title": "Credentials secret",
+              "secret": { "type": "credentials", "target": ["username", "password"] },
+              "description": "Select (or create) a stored secret that references your login credentials"
+            },
+            "loginBody": {
+              "type": "string",
+              "title": "POST Body",
+              "description": "Template for POST body to send with login request, ${username} and ${password} are used to specify location of these attributes in the message",
+              "default": "`{ \"username\": \"${username}\", \"password\": \"${password}\" }`",
+              "jsExpression": true
+            },
+            "tokenRespAttribute": {
+              "type": "string",
+              "title": "Token Attribute",
+              "description": "Path to token attribute in login response body. Nested attributes are OK.",
+              "default": "token"
+            },
+            "authHeaderExpr": {
+              "type": "string",
+              "title": "Authorize Expression",
+              "description": "JavaScript expression to compute the Authorization header to pass in discover and collect calls. The value ${token} is used to reference the token obtained from login.",
+              "default": "`Bearer ${token}`",
+              "jsExpression": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

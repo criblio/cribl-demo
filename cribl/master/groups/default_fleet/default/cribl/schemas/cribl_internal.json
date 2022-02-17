@@ -1,0 +1,29 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Cribl Internal Log",
+    "type": "object",
+    "required": [ "time", "cid", "channel", "level", "message" ],
+    "properties": {
+      "time": {
+        "type": "string",
+        "description": "Time of the event in ISO8601 format"
+      },
+      "cid": {
+        "type": "string",
+        "description": "Cribl ID"
+      },
+      "channel": {
+        "description": "Channel name",
+        "type": "string"
+      },
+      "level": {
+        "description": "Logging Level",
+        "type": "string"
+      },
+      "message": {
+        "description": "Log message",
+        "type": "string"
+      }
+    }
+  }

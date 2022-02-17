@@ -1,0 +1,44 @@
+output: default
+groups: {}
+asyncFuncTimeout: 1000
+functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Parse Apache Common Log formatted logs
+  - id: serde
+    filter: "true"
+    disabled: null
+    conf:
+      mode: extract
+      type: clf
+      srcField: _raw
+      fields:
+        - clientip
+        - ident
+        - user
+        - timestamp
+        - request
+        - status
+        - bytes
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: Enrich logs with status code description
+  - id: lookup
+    filter: "true"
+    disabled: null
+    conf:
+      matchMode: exact
+      reloadPeriodSec: 60
+      addToEvent: false
+      inFields:
+        - eventField: status
+          lookupField: status
+      ignoreCase: false
+      file: http_status.csv
+      outFields:
+        - lookupField: status_desc
+          eventField: status_desc

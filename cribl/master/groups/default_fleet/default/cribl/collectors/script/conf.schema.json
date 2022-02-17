@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["discoverScript", "collectScript"],
+  "properties": {
+    "discoverScript": {
+      "type": "string",
+      "title": "Discover Script",
+      "minLength": 1,
+      "description": "Script to discover what to collect. Should output one task per line in stdout."
+    },
+    "collectScript": {
+      "type": "string",
+      "title": "Collect Script",
+      "minLength": 1,
+      "description": "Script to run to perform data collections. Task passed in as $CRIBL_COLLECT_ARG. Should output results to stdout."
+    },
+    "shell": {
+      "type":"string",
+      "title": "Shell",
+      "description": "Shell to use to execute scripts.",
+      "default": "/bin/bash"
+    }
+  }
+}

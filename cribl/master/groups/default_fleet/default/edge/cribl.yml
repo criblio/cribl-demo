@@ -1,0 +1,35 @@
+api:
+  retryCount: 120
+  retrySleepSecs: 5
+  baseUrl: ""
+  disabled: false
+  revokeOnRoleChange: true
+  authTokenTTL: 3600
+  headers: {}
+  ssl:
+    disabled: true
+  host: 127.0.0.1
+  port: 9420
+  loginRateLimit: 2/second
+auth:
+  type: local
+kms.local:
+  type: local
+crypto:
+  keyPath: $CRIBL_HOME/local/cribl/auth/keys.json
+workers:
+  count: 1
+  minimum: 1
+  memory: 1024
+git:
+  gitOps: none
+tls:
+  defaultEcdhCurve: auto
+  rejectUnauthorized: true
+proxy:
+  useEnvVars: true
+system:
+  upgrade: api
+  restart: api
+  installType: standalone
+  intercom: true 

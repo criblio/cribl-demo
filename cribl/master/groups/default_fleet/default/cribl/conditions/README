@@ -1,0 +1,28 @@
+A directory of conditions. Each condition is encapsulated in a directory, the entry point for the condition is index.js (in its directory)
+
+The following methods are expected to be exported: `init` and `build`. See examples:
+
+```
+exports.init = (opt) => {
+  // opt.conf - will contain contents of conf.json if present in condition's dir
+}
+```
+
+```
+exports.build = () => {
+  return {
+    filter,   // <js expression used as a route filter>,
+    pipeline, // <a LogStream pipeline config>
+  };
+}
+```
+
+Conditions also require the following properties: `name`, `type`, and `category`.
+
+Name is the human friendly name of the condition.
+Type is the type of data the condition leverages, at the time of this writing, that's 'metric' or 'message'. 'metric' leverages LogStream internal metrics (as events), and 'message' uses the LogStream system messages (found in messages.yml) as events.
+Category is a property leveraged by the frontend to ensure it filters out unrelated conditions while configuring notifications within a certain context. For example, 'destinations' category will show up when configuring notifications on a destination.
+
+Category Mappings:
+'destinations' -> shows up in destination-specific notification UI
+'license' -> shows up in the license page

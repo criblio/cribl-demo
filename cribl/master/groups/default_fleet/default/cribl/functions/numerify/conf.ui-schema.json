@@ -1,0 +1,19 @@
+{
+  "filterExpr": {
+    "ui:widget": "JsInput",
+    "ui:placeholder": "Enter include expression"
+  },
+  "ignoreFields": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Field names"
+  },
+  "format": {
+    "ui:options": "{ inline:true, descriptionInline: true, width: conf.format === 'fix' ? '70%' : '100%', uiEnumOptions:[{'value':'none',label:'None','description':'Do not apply any additional formatting on numeric values.'},{'value':'fix',label:'Round','description':'Round a number to a specified number of decimal places.'},{'value':'floor',label:'Floor','description':'Round a number down to its nearest integer.'},{'value':'ceil',label:'Ceil','description':'Round a number upward to its nearest integer.'}] }"
+  },
+  "digits": {
+    "ui:options": {
+      "width": "30%",
+      "inline": true
+    }
+  }
+}

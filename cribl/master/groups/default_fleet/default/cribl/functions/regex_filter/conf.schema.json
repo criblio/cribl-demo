@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "regex": {
+      "title": "Regex",
+      "description": "Regex to test against",
+      "type": "string",
+      "regexp": true
+    },
+    "regexList": {
+      "type": "array",
+      "title": "Additional Regex",
+      "items": {
+        "type": "object",
+        "required": ["regex"],
+        "properties": {
+          "regex": {
+            "type": "string",
+            "title": "Regex",
+            "description": "Regex to test against",
+            "minLength": 1,
+            "regexp": true
+          }
+        }
+      }
+    },
+    "field": {
+      "title": "Field",
+      "description": "Name of the field to apply the regex on (defaults to _raw)",
+      "type": "string",
+      "default": "_raw"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "fields": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter field names (may be wildcarded)"
+  },
+  "passthrough": {
+    "ui:options": { "inline": true, "width": "200px" }
+  },
+  "update": {
+    "ui:options": { "inline": true, "width": "200px" }
+  },
+  "batchWriteInterval": {
+    "ui:options": { "labelInline": true, "inline": true, "width": "calc(100% - 400px" }
+  },
+  "ui:options": {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": ["batchWriteInterval","passthrough","update"]
+      }
+    }
+  }
+}

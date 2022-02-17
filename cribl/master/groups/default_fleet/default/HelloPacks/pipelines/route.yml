@@ -1,0 +1,21 @@
+id: default
+groups: {}
+routes:
+  - id: GpteqF
+    name: Apache Logs
+    final: true
+    disabled: false
+    pipeline: apache_sample_pipeline
+    description: Route Apache logs to the sample pipeline
+    clones: []
+    filter: logType=='APACHE' || sourcetype=='access_combined'
+    output: default
+  - id: default
+    name: default
+    final: true
+    disabled: false
+    pipeline: main
+    description: ""
+    clones: []
+    filter: "true"
+    output: default

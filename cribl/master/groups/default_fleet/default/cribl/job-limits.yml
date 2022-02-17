@@ -1,0 +1,6 @@
+concurrentJobLimit: 10
+concurrentTaskLimit: 2
+taskPollTimeoutMs: 60000
+jobArtifactsReaperPeriod: 30m
+finishedJobArtifactsLimit: 100
+finishedTaskArtifactsLimit: 500

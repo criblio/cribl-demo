@@ -1,0 +1,34 @@
+{
+   "type": "object",
+   "title": "",
+   "properties": {
+      "fields": {
+         "type": "array",
+         "title": "Fields",
+         "description": "List of top level fields to include for flattening. Supports * wildcards. Defaults to empty array which means all fields.",
+         "items": {
+            "type": "string"
+         },
+         "default": []
+      },
+      "prefix": {
+         "type": "string",
+         "title": "Prefix",
+         "description": "Prefix string for flattened field names. Defaults to empty.",
+         "default": ""
+      },
+      "depth": {
+         "type": "number",
+         "title": "Depth",
+         "description": "Number representing the nested levels to consider for flattening. Defaults to 5. Minimum should be 1.",
+         "default": 5,
+         "minimum": 1
+      },
+      "delimiter": {
+         "type": "string",
+         "title": "Delimiter",
+         "description": "Delimiter to be used for flattening. Defaults to underscore.",
+         "default": "_"
+      }
+   }
+}

@@ -1,0 +1,57 @@
+{
+  "overwrite": {
+    "ui:options": { "inline": true }
+  },
+  "fields": {
+    "ui:field": "Table",
+    "ui:options": {
+      "addLabel": "Add to List"
+    },
+    "items": {
+      "inFieldName": {
+        "ui:options": {
+          "columnWidth": "35%"
+        },
+        "ui:placeholder": "Enter field name"
+      },
+      "outFieldExpr": {
+        "ui:widget": "JsInput",
+        "ui:options": {
+          "columnWidth": "50%"
+        },
+        "ui:placeholder": "Enter output expression"
+      },
+      "metricType": {
+        "ui:options": {
+          "columnWidth": "15%"
+        }
+      }
+    }
+  },
+  "removeMetrics": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter list of fields names. Optional."
+  },
+  "dimensions": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter list of dimensions. Optional."
+  },
+  "removeDimensions": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter list of dimensions. Optional."
+  },
+  "ui:options": {
+    "groups": {
+      "metrics": {
+        "title": "Metrics",
+        "collapsed": false,
+        "properties": ["fields", "removeMetrics"]
+      },
+      "dimensions": {
+        "title": "Dimensions",
+        "collapsed": false,
+        "properties": ["dimensions", "removeDimensions"]
+      }
+    }
+  }
+}

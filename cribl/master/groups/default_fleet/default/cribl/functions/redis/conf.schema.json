@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "required": ["commands", "url"],
+  "properties": {
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["keyExpr", "command"],
+        "properties": {
+          "outField": {
+            "title": "Result field",
+            "description": "Field name where to store the returned value. Leave blank to discard returned value",
+            "type": "string"
+          },
+          "command": {
+            "title": "Command",
+            "description": "Redis command to perform. For a complete list visit: https://redis.io/commands",
+            "type": "string"
+          },
+          "keyExpr": {
+            "title": "Key",
+            "description": "A JavaScript expression to compute the value of the key to operate on. E.g username",
+            "type": "string",
+            "jsExpression": true
+          },
+          "argsExpr": {
+            "title": "Args",
+            "description": "A JavaScript expression to compute arguments to the operation. Can return an array.",
+            "type": "string",
+            "jsExpression": true
+          }
+        }
+      }
+    },
+    "url": {
+      "title": "Redis URL",
+      "description": "Redis URL to connect to, format: redis[s]://[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]",
+      "type": "string",
+      "pattern": "^redis[s]?://[a-zA-Z0-9:].+"
+    },
+    "authType": {
+      "type": "string",
+      "title": "Authentication Method",
+      "default": "none",
+      "enum": ["none", "manual", "credentialsSecret", "textSecret"],
+      "enumNames": ["None", "Manual", "User Secret", "Admin Secret"]
+    },
+    "maxBlockSecs": {
+      "type": "number",
+      "title": "Max blocking time",
+      "description": "Maximum amount of time (seconds), before assuming that Redis is down and passing events through. Use 0 to disable",
+      "default": 60
+    }
+  },
+  "dependencies": {
+    "authType": {
+      "oneOf": [
+        {
+          "properties": {"authType": { "enum": ["none"]}}
+        }, {
+          "required": ["password"],
+          "properties": {
+            "authType": { "enum": ["manual"] },
+            "username": {
+              "title": "Username",
+              "description": "Redis username",
+              "type": "string"
+            },
+            "password": {
+              "title": "Password",
+              "description": "Redis password",
+              "type": "string",
+              "encrypt": true
+            }
+          }
+        }, {
+          "required": ["credentialsSecret"],
+          "properties": {
+            "authType": { "enum": ["credentialsSecret"] },
+            "credentialsSecret": {
+              "type": "string",
+              "title": "User Secret",
+              "description": "Secret that references Redis username and password",
+              "secret": { "type": "credentials", "target": ["credentialsUsername", "credentialsPassword"] }
+            }
+          }
+        }, {
+          "required": ["textSecret"],
+          "properties": {
+            "authType": { "enum": ["textSecret"] },
+            "textSecret": {
+              "type": "string",
+              "title": "Admin Secret",
+              "description": "Secret that references Redis admin password",
+              "secret": { "type": "text", "target": ["textPassword"] }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

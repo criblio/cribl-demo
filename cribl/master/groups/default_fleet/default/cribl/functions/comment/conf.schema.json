@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "comment": {
+      "type": "string",
+      "title": "Comment",
+      "description": "Optional, short description of this Function's purpose in the Pipeline",
+      "maxLength": 1000
+    }
+  }
+}

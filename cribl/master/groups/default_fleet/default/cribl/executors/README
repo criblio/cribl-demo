@@ -1,0 +1,59 @@
+A directory of executors. Each executor is encapsulated in a directory, the entry point for the executor is index.js (in its directory)
+
+The following are expected to be exported:
+
+```
+exports.jobType = <'fifo' | 'task-per-node'>
+
+exports.initJob = async (opts) => {}
+exports.initTask = async (opts) => {}
+exports.jobSeedTask = async () => {} // the first task pushed to the queue
+exports.jobOnError = async (job, taskId, error) => {} // callback when job receives error from tasks
+exports.taskExecute = async (job, opts) => {}
+```
+
+Optional Functions
+```
+exports.jobOnResult = async (job, result) => {} // callback when job receives results from tasks, used for custom result handling/writing
+```
+
+If jobOnResult is not implemented, results sent to the job will be written directly to disk in the order received. Implementing will prevent
+any results from being written to disk. The implementor may write the results to disk using `job.addResult()`. This gives implementors the
+ability to write their own custom reduce step for their job.
+
+```
+exports.jobOnAddedTask =  async (job, taskId) => { }
+```
+Called upon task added with the newly created task id
+
+```
+exports.jobOnCompletedTask =  async (job, taskId) => { }
+```
+Called upon task completion with the task id
+
+Optional fields (strongly encouraged)
+
+```
+exports.name = <string, name of this executor>
+exports.version = <string, version of this executor>
+exports.disabled= <boolean, true iff executor is disabled>
+exports.waitForResults = <boolean, wait for results before finishing the job>
+```
+
+The job object passed as the arguement is a client to communicate information back to the owning Job with the following interface:
+
+```
+export interface IJobReporter {
+  addResult(result: IResult): Promise<void>;
+  addResults(results: IResult[]): Promise<void>;
+  reportError(err: Error, taskId?: string): Promise<void>;
+  addTask(task: TaskOpts): Promise<void>;
+  logger(): any;
+  finishJob(): Promise<void>;
+}
+```
+
+interface TaskOpts {
+  task: any;
+}
+```

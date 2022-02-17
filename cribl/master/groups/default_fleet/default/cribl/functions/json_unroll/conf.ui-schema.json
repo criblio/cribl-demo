@@ -1,0 +1,8 @@
+{
+  "path": {
+    "ui:placeholder": "Enter path to array to unroll"
+  },
+  "name": {
+    "ui:placeholder": "Enter name of each element in the new event"
+  }
+}

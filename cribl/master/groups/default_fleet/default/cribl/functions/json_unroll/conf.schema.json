@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["path"],
+  "properties": {
+    "path": {
+      "type": "string",
+      "title": "Path",
+      "description": "Path to array to unroll, e.g. foo.0.bar"
+    },
+    "name": {
+      "type": "string",
+      "title": "New Name",
+      "description": "Name of each exploded array element in each new event. Leave empty to expand the array element with its original name."
+    }
+  }
+}

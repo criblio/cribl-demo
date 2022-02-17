@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "field": {
+      "type": "string",
+      "title": "Field name",
+      "description": "Name of field in which to save the timestamp. (If empty, timestamp will not be saved to a field.)"
+    }
+  }
+}

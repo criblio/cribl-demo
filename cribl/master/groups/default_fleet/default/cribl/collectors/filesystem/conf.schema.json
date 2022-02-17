@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["path"],
+  "properties": {
+    "outputName": {
+      "type": "string",
+      "title": "Auto-populate from",
+      "description": "Select a predefined configuration (e.g., a Destination) to auto-populate collector settings."
+    },
+    "path": {
+      "type": "string",
+      "title": "Directory",
+      "description": "The directory from which to collect data. Templating is supported, e.g.: /myDir/${datacenter}/${host}/${app}/. Time-based tokens are also supported, e.g.: /myOtherDir/${_time:%Y}/${_time:%m}/${_time:%d}/",
+      "minLength": 1,
+      "templated": true
+    },
+    "extractors": {
+      "type": "array",
+      "uniqueFields": ["key"],
+      "title": "Path extractors",
+      "additionalProperties": false,
+      "items": {
+        "type": "object",
+        "required": ["key", "expression"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Token",
+            "description": "A token from the template directory, e.g.: epoch"
+          },
+          "expression": {
+            "type": "string",
+            "title": "Extractor expression",
+            "description": "JS expression that receives token under \"value\" variable, and evaluates to populate event fields, e.g.: {date: new Date(+value*1000)}"
+          }
+        }
+      },
+      "description": "Allows using template tokens as context for expressions that enrich discovery results. E.g.: given a template /path/${epoch}, an extractor under key \"epoch\" with an expression {date: new Date(+value*1000)}, will enrich discovery results with a human readable \"date\" field"
+    },
+    "recurse": {
+      "type": "boolean",
+      "title": "Recursive",
+      "description": "Whether to recurse through subdirectories.",
+      "default": true
+    },
+    "maxBatchSize": {
+      "type": "number",
+      "title": "Max Batch Size (files)",
+      "description": "Maximum number of metadata files to batch before recording as results.",
+      "minimum": 1,
+      "default": 10
+    }
+  }
+}

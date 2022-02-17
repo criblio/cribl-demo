@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "type": "string",
+      "title": "Code",
+      "description": "With great power comes great responsibility! All the code/expressions in this function will be evaluated in an unprotected/unsafe context. This means that you will be able to execute almost any JavaScript code.",
+      "jsExpression": true,
+      "jsExpressionUnprotected": true,
+      "jsExpressionEvalType": "inplace"
+    },
+    "maxNumOfIterations": {
+      "type": "number",
+      "title": "Maximum number of iterations.",
+      "description": "The maximum number of allowed iterations within this function. Defaults to 5,000.",
+      "minimum": 1,
+      "maximum": 10000,
+      "default": 5000
+    }
+  }
+}

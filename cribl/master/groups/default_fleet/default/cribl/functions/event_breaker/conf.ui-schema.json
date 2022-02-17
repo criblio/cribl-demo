@@ -1,0 +1,101 @@
+{
+  "existingOrNew": {
+  },
+  "existingRule": {
+    "ui:placeholder": "Select an existing ruleset",
+    "ui:widget": "ApiLookup",
+    "ui:options": {
+      "url": "/lib/breakers",
+      "valueProp": "id",
+      "labelProp": "id",
+      "editable": false
+    }
+  },
+  "ui:options": "conf.existingOrNew == 'new' ? { groups: { breaker: { title: 'Event Breaker Settings', collapsible: false, properties: ['disabled', 'type', 'eventBreakerRegex','headerLineRegex', 'delimiterRegex', 'fieldsLineRegex', 'nullFieldVal', 'cleanFields', 'jsonArrayField', 'jsonExtractAll', 'jsonTimeField', 'delimiter', 'quoteChar', 'escapeChar', 'timeField', 'maxEventBytes'] }, timestamp: { title: 'Timestamp Settings', collapsible: false, properties: ['timestampAnchorRegex', 'timestamp', 'timestampTimezone', 'timestampEarliest', 'timestampLatest']}, advanced: { title: 'Advanced Settings', collapsible: true, collapsed: true, properties: ['shouldMarkCriblBreaker']}}} : { groups: { advanced: { title: 'Advanced Settings', collapsible: true, collapsed: true, properties: ['shouldMarkCriblBreaker']}}}",
+  "ruleType": {
+    "ui:options": {
+      "uiEnumOptions": [
+        {
+          "value": "regex",
+          "label": "Regex",
+          "description": "Regex is used to break events using a regular expression"
+        },
+        {
+          "value": "json",
+          "label": "JSON Newline Delimited",
+          "description": "JSON New Line Delimited is used to extract fields in new line delimited JSON streams"
+        },
+        {
+          "value": "json_array",
+          "label": "JSON Array",
+          "description": "JSON Array can be used to extract events from an array in a JSON document"
+        },
+        {
+          "value": "header",
+          "label": "File Header",
+          "description": "File Header is used to break and parse files with headers, like IIS or Bro logs"
+        },
+        {
+          "value": "timestamp",
+          "label": "Timestamp",
+          "description": "Break events at the beginning of a line containing a timestamp"
+        },
+        {
+          "value": "csv",
+          "label": "CSV",
+          "description": "CSV is used to extract fields in CSV streams that include a header line"
+        }
+      ]
+    }
+  },
+  "eventBreakerRegex": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression",
+    "ui:options": {
+      "showRegexLibrary": false,
+      "showSampleSelector": false
+    }
+  },
+  "nullFieldVal": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "cleanFields": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "delimiter": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "escapeChar": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "quoteChar": {
+    "ui:options": { "inline": true, "width": "33%" }
+  },
+  "maxEventBytes": { "ui:widget": "UpDownWidget" },
+  "timestampEarliest": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "timestampLatest": {
+    "ui:options": { "inline": true, "width": "50%" }
+  },
+  "timestampAnchorRegex": {
+    "ui:widget": "RegexInput",
+    "ui:placeholder": "Regular expression",
+    "ui:options": {
+      "showRegexLibrary": false,
+      "showSampleSelector": false
+    }
+  },
+  "timestamp": { "ui:field": "Timestamp" },
+  "timestampTimezone": {
+    "ui:placeholder": "Select a timezone",
+    "ui:widget": "ApiLookup",
+    "ui:options": {
+      "url": "/timezoneInfo",
+      "ignorePackContext": true,
+      "valueProp": "value",
+      "labelProp": "label",
+      "editable": false
+    }
+  }
+}

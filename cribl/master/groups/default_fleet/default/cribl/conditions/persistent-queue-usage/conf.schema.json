@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Destination name",
+      "description": "Destination on which to configure notifications"
+    },
+    "timeWindow": {
+      "type": "string",
+      "duration": { "min": "60s" },
+      "title": "Time window",
+      "description": "Minimum interval at which notifications will be repeated",
+      "default": "60s"
+    },
+    "usageThreshold": {
+      "type": "integer",
+      "title": "Usage threshold",
+      "description": "Persistent queue utilization above this percent value will trigger notifications",
+      "default": 90,
+      "minimum": 0,
+      "maximum": 99
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["bucket"],
+  "properties": {
+    "outputName": {
+      "type": "string",
+      "title": "Auto-populate from",
+      "description": "The name of the predefined Destination that will be used to auto-populate collector settings."
+    },
+    "bucket": {
+      "type": "string",
+      "title": "Bucket name",
+      "minLength": 1,
+      "description": "Name of the bucket to collect from. This value can be a constant or a JavaScript expression that can only be evaluated at init time. E.g. referencing a Global Variable: `myBucket-${C.vars.myVar}`.",
+      "jsExpression": "warning"
+    },
+    "path": {
+      "type": "string",
+      "title": "Path",
+      "description": "The directory from which to collect data. Templating is supported, e.g.: myDir/${datacenter}/${host}/${app}/. Time-based tokens are also supported, e.g.: myOtherDir/${_time:%Y}/${_time:%m}/${_time:%d}/",
+      "minLength": 1,
+      "templated": true
+    },
+    "extractors": {
+      "type": "array",
+      "uniqueFields": ["key"],
+      "title": "Path extractors",
+      "additionalProperties": false,
+      "items": {
+        "type": "object",
+        "required": ["key", "expression"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Token",
+            "description": "A token from the template path, e.g.: epoch"
+          },
+          "expression": {
+            "type": "string",
+            "title": "Extractor expression",
+            "description": "JS expression that receives token under \"value\" variable, and evaluates to populate event fields, e.g.: {date: new Date(+value*1000)}"
+          }
+        }
+      },
+      "description": "Allows using template tokens as context for expressions that enrich discovery results. E.g.: given a template /path/${epoch}, an extractor under key \"epoch\" with an expression {date: new Date(+value*1000)}, will enrich discovery results with a human readable \"date\" field"
+    },
+    "endpoint": {
+      "type": "string",
+      "title": "Endpoint",
+      "description": "Google Cloud Storage service endpoint. If empty, the endpoint will be automatically constructed using service credentials."
+    },
+    "recurse": {
+      "type": "boolean",
+      "title": "Recursive",
+      "description": "Whether to recurse through subdirectories.",
+      "default": true
+    },
+    "maxBatchSize": {
+      "type": "number",
+      "title": "Max Batch Size (objects)",
+      "description": "Maximum number of metadata objects to batch before recording as results.",
+      "minimum": 1,
+      "default": 10
+    },
+    "authType": {
+        "title": "Authentication method",
+        "type": "string",
+        "enum": ["manual", "secret"],
+        "default": "manual",
+        "description": "Enter account credentials manually, or select a secret that references your credentials."
+    }
+  },
+  "dependencies": {
+    "authType": {
+      "oneOf": [
+        {
+          "required": ["serviceAccountCredentials"],
+          "properties": {
+            "authType": {"enum":["manual"]},
+            "serviceAccountCredentials": {
+              "type": "string",
+              "title": "Service account credentials",
+              "description": "Contents of Google Cloud service account credentials (JSON keys) file. To upload a file, click the upload button at this field's upper right.",
+              "encrypt": true
+            }
+          }
+        }, {
+          "required": ["textSecret"],
+          "properties": {
+            "authType": { "enum":["secret"] },
+            "textSecret": {
+              "type": "string",
+              "secret": { "type": "text", "target": "serviceAccountCredentials" },
+              "title": "Service account credentials (text secret)",
+              "description": "Select (or create) a stored text secret that references your credentials."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

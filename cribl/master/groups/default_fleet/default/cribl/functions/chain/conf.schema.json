@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "processor": {
+      "title": "Processor",
+      "description": "The data processor (Pack/pipeline) to send events through",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+samples:
+  maxSize: 256KB
+minFreeSpace: 5 GB
+metricsGCPeriod: 60s
+metricsMaxCardinality: 1000
+metricsWorkerIdBlacklist:
+  - host.*
+  - source.*
+  - sourcetype.*
+  - index.*
+metricsNeverDropList:
+  - total.*
+  - system.*
+metricsFieldsBlacklist:
+  - host
+  - source
+  - sourcetype
+  - index

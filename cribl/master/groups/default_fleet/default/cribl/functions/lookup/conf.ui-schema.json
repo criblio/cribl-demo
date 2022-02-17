@@ -1,0 +1,76 @@
+{
+  "matchMode": {
+    "ui:options": { "inline": true, "width": "40%" }
+  },
+  "matchType": {
+    "ui:options": {
+      "inline": true,
+      "width": "60%",
+      "descriptionInline": true,
+      "uiEnumOptions": [
+        {
+          "value": "first",
+          "label": "First Match",
+          "description": "Return the first matching entry"
+        },
+        {
+          "value": "specific",
+          "label": "Most Specific",
+          "description": "Scan all entries and return the most specific"
+        },
+        {
+          "value": "all",
+          "label": "All",
+          "description": "Return all matches in output as arrays"
+        }
+      ]
+    }
+  },
+  "inFields": {
+    "ui:field": "Table",
+    "items": {
+      "eventField": {
+        "ui:placeholder": "Enter field name"
+      },
+      "lookupField" :{
+        "ui:placeholder": "Enter field name"
+      }
+    }
+  },
+  "outFields": {
+    "ui:field": "Table",
+    "items": {
+      "eventField": {
+        "ui:placeholder": "Enter field name"
+      },
+      "lookupField" :{
+        "ui:placeholder": "Enter field name"
+      }
+    }
+  },
+  "file": {
+    "ui:placeholder": "Select one or enter lookup file path",
+    "ui:widget": "ApiLookup",
+    "ui:options": {
+      "url": "/system/lookups?ext=%5C.csv&ext=%5C.gz&ext=%5C.csv.gz",
+      "valueProp": "id",
+      "labelProp": "id",
+      "editable": true
+    }
+  },
+  "ignoreCase": {
+    "ui:options": { "inline": true, "width": "calc(50% - 85px)" }
+  },
+  "addToEvent": {
+    "ui:options": { "inline": true, "width": "calc(50% - 85px)" }
+  },
+  "ui:options": {
+    "groups": {
+      "advanced": {
+        "title": "Advanced Settings",
+        "collapsed": true,
+        "properties": ["reloadPeriodSec", "ignoreCase", "addToEvent"]
+      }
+    }
+  }
+}

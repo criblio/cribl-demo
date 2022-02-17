@@ -1,0 +1,74 @@
+{
+  "type": "object",
+  "title": "",
+  "additionalProperties": false,
+  "properties": {
+    "dnsLookupFields": {
+      "title": "DNS lookup field(s)",
+      "description": "List of field names to perform DNS lookup for.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "inFieldName": {
+            "type": "string",
+            "title": "Lookup field name",
+            "description": "Name of the field to lookup."
+          },
+          "resourceRecordType":{
+            "title": "Resource record type",
+            "description": "The DNS record type (RR) to return. Defaults to 'A'.",
+            "type": "string",
+            "enum": ["A", "AAAA", "ANY", "CNAME", "MX", "NAPTR", "NS", "PTR", "SOA", "SRV", "TXT"],
+            "enumNames": ["A", "AAAA", "ANY", "CNAME", "MX", "NAPTR", "NS", "PTR", "SOA", "SRV", "TXT"],
+            "default": "A"
+          },
+          "outFieldName": {
+            "type": "string",
+            "title": "Output field name",
+            "description": "Name of field to add lookup result(s) to. Leave blank to overwrite the lookup field."
+          }
+        }
+      }
+    },
+    "reverseLookupFields": {
+      "title": "Reverse DNS lookup field(s)",
+      "description": "List of field names to perform reverse DNS lookup for.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "inFieldName": {
+            "type": "string",
+            "title": "Lookup field name",
+            "description": "Name of the field containing the IP to look up. If the field value is not in ipv4 or ipv6 format, the lookup is skipped."
+          },
+          "outFieldName": {
+            "type": "string",
+            "title": "Output field name",
+            "description": "Name of field to add the resolved domain to. Leave blank to overwrite the lookup field."
+          }
+        }
+      }
+    },
+    "dnsServers": {
+      "title": "DNS server(s) overrides",
+      "description": "IP(s), in RFC 5952 format, of the DNS server(s) to use for resolution. E.g. IPv4 1.1.1.1, 4.2.2.2:53, or IPv6 [2001:4860:4860::8888], [2001:4860:4860::8888]:1053. If not specified, system's DNS will be used.",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "cacheTTL": {
+      "type": "number",
+      "title": "Reload period (minutes)",
+      "description": "Interval at which to refresh DNS cache. Use 0 to disable.",
+      "default": 30
+    },
+    "maxCacheSize": {
+      "type": "number",
+      "title": "Maximum cache size",
+      "default": 5000,
+      "description": "The maximum number of DNS resolutions to be cached locally. Leave at default, unless you understand the implications of changing.",
+      "maximum": 10000
+    }
+  }
+}

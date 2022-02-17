@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "title": "",
+  "properties": {
+    "dimensions": {
+      "title": "Dimensions",
+      "description": "List of dimensions across which to perform rollups. Supports wildcards. Defaults to all original dimensions.",
+      "default": ["*"],
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "timeWindow": {
+      "pattern": "\\d+[sm]$",
+      "type": "string",
+      "title": "Time Window",
+      "description": "The time span of the rollup window. Must be a valid time string (e.g., 10s).",
+      "default": "30s"
+    },
+    "gaugeRollup": {
+      "title": "Gauge Update",
+      "description": "The operation to use when rolling up gauge metrics. Defaults to last.",
+      "default": "last",
+      "type": "string",
+      "enum": [ "last", "max", "min", "avg" ],
+      "enumNames": [ "Last", "Maximum", "Minimum", "Average" ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: This pipeline adds the `job` and `instance` dimensions some
+        Grafana dashboards expect in metrics from Prometheus. Attach it as a
+        pre-processing pipeline for the System Metrics source when it's being
+        routed to a Prometheus destination.
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      add:
+        - name: job
+          value: "'LogStream'"
+        - name: instance
+          value: host
+      remove:
+        - host
+    description: Adjust the `job` value below as needed. Some dashboards expect
+      it to be set to 'node'.
+  - id: publish_metrics
+    filter: "true"
+    disabled: null
+    conf:
+      overwrite: false
+      dimensions:
+        - job
+        - instance
+      removeMetrics: []
+      removeDimensions:
+        - host
+groups: {}
+output: default
+description: Prepare Events headed to Prometheus

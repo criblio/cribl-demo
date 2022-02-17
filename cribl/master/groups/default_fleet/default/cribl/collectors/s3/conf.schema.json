@@ -1,0 +1,205 @@
+{
+  "type": "object",
+  "title": "",
+  "required": ["bucket"],
+  "properties": {
+    "outputName": {
+      "type": "string",
+      "title": "Auto-populate from",
+      "description": "The name of the predefined Destination that will be used to auto-populate collector settings."
+    },
+    "bucket": {
+      "type": "string",
+      "title": "S3 bucket",
+      "minLength": 1,
+      "description": "S3 Bucket from which to collect data.",
+      "jsExpression": "warning"
+    },
+    "region": {
+      "type": "string",
+      "title": "Region",
+      "description": "Region from which to retrieve data.",
+      "enum": [
+        "us-east-1",
+        "us-east-2",
+        "us-west-1",
+        "us-west-2",
+        "af-south-1",
+        "ca-central-1",
+        "eu-west-1",
+        "eu-central-1",
+        "eu-west-2",
+        "eu-south-1",
+        "eu-west-3",
+        "eu-north-1",
+        "ap-east-1",
+        "ap-northeast-1",
+        "ap-northeast-2",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "ap-south-1",
+        "me-south-1",
+        "sa-east-1",
+        "us-gov-east-1",
+        "us-gov-west-1"
+      ],
+      "enumNames": [
+        "US East (N. Virginia)",
+        "US East (Ohio)",
+        "US West (N. California)",
+        "US West (Oregon)",
+        "Africa (Cape Town)",
+        "Canada (Central)",
+        "EU (Ireland)",
+        "EU (Frankfurt)",
+        "EU (London)",
+        "EU (Milan)",
+        "EU (Paris)",
+        "EU (Stockholm)",
+        "Asia Pacific (Hong Kong)",
+        "Asia Pacific (Tokyo)",
+        "Asia Pacific (Seoul)",
+        "Asia Pacific (Singapore)",
+        "Asia Pacific (Sydney)",
+        "Asia Pacific (Mumbai)",
+        "Middle East (Bahrain)",
+        "South America (São Paulo)",
+        "US Gov East 1",
+        "US Gov West 1"
+      ]
+    },
+    "path": {
+      "type": "string",
+      "title": "Path",
+      "description": "The directory from which to collect data. Templating is supported, e.g.: myDir/${datacenter}/${host}/${app}/. Time-based tokens are also supported, e.g.: myOtherDir/${_time:%Y}/${_time:%m}/${_time:%d}/",
+      "minLength": 1,
+      "templated": true
+    },
+    "extractors": {
+      "type": "array",
+      "uniqueFields": ["key"],
+      "title": "Path extractors",
+      "additionalProperties": false,
+      "items": {
+        "type": "object",
+        "required": ["key", "expression"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Token",
+            "description": "A token from the template path, e.g.: epoch"
+          },
+          "expression": {
+            "type": "string",
+            "title": "Extractor expression",
+            "description": "JS expression that receives token under \"value\" variable, and evaluates to populate event fields, e.g.: {date: new Date(+value*1000)}"
+          }
+        }
+      },
+      "description": "Allows using template tokens as context for expressions that enrich discovery results. E.g.: given a template /path/${epoch}, an extractor under key \"epoch\" with an expression {date: new Date(+value*1000)}, will enrich discovery results with a human readable \"date\" field"
+    },
+    "awsAuthenticationMethod": {
+      "type": "string",
+      "title": "Authentication Method",
+      "description": "AWS authentication method. Choose Auto to use IAM roles.",
+      "default": "auto",
+      "enum": ["auto", "manual", "secret"],
+      "enumNames": ["Auto", "Manual", "Secret Key pair"]
+    },
+    "endpoint": {
+      "type": "string",
+      "title": "Endpoint",
+      "description": "S3 service endpoint. If empty, the endpoint will be automatically constructed from the region."
+    },
+    "signatureVersion": {
+      "type": "string",
+      "title": "Signature version",
+      "description": "Signature version to use for signing S3 requests.",
+      "default": "v4",
+      "enum": ["v2", "v4"]
+    },
+    "enableAssumeRole": {
+      "type":"boolean",
+      "title": "Enable Assume Role",
+      "description": "Use Assume Role credentials.",
+      "default": false
+    },
+    "assumeRoleArn": {
+      "type":"string",
+      "title": "AssumeRole ARN",
+      "description": "Amazon Resource Name (ARN) of the role to assume.",
+      "pattern": "^arn:",
+      "minLength": 20
+    },
+    "assumeRoleExternalId": {
+      "type": "string",
+      "title": "External ID",
+      "description": "External ID to use when assuming role."
+    },
+    "recurse": {
+      "type": "boolean",
+      "title": "Recursive",
+      "description": "Whether to recurse through subdirectories.",
+      "default": true
+    },
+    "maxBatchSize": {
+      "type": "number",
+      "title": "Max Batch Size (objects)",
+      "description": "Maximum number of metadata objects to batch before recording as results.",
+      "minimum": 1,
+      "default": 10
+    },
+    "reuseConnections": {
+      "type": "boolean",
+      "title": "Reuse Connections",
+      "description": "Whether to reuse connections between requests, which can improve performance.",
+      "default": true
+    },
+    "rejectUnauthorized": {
+      "type": "boolean",
+      "title": "Reject Unauthorized Certificates",
+      "description": "Whether to accept certificates which cannot be verified against a valid CA (e.g. self-signed certificates).",
+      "default": true
+    }
+  },
+  "dependencies": {
+    "awsAuthenticationMethod": {
+      "oneOf": [
+        {
+          "properties": {
+            "awsAuthenticationMethod": {
+              "enum":["auto"]
+            }
+          }
+        },
+        {
+          "properties": {
+            "awsAuthenticationMethod": {"enum": ["manual"]},
+            "awsApiKey": {
+              "type": "string",
+              "title": "Access key",
+              "description": "Access key. If not present, will fall back to env.AWS_ACCESS_KEY_ID, or to the metadata endpoint for IAM creds. Optional when running on AWS."
+            },
+            "awsSecretKey": {
+              "type": "string",
+              "title": "Secret key",
+              "description": "Secret key. If not present, will fall back to env.AWS_SECRET_ACCESS_KEY, or to the metadata endpoint for IAM creds. Optional when running on AWS.",
+              "encrypt": true
+            }
+          }
+        },
+        {
+          "properties": {
+            "awsAuthenticationMethod": {"enum": ["secret"]},
+            "awsSecret": {
+              "type": "string",
+              "title": "Secret key pair",
+              "secret": {"target": ["awsApiKey", "awsSecretKey"], "type": "keypair"},
+              "description": "Select (or create) a stored secret that references AWS access key and secret key."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

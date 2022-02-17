@@ -1,0 +1,137 @@
+{
+  "dimensionList": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter dimensions",
+    "ui:options": {
+      "separator": ","
+    }
+  },
+  "targetList": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter Prometheus targets",
+    "ui:options": {
+      "separator": ","
+    }
+  },
+  "nameList": {
+    "ui:field": "Tags",
+    "ui:placeholder": "Enter DNS names",
+    "ui:options": {
+      "separator": ","
+    }
+  },
+  "scrapeProtocol": { "ui:options": { "inline": true, "width": "15%" } },
+  "scrapePort": { "ui:options": { "inline": true, "width": "15%" } },
+  "scrapePath": { "ui:options": { "inline": true, "width": "70%" } },
+  "searchFilter": {
+    "ui:field": "Table",
+    "items": {
+      "Name": {  "ui:widget": "AutoComplete",
+        "ui:options": {
+          "editable": true,
+          "uiEnumOptions": [
+            {"value": "affinity"},
+            {"value": "architecture"},
+            {"value": "availability-zone"},
+            {"value": "block-device-mapping.attach-time"},
+            {"value": "block-device-mapping.delete-on-termination"},
+            {"value": "block-device-mapping.device-name"},
+            {"value": "block-device-mapping.status"},
+            {"value": "block-device-mapping.volume-id"},
+            {"value": "client-token"},
+            {"value": "dns-name"},
+            {"value": "group-id"},
+            {"value": "group-name"},
+            {"value": "hibernation-options.configured"},
+            {"value": "host-id"},
+            {"value": "hypervisor"},
+            {"value": "iam-instance-profile.arn"},
+            {"value": "image-id"},
+            {"value": "instance-id"},
+            {"value": "instance-lifecycle"},
+            {"value": "instance-state-code"},
+            {"value": "instance-state-name"},
+            {"value": "instance-type"},
+            {"value": "instance.group-id"},
+            {"value": "instance.group-name"},
+            {"value": "ip-address"},
+            {"value": "kernel-id"},
+            {"value": "key-name"},
+            {"value": "launch-index"},
+            {"value": "launch-time"},
+            {"value": "metadata-options.http-tokens"},
+            {"value": "metadata-options.http-put-response-hop-limit"},
+            {"value": "metadata-options.http-endpoint"},
+            {"value": "monitoring-state"},
+            {"value": "network-interface.addresses.private-ip-address"},
+            {"value": "network-interface.addresses.primary"},
+            {"value": "network-interface.addresses.association.public-ip"},
+            {"value": "network-interface.addresses.association.ip-owner-id"},
+            {"value": "network-interface.association.public-ip"},
+            {"value": "network-interface.association.ip-owner-id"},
+            {"value": "network-interface.association.allocation-id"},
+            {"value": "network-interface.association.association-id"},
+            {"value": "network-interface.attachment.attachment-id"},
+            {"value": "network-interface.attachment.instance-id"},
+            {"value": "network-interface.attachment.instance-owner-id"},
+            {"value": "network-interface.attachment.device-index"},
+            {"value": "network-interface.attachment.status"},
+            {"value": "network-interface.attachment.attach-time"},
+            {"value": "network-interface.attachment.delete-on-termination"},
+            {"value": "network-interface.availability-zone - The Availability Zone for the network interface."},
+            {"value": "network-interface.description"},
+            {"value": "network-interface.group-id"},
+            {"value": "network-interface.group-name"},
+            {"value": "network-interface.ipv6-addresses.ipv6-address"},
+            {"value": "network-interface.mac-address"},
+            {"value": "network-interface.network-interface-id"},
+            {"value": "network-interface.owner-id"},
+            {"value": "network-interface.private-dns-name"},
+            {"value": "network-interface.requester-id"},
+            {"value": "network-interface.requester-managed"},
+            {"value": "network-interface.status"},
+            {"value": "network-interface.source-dest-check"},
+            {"value": "network-interface.subnet-id"},
+            {"value": "network-interface.vpc-id"},
+            {"value": "owner-id"},
+            {"value": "placement-group-name"},
+            {"value": "placement-partition-number"},
+            {"value": "platform"},
+            {"value": "private-dns-name"},
+            {"value": "private-ip-address"},
+            {"value": "product-code"},
+            {"value": "product-code.type"},
+            {"value": "ramdisk-id"},
+            {"value": "reason "},
+            {"value": "requester-id"},
+            {"value": "reservation-id"},
+            {"value": "root-device-name"},
+            {"value": "root-device-type"},
+            {"value": "source-dest-check"},
+            {"value": "spot-instance-request-id"},
+            {"value": "state-reason-code"},
+            {"value": "state-reason-message "},
+            {"value": "subnet-id"},
+            {"value": "tag:<enter-key-here>"},
+            {"value": "tag-key "},
+            {"value": "tenancy "},
+            {"value": "virtualization-type "},
+            {"value": "vpc-id "}
+          ],
+          "columnWidth": "40%"
+          }
+      },
+      "Values": { "ui:field": "Tags", "ui:placeholder": "Enter search filter value", "ui:options": { "columnWidth": "60%" } }
+    }
+  },
+  "awsAuthenticationMethod": {
+    "ui:widget": "Radio",
+    "ui:options": {
+      "uiEnumOptions": [
+        { "value": "auto", "label": "Auto", "description": "Will use environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY, or the attached IAM role. Will work only when running on AWS." },
+        { "value": "manual", "label": "Manual", "description": "Provide API key and secret key. Required when not running on AWS." }
+      ],
+      "toggle": true
+    }
+  }
+}

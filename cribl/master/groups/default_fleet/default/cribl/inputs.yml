@@ -1,0 +1,107 @@
+inputs:
+  http:
+    disabled: true
+    type: http
+    host: 0.0.0.0
+    port: 10080
+    elasticAPI: /elastic
+    criblAPI: /cribl
+    splunkHecAPI: /services/collector
+  in_splunk_tcp:
+    disabled: true
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    ipWhitelistRegex: /.*/
+    enableProxyHeader: false
+    staleChannelFlushMs: 10000
+    type: splunk
+    port: 9997
+  in_splunk_hec:
+    disabled: true
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    splunkHecAPI: /services/collector
+    splunkHecAcks: false
+    staleChannelFlushMs: 10000
+    type: splunk_hec
+    port: 8088
+  in_elastic:
+    disabled: true
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    elasticAPI: /
+    type: elastic
+    port: 9200
+  in_syslog:
+    disabled: true
+    host: 0.0.0.0
+    maxBufferSize: 1000
+    ipWhitelistRegex: /.*/
+    timestampTimezone: local
+    singleMsgUdpPackets: false
+    enableProxyHeader: false
+    keepFieldsList: []
+    tls:
+      disabled: true
+    type: syslog
+    udpPort: 9514
+    tcpPort: 9514
+  in_tcp:
+    disabled: true
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    ipWhitelistRegex: /.*/
+    enableProxyHeader: false
+    staleChannelFlushMs: 10000
+    enableHeader: false
+    preprocess:
+      disabled: true
+    type: tcp
+    port: 10060
+    authType: manual
+  in_tcp_json:
+    disabled: true
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    ipWhitelistRegex: /.*/
+    enableProxyHeader: false
+    authToken: ""
+    type: tcpjson
+    port: 10070
+    authType: manual
+  in_appscope:
+    disabled: true
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    ipWhitelistRegex: /.*/
+    maxActiveCxn: 1000
+    enableProxyHeader: false
+    staleChannelFlushMs: 10000
+    authToken: ""
+    type: appscope
+    port: 10090
+    authType: manual
+  in_snmp_trap:
+    disabled: true
+    host: 0.0.0.0
+    port: 9162
+    maxBufferSize: 1000
+    ipWhitelistRegex: /.*/
+    type: snmp
+  CriblLogs:
+    type: cribl
+    disabled: true
+  CriblMetrics:
+    type: criblmetrics
+    disabled: true
+    pipeline: cribl_metrics_rollup
+  in_system_metrics:
+    type: system_metrics
+    disabled: true
+

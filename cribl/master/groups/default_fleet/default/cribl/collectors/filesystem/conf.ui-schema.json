@@ -1,0 +1,38 @@
+{
+  "outputName": {
+    "ui:widget": "OutputName",
+    "ui:forceRender": true,
+    "ui:options": {
+      "outputType": "filesystem",
+      "outputProps": {
+        "path": [
+          "destPath",
+          {
+            "id": "partitionExpr",
+            "expression": true
+          }
+        ]
+      }
+    }
+  },
+  "extractors": {
+    "ui:widget": "Table",
+    "items": {
+      "key": {
+        "ui:options": { "columnWidth": "30%" },
+        "ui:placeholder": "Enter extractor token"
+      },
+      "expression": {
+        "ui:widget": "JsInputWithoutPopup",
+        "ui:options": { "columnWidth": "70%" },
+        "ui:placeholder": "Enter extractor expression"
+      }
+    }
+  },
+  "recurse": {
+    "ui:options": { "inline": true, "width": "30%" }
+  },
+  "maxBatchSize": {
+    "ui:options": { "inline": false, "width": "30%" }
+  }
+}
