@@ -21,7 +21,7 @@ inputs:
       destPath: $CRIBL_HOME/state/system_metrics
     type: system_metrics
     connections:
-      - output: dc1-metrics-ls
+      - output: prometheus
         pipeline: ""
   in_file_auto:
     disabled: false

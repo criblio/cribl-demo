@@ -35,3 +35,24 @@ outputs:
     type: logstream
     host: demo-cribl-w0
     port: 10250
+  prometheus:
+    systemFields:
+      - cribl_host
+      - cribl_wp
+    streamtags: []
+    metricRenameExpr: name.replace(/[^a-zA-Z0-9_]/g, '_')
+    sendMetadata: true
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    maxPayloadEvents: 0
+    rejectUnauthorized: false
+    timeoutSec: 30
+    flushPeriodSec: 1
+    useRoundRobinDns: false
+    failedRequestLoggingMode: none
+    safeHeaders: []
+    onBackpressure: block
+    authType: none
+    metricsFlushPeriodSec: 60
+    type: prometheus
+    url: http://demo-prometheus:9090/api/v1/write

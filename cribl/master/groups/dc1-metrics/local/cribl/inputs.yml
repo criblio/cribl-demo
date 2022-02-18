@@ -17,7 +17,7 @@ inputs:
         value: cribl-metrics
   edge-in:
     disabled: false
-    sendToRoutes: true
+    sendToRoutes: false
     streamtags: []
     host: 0.0.0.0
     tls:
@@ -30,3 +30,6 @@ inputs:
       9hURjThWeRChW6RqZA=="
     type: logstream
     port: 10250
+    connections:
+      - output: prometheus
+        pipeline: ""
