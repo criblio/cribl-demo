@@ -33,27 +33,6 @@ outputs:
     type: splunk
     host: splunk
     pipeline: metrics_to_logs
-  influxdb2:
-    timestampPrecision: ms
-    dynamicValueFieldName: true
-    valueFieldName: value
-    concurrency: 5
-    maxPayloadSizeKB: 4096
-    flushPeriodSec: 1
-    auth:
-      disabled: true
-      username: admin
-      password: "#42:sr3FXXrdKPyRQ9wGo0utvGqplJcIAExmW5Wmu3HVd2A="
-    onBackpressure: block
-    type: influxdb
-    url: http://influxdb2-internal:8086/write?rp=forever
-    database: cribl
-    extraHttpHeaders:
-      - name: Authorization
-        value: Token
-          sKvQsRYB9OTwG53QszRyoEYd6t99Xp_HlG29GxDs1sfxep7XHkMPWrqKroMs8mSoGPokIvUlJuptcESe_X8uig==
-      - name: User-Agent
-        value: Cribl-42.0-5eea030d
   s3:
     type: s3
     awsAuthenticationMethod: manual
@@ -106,7 +85,7 @@ outputs:
     rules:
       - final: true
         filter: _metric
-        output: influxdb2
+        output: devnull
         description: Metrics go to Influx
       - final: true
         filter: "!_metric"
