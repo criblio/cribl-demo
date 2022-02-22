@@ -1,8 +1,7 @@
 outputs:
   default:
-    defaultId: splunk
+    defaultId: logs
     type: default
-
   splunk:
     systemFields:
       - cribl_pipe
@@ -28,7 +27,7 @@ outputs:
         condition: unhealthy-dest
         group: dc1-logs
         id: Splunk-unhealthy
-
+    authType: manual
   statsd:
     systemFields:
       - cribl_pipe
@@ -60,6 +59,7 @@ outputs:
     onBackpressure: block
     type: splunk
     host: splunk
+    authType: manual
   s3:
     type: s3
     awsAuthenticationMethod: manual
@@ -67,7 +67,7 @@ outputs:
     destPath: ""
     stagePath: /tmp/cribl
     awsApiKey: ACCESSKEY
-    awsSecretKey: SECRETKEY
+    awsSecretKey: "#42:jTL9JdVDlvuub+ct/bajgx77gWG4xCjP8E3K7VNohfY="
     region: us-east-1
     endpoint: http://minio:9000
     signatureVersion: v4
@@ -96,7 +96,7 @@ outputs:
     onBackpressure: block
     type: splunk
     host: splunk
-
+    authType: manual
   s3-pan:
     type: s3
     awsAuthenticationMethod: manual
@@ -104,11 +104,13 @@ outputs:
     destPath: ""
     stagePath: /tmp/cribl
     awsApiKey: ACCESSKEY
-    awsSecretKey: SECRETKEY
+    awsSecretKey: "#42:dTnK0xM1o/nY65IbwYQ1cM/gn/1dxunHAJpqgDDMd00="
     region: us-east-1
     endpoint: http://minio:9000
     signatureVersion: v4
-    partitionExpr: "`${C.Time.strftime(_time ? _time : Date.now(), '%Y/%m/%d/%H')}/${sourcetype}/${src_zone}/${src_ip}/${dest_zone}/${dest_ip}`"
+    partitionExpr: "`${C.Time.strftime(_time ? _time : Date.now(),
+      '%Y/%m/%d/%H')}/${sourcetype}/${src_zone}/${src_ip}/${dest_zone}/${dest_i\
+      p}`"
     format: json
     baseFileName: CriblOut
     compress: gzip
@@ -126,7 +128,6 @@ outputs:
         filter: "true"
         output: s3-pan
     type: router
-
   splunk-multimetrics:
     systemFields:
       - cribl_pipe
@@ -143,3 +144,39 @@ outputs:
     pipeline: metrics_to_logs
     type: splunk
     host: splunk
+    authType: manual
+  elastic:
+    systemFields:
+      - cribl_pipe
+    streamtags: []
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    maxPayloadEvents: 0
+    compress: false
+    rejectUnauthorized: false
+    timeoutSec: 30
+    flushPeriodSec: 1
+    useRoundRobinDns: false
+    failedRequestLoggingMode: none
+    safeHeaders: []
+    auth:
+      disabled: true
+    elasticVersion: auto
+    onBackpressure: block
+    type: elastic
+    url: http://elasticsearch-master:9200/_bulk
+    index: cribl
+    docType: cribl
+    pipeline: elastic-destination-conditioning
+  logs:
+    systemFields:
+      - cribl_pipe
+    streamtags: []
+    rules:
+      - final: false
+        filter: "true"
+        output: splunk
+      - final: true
+        filter: "true"
+        output: elastic
+    type: router
