@@ -23,6 +23,8 @@ inputs:
     connections:
       - output: prometheus
         pipeline: ""
+      - output: s3
+        pipeline: ""
   in_file_auto:
     disabled: false
     sendToRoutes: false
@@ -36,5 +38,19 @@ inputs:
     staleChannelFlushMs: 10000
     type: file
     connections:
-      - output: dc1-logs-ls
+      - output: s3
+        pipeline: ""
+  in_file_varlog:
+    type: file
+    disabled: false
+    sendToRoutes: false
+    mode: manual
+    interval: 10
+    path: /var/log/
+    filenames:
+      - "!*.journal*"
+      - "!*.gz"
+      - "*"
+    connections:
+      - output: s3
         pipeline: ""
