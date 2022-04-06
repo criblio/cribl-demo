@@ -56,3 +56,24 @@ outputs:
     metricsFlushPeriodSec: 60
     type: prometheus
     url: http://demo-prometheus:9090/api/v1/write
+  s3:
+    type: s3
+    awsAuthenticationMethod: manual
+    bucket: archival
+    destPath: ""
+    stagePath: /tmp/cribl
+    awsApiKey: ACCESSKEY
+    awsSecretKey: "#42:jTL9JdVDlvuub+ct/bajgx77gWG4xCjP8E3K7VNohfY="
+    region: us-east-1
+    endpoint: http://minio:9000
+    signatureVersion: v4
+    partitionExpr: "`${__inputId.replace(/:/g, '_')}/${C.Time.strftime(_time ? _time :
+      Date.now(), '%Y-%m-%d_%H')}/${host}/${sourcetype}`"
+    format: json
+    baseFileName: CriblOut
+    compress: gzip
+    maxFileSizeMB: 32
+    maxFileOpenTimeSec: 60
+    maxFileIdleTimeSec: 30
+    maxOpenFiles: 100
+    onBackpressure: block
