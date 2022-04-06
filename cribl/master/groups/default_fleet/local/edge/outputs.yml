@@ -63,7 +63,7 @@ outputs:
     destPath: ""
     stagePath: /tmp/cribl
     awsApiKey: ACCESSKEY
-    awsSecretKey: "#42:jTL9JdVDlvuub+ct/bajgx77gWG4xCjP8E3K7VNohfY="
+    awsSecretKey: "#42:vslOM/1iJSic398+CnXf8Me8mbO5jhv3WbSekYS4UGo="
     region: us-east-1
     endpoint: http://minio:9000
     signatureVersion: v4
