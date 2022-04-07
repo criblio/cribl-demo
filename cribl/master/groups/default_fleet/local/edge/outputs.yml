@@ -55,7 +55,7 @@ outputs:
     authType: none
     metricsFlushPeriodSec: 60
     type: prometheus
-    url: http://demo-prometheus:9090/api/v1/write
+    url: http://edgeled-prometheus:9090/api/v1/write
   s3:
     type: s3
     awsAuthenticationMethod: manual
