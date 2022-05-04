@@ -45,7 +45,7 @@ if [ -z "$adminpass" ]; then
 fi
 
 if [ -z "$branch" ]; then
-  branch=$(git branch --show-current)
+  branch=$(git branch)
 fi
 
 # make sure the namespace exists
