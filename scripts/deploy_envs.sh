@@ -26,5 +26,6 @@ for dom in $($DIR/enumerate_envs.py -j $arg); do
   git checkout $branch
   $DIR/scripts/setup.sh -n $ns
   $DIR/undeploy-eks.py -n $ns
+  sleep 300
   $DIR/deploy-eks.py -n $ns
 done
