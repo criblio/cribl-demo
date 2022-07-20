@@ -145,29 +145,6 @@ outputs:
     type: splunk
     host: splunk
     authType: manual
-  elastic:
-    systemFields:
-      - cribl_pipe
-    streamtags: []
-    concurrency: 5
-    maxPayloadSizeKB: 4096
-    maxPayloadEvents: 0
-    compress: false
-    rejectUnauthorized: false
-    timeoutSec: 30
-    flushPeriodSec: 1
-    useRoundRobinDns: false
-    failedRequestLoggingMode: none
-    safeHeaders: []
-    auth:
-      disabled: true
-    elasticVersion: auto
-    onBackpressure: block
-    type: elastic
-    url: http://elasticsearch-master:9200/_bulk
-    index: cribl
-    docType: cribl
-    pipeline: elastic-destination-conditioning
   logs:
     systemFields:
       - cribl_pipe
@@ -176,7 +153,4 @@ outputs:
       - final: false
         filter: "true"
         output: splunk
-      - final: true
-        filter: "true"
-        output: elastic
     type: router

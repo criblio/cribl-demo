@@ -86,7 +86,7 @@ outputs:
       - final: true
         filter: _metric
         output: devnull
-        description: Metrics go to Influx
+        description: Metrics go to devnull
       - final: true
         filter: "!_metric"
         output: splunk
