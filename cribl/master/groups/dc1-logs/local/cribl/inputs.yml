@@ -104,3 +104,18 @@ inputs:
       GwF9NXhRfuDSw+KCCw=="
     type: logstream
     port: 10250
+  edge-in-http:
+    disabled: false
+    sendToRoutes: true
+    pqEnabled: false
+    streamtags: []
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    maxActiveReq: 256
+    enableProxyHeader: false
+    captureHeaders: false
+    activityLogSampleRate: 100
+    requestTimeout: 0
+    type: cribl_http
+    port: 10275
