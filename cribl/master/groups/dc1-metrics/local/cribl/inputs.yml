@@ -33,3 +33,15 @@ inputs:
     connections:
       - output: prometheus
         pipeline: ""
+  edge-in-tcp:
+    disabled: false
+    sendToRoutes: true
+    pqEnabled: false
+    streamtags: []
+    host: 0.0.0.0
+    tls:
+      disabled: true
+    maxActiveCxn: 1000
+    enableProxyHeader: false
+    type: cribl_tcp
+    port: 10275

@@ -77,3 +77,42 @@ outputs:
     maxFileIdleTimeSec: 30
     maxOpenFiles: 100
     onBackpressure: block
+  dc1-logs-http:
+    systemFields:
+      - cribl_pipe
+    streamtags: []
+    loadBalanced: false
+    tls:
+      disabled: true
+    tokenTTLMinutes: 60
+    excludeFields: []
+    compression: gzip
+    concurrency: 5
+    maxPayloadSizeKB: 4096
+    maxPayloadEvents: 0
+    rejectUnauthorized: true
+    timeoutSec: 30
+    flushPeriodSec: 1
+    failedRequestLoggingMode: none
+    safeHeaders: []
+    onBackpressure: block
+    useRoundRobinDns: false
+    type: cribl_http
+    url: http://demo-cribl-w0:10275
+  dc1-metrics-tcp:
+    systemFields:
+      - cribl_pipe
+    streamtags: []
+    loadBalanced: false
+    compression: gzip
+    throttleRatePerSec: "0"
+    tls:
+      disabled: true
+    connectionTimeout: 10000
+    writeTimeout: 60000
+    tokenTTLMinutes: 60
+    excludeFields: []
+    onBackpressure: block
+    port: 10275
+    type: cribl_tcp
+    host: demo-cribl-w1
