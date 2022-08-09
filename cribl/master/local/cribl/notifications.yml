@@ -64,3 +64,21 @@ notifications:
       timeWindow: 60s
     condition: unhealthy-dest
     group: dc1-logs
+  syslog_high_water:
+    disabled: true
+    targets: []
+    conf:
+      name: syslog:syslog
+      timeWindow: 60s
+      dataVolume: 50KB
+    condition: high-volume
+    group: dc1-logs
+  syslog_low_water:
+    disabled: true
+    targets: []
+    conf:
+      name: syslog:syslog
+      timeWindow: 60s
+      dataVolume: 60GB
+    condition: low-volume
+    group: dc1-logs
