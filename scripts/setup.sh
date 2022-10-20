@@ -76,7 +76,7 @@ EOU
     fi
 
     if [ $dir = "cribl/master" ]; then
-      if [[ "$namespace" =~ ^(nologstream|logstreamnext|candidate)$ ]]; then
+      if [[ "$namespace" =~ ^(logstream|logstreamnext|candidate)$ ]]; then
         cat >> kustomization.yml<<EOU
 patchesJson6902:
 - target:
