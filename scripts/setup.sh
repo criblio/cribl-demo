@@ -74,6 +74,24 @@ images:
   newTag: ${CRIBL_TAG}
 EOU
     fi
+
+    if [ $dir = "cribl/master" ]; then
+      if [[ "$namespace" =~ ^(nologstream|logstreamnext|candidate)$ ]]; then
+        cat >> kustomization.yml<<EOU
+patchesJson6902:
+- target:
+    version: v1
+    kind: Service
+    name: cribl
+  patch: |-
+    - op: replace
+      path: /metadata/annotations
+      value:
+        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+        service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-west-2:586997984287:certificate/f7a72335-52a3-40fc-b01f-fa33f6b104c8
+EOU
+      fi
+    fi
     kustomize build > tmp/$tempname-rendered.yml
     
   )
