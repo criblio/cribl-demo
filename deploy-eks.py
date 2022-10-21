@@ -597,7 +597,7 @@ for svc in services.keys():
     chgbatch['Changes'].append(chg)
     for port in ret.spec.ports:
       if port.port in allowed_ports:
-        htmlout += "<tr><td><A HREF=http://%s.%s.%s:%d/>%s</A></td><td>%s</td></tr>" % ( svc, options.ns, options.domain, port.port, svc, services[svc])
+        htmlout += "<tr><td><A HREF=https://%s.%s.%s:%d/>%s</A></td><td>%s</td></tr>" % ( svc, options.ns, options.domain, port.port, svc, services[svc])
 
 htmlout += "</table></body></HTML>"
 
