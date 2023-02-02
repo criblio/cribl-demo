@@ -102,6 +102,9 @@ def run_setup(params,options):
     print("Error: Not in the Repo Top Level")
     sys.exit(255)
 
+  if options.license:
+    cmd += " -l %s" % options.license
+
   if options.pullsecret:
     cmd += " -a %s" % options.pullsecret
 
@@ -398,6 +401,7 @@ parser.add_option("-a", "--description", dest="description", default="Demo Envir
 parser.add_option("-c", "--container-repo-head", dest="repohead", default="cribl-demo", help="ECR Repo top level")
 parser.add_option("-p", "--profile", dest="profile", help="Skaffold Profile to run with")
 parser.add_option("-i", "--scope", dest="scope", action="store_true", help="Enable (instrument) appscope through demo")
+parser.add_option("-l", "--license", dest="license", help="Set a license key for this instance")
 (options, args) = parser.parse_args()
 
 
@@ -445,6 +449,9 @@ if ("scope" in parameters):
 
 if ("tag" in parameters):
   os.environ['CRIBL_TAG'] = parameters['tag']
+
+if ("license" in parameters):
+  options.license = parameters['license']
 
 if ("docker-auth" in parameters):
   kubecmd="kubectl create secret docker-registry dockreg -n %s --docker-username=%s --docker-password=%s --docker-email=%s" % ( options.ns, parameters['docker-auth']['username'], parameters['docker-auth']['password'], parameters['docker-auth']['email'])
@@ -637,3 +644,11 @@ if 'notifyurl' in parameters:
   rval = subprocess.call(cmd,  shell=True)
   if rval == 0:
     print("Notification URL Clear Succeeded")
+
+if 'license' in parameters:
+  cmd="git checkout ./cribl/master/local/cribl/licenses.yml" 
+  rval = subprocess.call(cmd,  shell=True)
+  if rval == 0:
+    print("License Clear Succeeded")
+
+
