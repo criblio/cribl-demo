@@ -60,10 +60,10 @@ fi
 
 if [ ! -z "$license" ]; then
   echo "In License Set"
-  cat >> cribl/master/local/cribl/licenses.yml << "EOU"
+  cat > cribl/master/local/cribl/licenses.yml<<EOU
 licenses:
   - >
-      $license
+    $license
 
 EOU
 fi
