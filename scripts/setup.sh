@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -x
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 WD=$(pwd)
 
@@ -14,7 +15,7 @@ fi
 
 
 # Options (with defaults) for namespace, branch name and admin password.
-while getopts "a:b:n:p:s" opt; do
+while getopts "a:b:l:n:p:s" opt; do
   case ${opt} in
     n ) 
       namespace=$OPTARG
@@ -24,6 +25,9 @@ while getopts "a:b:n:p:s" opt; do
       ;;
     b )
       branch=$OPTARG
+      ;;
+    l )
+      license=$OPTARG
       ;;
     a )
       authsecret=$OPTARG
@@ -52,6 +56,16 @@ fi
 kubectl get namespace $namespace >/dev/null 2>&1 
 if [ $? -gt 0 ]; then
   kubectl create namespace $namespace
+fi
+
+if [ ! -z "$license" ]; then
+  echo "In License Set"
+  cat > cribl/master/local/cribl/licenses.yml<<EOU
+licenses:
+  - >
+    $license
+
+EOU
 fi
 
 # Create Kustomization files.
